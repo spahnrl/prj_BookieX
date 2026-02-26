@@ -1,264 +1,318 @@
 # prj_BookieX 🏀📊
 
-**Deterministic NBA Data Pipeline for Fatigue & Betting Analysis**
+## Deterministic NBA Betting Analytics Engine  
+Multi-Model Arbitration • Backtesting • Confidence Gating • Dashboard
 
 ---
 
-## 📌 Project Overview
+## 🎯 What This Is
 
-**prj_BookieX** is a deterministic, audit-safe NBA data engineering pipeline designed to support **sports betting analysis**, **fatigue modeling**, and **market comparison**.
+**BookieX** is a deterministic, audit-safe NBA analytics engine designed to:
 
-The system ingests **free, reliable NBA data** (schedule, teams, boxscores), computes **rest and fatigue signals**, and prepares a clean foundation for **betting line integration** (paid or scraped sources).
+- Generate structured betting projections
+- Compare projections vs market lines
+- Arbitrate across multiple models
+- Apply confidence gating
+- Backtest performance
+- Produce explainable outputs
 
-**Key principles:**
+This system is built like production software — not a notebook experiment.
 
-* Forward-only data flow (no back-references)
-* Reproducible outputs
-* Clear separation of *facts* vs *market data*
-* Observable, debuggable, long-running jobs
+It is:
 
----
-
-## 🎯 Core Use Case
-
-Answer questions like:
-
-* Is one team at a **fatigue disadvantage**?
-* Are teams on **back-to-back** or **back-to-back-to-back** games?
-* Did a game go to **overtime** (and how much)?
-* How does **market pricing** (spread / O-U) compare to fatigue-adjusted expectations?
-
-This project **does not place bets** — it generates **decision-ready data**.
+- Deterministic
+- Reproducible
+- Modular
+- Fully artifact-driven
+- Forward-only pipeline architecture
 
 ---
 
-## 🧱 Architecture Philosophy
+## 🧠 System Capabilities
 
-* **No ML required to start**
-* Signal quality > model complexity
-* Every `.py`:
+### ✅ Multi-Model Architecture
 
-  * Reads exactly **one prior artifact**
-  * Writes exactly **one new artifact**
-* CSV + JSON always produced
-* No silent failures
+Current models:
 
----
+- Joel Baseline Model
+- Fatigue Plus Model
+- Injury Model
+- Market Pressure Model
+- Monkey Darts (control baseline)
 
-## 📂 Directory Structure
+Each model produces:
 
-```
-prj_BookieX/
-│
-├── a_data/                  # Raw & ingestion steps
-│   ├── a_data_001_ingest_schedule.py
-│   ├── a_data_002_team_map.py
-│   ├── a_data_003_join_schedule_teams.py
-│   ├── a_data_004_ingest_boxscores.py
-│
-├── calc/                    # Derived metrics & scoring
-│   ├── calc_005_compute_team_rest_days.py
-│   ├── calc_006_add_b2b_flags.py
-│   ├── calc_007_compute_fatigue_score.py
-│
-├── data/
-│   ├── raw/                 # Direct source outputs
-│   └── derived/             # Chained outputs (truth source)
-│
-├── CHANGELOG.md
-├── README.md
-└── requirements.txt
-```
+- Spread projection
+- Total projection
+- Edge magnitude
+- Pick direction
 
 ---
 
-## 🔄 Data Pipeline (Authoritative Order)
+### ✅ Arbitration Layer
 
-> **IMPORTANT:**
-> Each step reads *only* the immediately previous output.
+All models feed into:
+eng/arbitration/confidence_engine.py
+eng/arbitration/confidence_gate.py
 
-### 1️⃣ `a_data_001_ingest_schedule.py`
 
-**Purpose:**
-Fetch official NBA schedule.
+Responsibilities:
 
-**Outputs:**
+- Cross-model agreement detection
+- Edge strength scoring
+- Confidence tier assignment
+- Final authority pick selection
 
-* `nba_schedule.json`
-* `nba_schedule.csv`
+Confidence tiers:
 
----
-
-### 2️⃣ `a_data_002_team_map.py`
-
-**Purpose:**
-Normalize team metadata (IDs, names, conferences, divisions).
-
-**Outputs:**
-
-* `nba_team_map.json`
-* `nba_team_map.csv`
+- HIGH
+- MODERATE
+- LOW
 
 ---
 
-### 3️⃣ `a_data_003_join_schedule_teams.py`
+### ✅ Determinism Guarantee
 
-**Purpose:**
-Join schedule + teams into game-level records.
+BookieX includes:
+TRUTH/build_baseline_manifest.py
+TRUTH/verify_determinism.py
 
-**Outputs:**
+These verify:
 
-* `nba_games_base.json`
-* `nba_games_base.csv`
+- Artifact integrity
+- No silent schema drift
+- No hidden mutation
+- Reproducible outputs
 
----
-
-### 4️⃣ `a_data_004_ingest_boxscores.py`
-
-**Purpose:**
-Detect **overtime** using NBA boxscores.
-
-**Adds (flags only):**
-
-* `went_ot`
-* `ot_minutes`
-* `home_went_ot`
-* `away_went_ot`
-
-**Outputs:**
-
-* `nba_games_with_ot.json`
-* `nba_games_with_ot.csv`
-
-> ⚠️ OT is **flagged**, never filtered.
+This prevents pipeline corruption during refactors.
 
 ---
 
-### 5️⃣ `calc_005_compute_team_rest_days.py`
+### ✅ Backtesting Engine
 
-**Purpose:**
-Compute rest days per team per game.
+Located in:
+eng/backtest_runner.py
+eng/backtest_grader.py
+eng/backtest_summary.py
 
-**Adds:**
 
-* `home_rest_days`
-* `away_rest_days`
+Capabilities:
 
----
-
-### 6️⃣ `calc_006_add_b2b_flags.py`
-
-**Purpose:**
-Detect compressed schedules.
-
-**Adds:**
-
-* `home_back_to_back`
-* `away_back_to_back`
-* `home_back_to_back_to_back`
-* `away_back_to_back_to_back`
-* `any_back_to_back`
-* `any_back_to_back_to_back`
+- Projection vs Vegas comparison
+- Spread sign validation
+- Edge magnitude performance curve
+- Confidence tier performance testing
+- Model disagreement analysis
 
 ---
 
-### 7️⃣ `calc_007_compute_fatigue_score.py`
+### ✅ Calibration Snapshot
+eng/calibration/build_calibration_snapshot.py
 
-**Purpose:**
-Create composite fatigue signals.
+Creates a historical reference snapshot to:
 
-**Outputs:**
-
-* `nba_games_with_fatigue.json`
-* `nba_games_with_fatigue.csv`
-
-> This is the **final free-data stopping point**.
+- Track projection drift
+- Compare model stability
+- Evaluate structural bias
 
 ---
 
-## 📊 Fatigue Model (Current)
+### ✅ Dashboard UI
 
-Fatigue is derived from:
+Streamlit interface:
+eng/ui/bookiex_dashboard.py
 
-* Days rest
-* B2B / B2B2B flags
-* OT minutes
 
-The model is:
+Features:
 
-* Transparent
-* Deterministic
-* Easy to re-weight or replace later
-
----
-
-## 💰 Betting Lines (Planned — Not Implemented)
-
-Betting lines are **external market data**.
-
-Planned ingestion:
-
-* `a_data_008_ingest_betting_lines.py`
-* Source: Joel’s paid feed or approved scrape
-* Format: CSV or API
-* Joined *after* fatigue computation
-
-**Key rule:**
-
-> Betting data is **never inferred**, only ingested.
+- Game-level rollup view
+- Collapsible model detail sections
+- Confidence tier display
+- Signal strength bars
+- Explanation section
+- Clear separation of authority vs model-level signals
 
 ---
 
-## 🛠️ Reliability & Stability
+### ✅ CLI Interface
 
-* Uses NBA CDN endpoints (no API keys)
-* Handles:
+Allows:
 
-  * 403s
-  * SSL mismatches
-  * Partial failures
-* Long-running jobs include progress logging
-* Safe CSV fallbacks if files are locked
+- Pipeline execution
+- Daily view generation
+- Structured artifact control
 
 ---
 
-## ▶️ How to Run
+## 🧱 Architecture Overview
 
-Run scripts **in order**:
+BookieX is built as a forward-only artifact pipeline:
+Raw Data
+↓
+Canonical Game Builder
+↓
+Game-Level Collapse
+↓
+Betting Line Integration
+↓
+Model Layer
+↓
+Arbitration Layer
+↓
+Confidence Gate
+↓
+Final Game View
+↓
+Backtest / Dashboard / CLI
+
+Each step:
+
+- Reads one prior artifact
+- Writes one new artifact
+- Never mutates historical artifacts
+
+---
+
+## 🏗 System Architecture Diagram
+
+```mermaid
+flowchart TD
+
+A[Raw NBA Data<br>Schedule / Boxscores / Injuries] --> B[Canonical Game Builder]
+B --> C[Game-Level Collapse]
+C --> D[Betting Line Integration]
+
+D --> E[Model Layer]
+
+subgraph Models
+E1[Joel Baseline]
+E2[Fatigue Plus]
+E3[Injury Model]
+E4[Market Pressure]
+E5[Monkey Darts]
+end
+
+E --> E1
+E --> E2
+E --> E3
+E --> E4
+E --> E5
+
+E1 --> F[Arbitration Engine]
+E2 --> F
+E3 --> F
+E4 --> F
+E5 --> F
+
+F --> G[Confidence Gate]
+G --> H[Final Game View]
+
+H --> I[Backtest Engine]
+H --> J[Dashboard UI]
+H --> K[CLI Interface]
+
+I --> L[Calibration Snapshot]
+
+
+
+## 📂 Core Structure
+eng/
+├── models/
+├── arbitration/
+├── analysis/
+├── calibration/
+├── daily/
+├── ui/
+├── cli/
+├── backtest_runner.py
+├── backtest_grader.py
+└── decision_explainer.py
+
+TRUTH/
+data/static/
+docs/
+
+
+---
+
+## 🔬 Engineering Standards
+
+BookieX enforces:
+
+- No circular dependencies
+- No hidden joins
+- Schema stability
+- Explicit contracts (see docs/)
+- Artifact flow documentation
+- Confidence gating separated from modeling
+
+---
+
+## 🚀 How To Run
+
+### Full Pipeline
 
 ```bash
-python a_data_001_ingest_schedule.py
-python a_data_002_team_map.py
-python a_data_003_join_schedule_teams.py
-python a_data_004_ingest_boxscores.py
-python calc_005_compute_team_rest_days.py
-python calc_006_add_b2b_flags.py
-python calc_007_compute_fatigue_score.py
-```
+python 000_RUN_ALL.py
 
----
+Launch Dashboard
+streamlit run eng/ui/bookiex_dashboard.py
 
-## 🚦 Current Status
 
-✅ Free data pipeline complete
-✅ Fatigue metrics stable
-✅ OT detection validated
-🛑 Betting data intentionally deferred
+📊 Example Use Cases
 
----
+Detect model agreement zones
 
-## 🔮 Next Steps (When Ready)
+Identify high-confidence spread edges
 
-* Add betting line ingestion
-* Compare fatigue vs market pricing
-* Track model vs closing line value (CLV)
-* Add sport extensions (NCAA, NHL)
+Evaluate projection sign correctness
 
----
+Compare edge magnitude vs profit curve
 
-## 👥 Contributors
+Analyze disagreement volatility
 
-* **Rick Spahn** — Architecture, Data Engineering
-* **Joel Petershagen** — Domain Model, Betting Strategy
+Test projection direction integrity
 
----
+🧩 Design Philosophy
+
+BookieX was intentionally built:
+
+Without hidden ML black boxes
+
+Without notebook coupling
+
+Without fragile joins
+
+Without refactor drift
+
+It is structured as if it were preparing for:
+
+Commercial deployment
+
+Multi-sport extension
+
+Agent-based orchestration
+
+Capital allocation logic
+
+👥 Contributors
+
+Rick Spahn — Architecture & Data Engineering
+Joel Petershagen — Domain Strategy & Market Insight
+
+📌 Status
+
+Version: Pre-Release v1.0
+Architecture: Stable
+Backtesting: Operational
+Dashboard: Operational
+Confidence Gating: Active
+Determinism: Verified
+
+⚠️ Disclaimer
+
+This system generates analytical signals.
+It does not place bets and does not constitute financial advice.
+
+
+
