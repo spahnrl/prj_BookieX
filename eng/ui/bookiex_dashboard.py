@@ -494,20 +494,42 @@ for g in games:
         if not models:
             st.write("No model details available.")
         else:
+            final_spread = model.get("spread_pick")
+            final_total = model.get("total_pick")
+
             for model_name, model_data in models.items():
+
+                model_spread = model_data.get("spread_pick")
+                model_total = model_data.get("total_pick")
+
+                spread_align = model_spread == final_spread
+                total_align = model_total == final_total
+
+                # --------------------------------------------------
+                # ICON LOGIC
+                # --------------------------------------------------
+
+                if spread_align and total_align:
+                    icon = "🟢"
+                elif spread_align and not total_align:
+                    icon = "🟡 T"
+                elif not spread_align and total_align:
+                    icon = "🟡 S"
+                else:
+                    icon = "🔴"
 
                 # Mark models excluded from arbitration
                 if model_name == "MonkeyDarts_v2":
-                    expander_label = f"{model_name} 🚫 (Excluded from Arbitration)"
+                    expander_label = f"{icon} {model_name} 🚫 (Excluded from Arbitration)"
                 else:
-                    expander_label = f"{model_name}"
+                    expander_label = f"{icon} {model_name}"
 
                 with st.expander(expander_label):
 
-                    st.write("Spread Pick:", model_data.get("spread_pick"))
+                    st.write("Spread Pick:", model_spread)
                     st.write("Spread Edge:", round(model_data.get("spread_edge", 0), 2))
 
-                    st.write("Total Pick:", model_data.get("total_pick"))
+                    st.write("Total Pick:", model_total)
                     st.write("Total Edge:", round(model_data.get("total_edge", 0), 2))
 
                     if model_data.get("parlay_edge_score") is not None:
@@ -519,7 +541,6 @@ for g in games:
                     context_flags = model_data.get("context_flags")
                     if context_flags:
                         st.write("Context Flags:", context_flags)
-
 # --------------------------------------------------
 # GAMES LOOP END
 # --------------------------------------------------
