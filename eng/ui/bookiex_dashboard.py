@@ -291,7 +291,7 @@ for g in games:
     if spread_pick == "HOME":
         spread_text = f"{home} (+{spread_line})"
     elif spread_pick == "AWAY":
-        spread_text = f"{away} (-{spread_line})"
+        spread_text = f"{away} ({spread_line})"
     else:
         spread_text = "No Spread Pick"
 
