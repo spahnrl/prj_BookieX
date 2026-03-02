@@ -323,6 +323,48 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
         "for execution. It does not mean it will win."
     )
 
+    st.markdown("## 💰 Expected Value & Kelly Guidance (Spread Only)")
+
+    st.write(
+        "For games that qualify as **Spread Sweet Spot**, the dashboard displays "
+        "expected value and Kelly sizing guidance."
+    )
+
+    st.write(
+        "These calculations are based on historical backtested performance "
+        "of the Spread Sweet Spot regime."
+    )
+
+    st.markdown("### Assumptions Used")
+
+    st.write(
+        "• Historical Win Rate: 56.6%\n"
+        "• Standard -110 odds\n"
+        "• Risk $110 to win $100\n"
+    )
+
+    st.markdown("### What the Numbers Mean")
+
+    st.write(
+        "• **Expected Value (EV)** shows the projected percentage return "
+        "per dollar risked based on historical regime performance.\n"
+        "  Spread Sweet Spot historically produced ~+8–9% ROI."
+    )
+
+    st.write(
+        "• **Kelly Fraction** estimates optimal bankroll sizing "
+        "based on the edge and payout structure.\n"
+        "  Full Kelly ≈ 8–9% of bankroll.\n"
+        "  Half Kelly (more conservative) ≈ 4%."
+    )
+
+    st.write(
+        "These numbers assume the historical win rate continues. "
+        "If performance regresses toward 52–53%, optimal sizing shrinks significantly."
+    )
+
+    st.markdown("---")
+
     st.markdown("---")
 
     st.markdown("## ⚠ Important")
@@ -620,6 +662,28 @@ for g in games:
         st.write("Dual Sweet Spot:", overlay.get("dual_sweet_spot"))
         st.write("Spread Avoid:", overlay.get("spread_avoid"))
         st.write("Total Avoid:", overlay.get("total_avoid"))
+        # --------------------------------------------------
+        # EV + Kelly (Spread Only - Informational)
+        # --------------------------------------------------
+
+        if overlay.get("spread_sweet_spot") and not overlay.get("spread_avoid"):
+
+            HISTORICAL_P = 0.566
+            b = 100 / 110  # payout ratio
+            q = 1 - HISTORICAL_P
+
+            ev_pct = (HISTORICAL_P * b) - q
+            kelly = ((b * HISTORICAL_P) - q) / b
+
+            if kelly < 0:
+                kelly = 0
+
+            st.subheader("📈 Expected Value Guidance (Spread Regime)")
+
+            st.write(f"Historical Win Rate (Spread Sweet Spot): {HISTORICAL_P:.3f}")
+            st.write(f"Expected Value per $1 Risked: {ev_pct:.3f}")
+            st.write(f"Full Kelly: {kelly:.3f} (Fraction of bankroll)")
+            st.write(f"Half Kelly: {kelly / 2:.3f}")
 
         st.write("Actionability:", model["actionability"])
         st.write("Reason:", model.get("confidence_reason"))
