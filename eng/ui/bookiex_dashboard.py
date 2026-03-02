@@ -73,6 +73,7 @@ sort_option = st.selectbox(
     "Sort Games By",
     [
         "Schedule Order",
+        "Execution Quality",
         "Parlay Edge",
         "Spread Edge",
         "Total Edge",
@@ -81,7 +82,25 @@ sort_option = st.selectbox(
     ]
 )
 
-if sort_option == "Parlay Edge":
+if sort_option == "Execution Quality":
+
+    def execution_rank(g):
+        overlay = g.get("execution_overlay", {})
+
+        dual = overlay.get("dual_sweet_spot")
+        spread = overlay.get("spread_sweet_spot")
+        total = overlay.get("total_sweet_spot")
+
+        # Priority scoring
+        if dual:
+            return 3
+        if spread or total:
+            return 2
+        return 1
+
+    games = sorted(games, key=execution_rank, reverse=True)
+
+elif sort_option == "Parlay Edge":
     games = sorted(games, key=lambda g: g["edge_metrics"]["parlay_edge_score"], reverse=True)
 
 elif sort_option == "Spread Edge":
@@ -165,6 +184,41 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
         "This page compares market betting lines to multiple internal models. "
         "We are looking for differences (called 'edges') between what sportsbooks expect "
         "and what our models project."
+    )
+
+    st.markdown("## 🟢 Execution Badges (Rule-Based Overlay)")
+
+    st.write("Execution badges are triggered by specific statistical filters:")
+
+    st.markdown("### Sweet Spot Rules")
+
+    st.write(
+        "• **Spread Sweet Spot**:\n"
+        "  - |Spread Edge| between 2 and 8 points\n"
+        "  - Confidence Tier HIGH or MODERATE\n"
+        "  - Not flagged as market disagreement\n"
+    )
+
+    st.write(
+        "• **Total Sweet Spot**:\n"
+        "  - |Total Edge| between 4 and 12 points\n"
+        "  - Confidence Tier HIGH or MODERATE\n"
+        "  - Not in extreme total bucket (<225 or >242)\n"
+    )
+
+    st.markdown("### Badge Meaning")
+
+    st.write(
+        "• 🟢 EXECUTION+ = Spread and Total both meet sweet spot rules\n"
+        "• 🟢 SPREAD+ = Spread meets sweet spot rules\n"
+        "• 🟢 TOTAL+ = Total meets sweet spot rules\n"
+        "• 🔴 AVOID = Falls in historically unstable edge regime\n"
+        "• (no badge) = Neutral execution zone (no statistical sweet spot or avoid trigger)\n"
+    )
+
+    st.write(
+        "Execution badges are derived from backtested performance pockets "
+        "and represent where the model has historically performed best."
     )
 
     st.markdown("---")
@@ -271,6 +325,7 @@ for g in games:
     edge = g["edge_metrics"]
     calibration = g["calibration_tags"]
     arb = g.get("arbitration") or {}
+    overlay = g.get("execution_overlay") or {}
 
     # --------------------------------------------------
     # BASIC IDENTIFIERS
@@ -334,10 +389,25 @@ for g in games:
     # GAME ROLL-UP HEADER (Collapsed View)
     # --------------------------------------------------
 
+    # --------------------------------------------------
+    # EXECUTION BADGE (Minimal System)
+    # --------------------------------------------------
+
+    badge = ""
+
+    if overlay.get("dual_sweet_spot"):
+        badge = " 🟢 EXECUTION+"
+    elif overlay.get("spread_sweet_spot"):
+        badge = " 🟢 SPREAD+"
+    elif overlay.get("total_sweet_spot"):
+        badge = " 🟢 TOTAL+"
+    elif overlay.get("spread_avoid") or overlay.get("total_avoid"):
+        badge = " 🔴 AVOID"
+
     with st.expander(
-        f"{away} @ {home}: Take {spread_text} / {total_text} "
-        f"— {tier} | {parlay_pct}%",
-        expanded=False
+            f"{away} @ {home}: Take {spread_text} / {total_text}"
+            f"{badge} — {tier} | {parlay_pct}%",
+            expanded=False
     ):
 
         # --------------------------------------------------
@@ -457,6 +527,14 @@ for g in games:
         # --------------------------------------------------
 
         st.subheader("Decision")
+
+        st.subheader("Execution Overlay")
+
+        st.write("Spread Sweet Spot:", overlay.get("spread_sweet_spot"))
+        st.write("Total Sweet Spot:", overlay.get("total_sweet_spot"))
+        st.write("Dual Sweet Spot:", overlay.get("dual_sweet_spot"))
+        st.write("Spread Avoid:", overlay.get("spread_avoid"))
+        st.write("Total Avoid:", overlay.get("total_avoid"))
 
         st.write("Actionability:", model["actionability"])
         st.write("Reason:", model.get("confidence_reason"))
