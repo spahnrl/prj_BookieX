@@ -221,6 +221,33 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
         "and represent where the model has historically performed best."
     )
 
+    st.markdown("## 🔥 Top 2 Spread Sweet Spots")
+
+    st.write(
+        "This section identifies the two strongest spread bets on the slate "
+        "based on historical sweet spot performance."
+    )
+
+    st.write(
+        "Selection priority:\n"
+        "• Must qualify as **Spread Sweet Spot**\n"
+        "• Cannot be flagged as Avoid\n"
+        "• Confidence Tier ranked HIGH > MODERATE > LOW\n"
+        "• Larger spread edge ranks higher within tier\n"
+    )
+
+    st.write(
+        "This is a bet-centric ranking, meaning spreads are selected "
+        "across different games if they statistically rank strongest."
+    )
+
+    st.write(
+        "The goal is to isolate the highest historical ROI regime "
+        "without requiring same-game pairing."
+    )
+
+    st.markdown("---")
+
     st.markdown("---")
 
     st.markdown("## 🔥 Signal Strength Bars")
@@ -309,6 +336,64 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
 # GAMES
 # --------------------------------------------------
 
+# --------------------------------------------------
+# 🔥 TOP 2 SPREAD SWEET SPOTS (Bet-Centric View)
+# --------------------------------------------------
+
+def spread_rank_score(g):
+    overlay = g.get("execution_overlay", {})
+    model = g.get("model_output", {})
+    edge = g.get("edge_metrics", {})
+
+    # Must be spread sweet spot and not avoid
+    if not overlay.get("spread_sweet_spot"):
+        return -999
+
+    if overlay.get("spread_avoid"):
+        return -999
+
+    tier_weight = {"HIGH": 3, "MODERATE": 2, "LOW": 1, "IGNORE": 0}
+    tier = model.get("confidence_tier", "LOW")
+
+    spread_edge = abs(edge.get("spread_edge", 0))
+
+    # Weighted score: tier priority first, then magnitude
+    return tier_weight.get(tier, 0) * 100 + spread_edge
+
+
+top_spreads = sorted(games, key=spread_rank_score, reverse=True)[:2]
+
+if top_spreads:
+
+    st.markdown("## 🔥 Top 2 Spread Sweet Spots")
+
+    for g in top_spreads:
+
+        identity = g["identity"]
+        market = g["market_state"]
+        model = g["model_output"]
+        edge = g["edge_metrics"]
+
+        away = identity["away_team"]
+        home = identity["home_team"]
+
+        spread_line = market["spread_home_last"]
+        spread_pick = model.get("spread_pick")
+        tier = model.get("confidence_tier")
+
+        if spread_pick == "HOME":
+            spread_text = f"{home} (+{spread_line})"
+        else:
+            spread_text = f"{away} ({spread_line})"
+
+        spread_edge = round(edge.get("spread_edge", 0), 2)
+
+        st.markdown(
+            f"**{away} @ {home}** — "
+            f"{spread_text} | {tier} | Edge: {spread_edge}"
+        )
+
+    st.markdown("---")
 
 # --------------------------------------------------
 # GAMES LOOP START
