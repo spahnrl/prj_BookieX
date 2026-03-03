@@ -379,7 +379,8 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
 # --------------------------------------------------
 
 # --------------------------------------------------
-# 🔥 TOP 2 SPREAD SWEET SPOTS (Bet-Centric View)
+# --------------------------------------------------
+# 🔥 TOP SPREAD SWEET SPOTS (Strict Regime View)
 # --------------------------------------------------
 
 def spread_rank_score(g):
@@ -389,27 +390,35 @@ def spread_rank_score(g):
 
     # Must be spread sweet spot and not avoid
     if not overlay.get("spread_sweet_spot"):
-        return -999
+        return None
 
     if overlay.get("spread_avoid"):
-        return -999
+        return None
 
     tier_weight = {"HIGH": 3, "MODERATE": 2, "LOW": 1, "IGNORE": 0}
     tier = model.get("confidence_tier", "LOW")
 
     spread_edge = abs(edge.get("spread_edge", 0))
 
-    # Weighted score: tier priority first, then magnitude
     return tier_weight.get(tier, 0) * 100 + spread_edge
 
 
-top_spreads = sorted(games, key=spread_rank_score, reverse=True)[:2]
+qualified_spreads = []
 
-if top_spreads:
+for g in games:
+    score = spread_rank_score(g)
+    if score is not None:
+        qualified_spreads.append((score, g))
 
-    st.markdown("## 🔥 Top 2 Spread Sweet Spots")
+qualified_spreads = sorted(qualified_spreads, key=lambda x: x[0], reverse=True)
 
-    for g in top_spreads:
+if qualified_spreads:
+
+    st.markdown("## 🔥 Top Spread Sweet Spots")
+
+    top_n = min(2, len(qualified_spreads))
+
+    for _, g in qualified_spreads[:top_n]:
 
         identity = g["identity"]
         market = g["market_state"]
@@ -425,16 +434,28 @@ if top_spreads:
 
         if spread_pick == "HOME":
             spread_text = f"{home} (+{spread_line})"
-        else:
+        elif spread_pick == "AWAY":
             spread_text = f"{away} ({spread_line})"
+        else:
+            spread_text = "No Spread Pick"
 
         spread_edge = round(edge.get("spread_edge", 0), 2)
 
         st.markdown(
+            f"🟢 **SPREAD+** — "
             f"**{away} @ {home}** — "
-            f"{spread_text} | {tier} | Edge: {spread_edge}"
+            f"Take {spread_text} | {tier} | Edge: {spread_edge}"
         )
 
+    if len(qualified_spreads) == 1:
+        st.write("Only 1 qualifying Spread Sweet Spot on this slate.")
+
+    st.markdown("---")
+
+else:
+
+    st.markdown("## 🔥 Top Spread Sweet Spots")
+    st.write("No qualifying Spread Sweet Spots on this slate.")
     st.markdown("---")
 
 # --------------------------------------------------
