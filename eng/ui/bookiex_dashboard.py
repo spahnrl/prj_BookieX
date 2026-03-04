@@ -4,8 +4,50 @@
 import streamlit as st
 import json
 from pathlib import Path
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 DAILY_DIR = Path("data/daily")
+
+
+# --------------------------------------------------
+# LOAD FILE
+# --------------------------------------------------
+
+files = sorted(DAILY_DIR.glob("daily_view_*_v1.json"))
+
+if not files:
+    st.error("No DAILY_VIEW files found.")
+    st.stop()
+
+date_map = {f.name.split("_")[2]: f for f in files}
+
+selected_date = st.selectbox(
+    "Select Date",
+    sorted(date_map.keys(), reverse=True)
+)
+
+file_path = date_map[selected_date]
+
+# --------------------------------------------------
+# LAST UPDATE (CST)
+# --------------------------------------------------
+
+last_modified_utc = datetime.fromtimestamp(
+    file_path.stat().st_mtime,
+    tz=ZoneInfo("UTC")
+)
+
+last_modified_cst = last_modified_utc.astimezone(
+    ZoneInfo("America/Chicago")
+)
+
+last_update_str = last_modified_cst.strftime(
+    "%m/%d/%Y %I:%M %p"
+)
+
+with open(file_path, "r", encoding="utf-8") as f:
+    data = json.load(f)
 
 st.set_page_config(page_title="BookieX", layout="wide")
 # st.title("🏀 BookieX — Today’s Games & Model View")
@@ -36,28 +78,13 @@ with col2:
         "<h1 style='margin-bottom:0;'>BookieX — Today’s Games & Model View</h1>",
         unsafe_allow_html=True
     )
+    st.markdown(
+        f"<div style='color:#d0d0d0; font-size:14px; margin-top:4px;'>"
+        f"Last Update: {last_update_str} CST"
+        f"</div>",
+        unsafe_allow_html=True
+    )
 
-# --------------------------------------------------
-# LOAD FILE
-# --------------------------------------------------
-
-files = sorted(DAILY_DIR.glob("daily_view_*_v1.json"))
-
-if not files:
-    st.error("No DAILY_VIEW files found.")
-    st.stop()
-
-date_map = {f.name.split("_")[2]: f for f in files}
-
-selected_date = st.selectbox(
-    "Select Date",
-    sorted(date_map.keys(), reverse=True)
-)
-
-file_path = date_map[selected_date]
-
-with open(file_path, "r", encoding="utf-8") as f:
-    data = json.load(f)
 
 games = data.get("games", [])
 
