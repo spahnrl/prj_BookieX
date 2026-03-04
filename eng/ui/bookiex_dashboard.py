@@ -67,7 +67,7 @@ last_modified_cst = last_modified_utc.astimezone(
 )
 
 last_update_str = last_modified_cst.strftime("%m/%d/%Y %I:%M %p")
-
+st.write("DEBUG FILE:", file_path)
 st.markdown(
     f"<div style='color:#8a8a8a; font-size:14px; margin-top:-10px;'>"
     f"Last Update: {last_update_str} CST"
