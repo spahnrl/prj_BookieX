@@ -54,20 +54,48 @@ with header_right:
 # --------------------------------------------------
 # LOAD SELECTED FILE
 # --------------------------------------------------
-
 file_path = date_map[selected_date]
 
-last_modified_utc = datetime.fromtimestamp(
-    file_path.stat().st_mtime,
-    tz=ZoneInfo("UTC")
-)
+# st.write("DEBUG FILE:", file_path)
 
-last_modified_cst = last_modified_utc.astimezone(
-    ZoneInfo("America/Chicago")
-)
+with open(file_path, "r", encoding="utf-8") as f:
+    data = json.load(f)
 
-last_update_str = last_modified_cst.strftime("%m/%d/%Y %I:%M %p")
-st.write("DEBUG FILE:", file_path)
+# --------------------------------------------------
+# LAST UPDATE (Prefer Artifact Timestamp)
+# --------------------------------------------------
+
+artifact_ts = data.get("build_timestamp_utc")
+
+if artifact_ts:
+    try:
+        build_utc = datetime.strptime(
+            artifact_ts,
+            "%Y-%m-%dT%H:%M:%SZ"
+        ).replace(tzinfo=ZoneInfo("UTC"))
+
+        build_cst = build_utc.astimezone(
+            ZoneInfo("America/Chicago")
+        )
+
+        last_update_str = build_cst.strftime("%m/%d/%Y %I:%M %p")
+
+    except Exception:
+        last_update_str = "Invalid Timestamp"
+
+else:
+    # Fallback to file modified time (original logic)
+    last_modified_utc = datetime.fromtimestamp(
+        file_path.stat().st_mtime,
+        tz=ZoneInfo("UTC")
+    )
+
+    last_modified_cst = last_modified_utc.astimezone(
+        ZoneInfo("America/Chicago")
+    )
+
+    last_update_str = last_modified_cst.strftime("%m/%d/%Y %I:%M %p")
+
 st.markdown(
     f"<div style='color:#8a8a8a; font-size:14px; margin-top:-10px;'>"
     f"Last Update: {last_update_str} CST"
@@ -75,8 +103,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-with open(file_path, "r", encoding="utf-8") as f:
-    data = json.load(f)
 games = data.get("games", [])
 
 if not games:
