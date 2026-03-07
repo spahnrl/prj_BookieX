@@ -388,7 +388,7 @@ st.markdown(f"**Last Odds Update:** {last_odds_update_cst}")
 # KELLY BET SIZING MODEL
 # --------------------------------------------------
 
-with st.expander("🍀 Kelly Bet Sizing Strateg'ery 🌵", expanded=False):
+with st.expander("🍀 KBX Bet Sizing Strateg'ery 🌵", expanded=False):
     kelly_rows = []
 
     for g in games:
