@@ -218,7 +218,7 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
 
     st.markdown("---")
 
-    st.markdown("## 🍀 Kelly Bet Sizing Model")
+    st.markdown("## 🍀 Kelly Bet Sizing Strategy")
 
     st.write(
         "The Kelly section shows a **full Kelly example** using historical win rates from the current execution regime."
@@ -388,7 +388,7 @@ st.markdown(f"**Last Odds Update:** {last_odds_update_cst}")
 # KELLY BET SIZING MODEL
 # --------------------------------------------------
 
-with st.expander("🍀 Kelly Bet Sizing Model", expanded=False):
+with st.expander("🍀 Kelly Bet Sizing Strateg'ery 🌵", expanded=False):
     kelly_rows = []
 
     for g in games:
@@ -408,6 +408,7 @@ with st.expander("🍀 Kelly Bet Sizing Model", expanded=False):
 
         spread_pick = model.get("spread_pick")
         total_pick = model.get("total_pick")
+        models_allingment = model.get("confidence_tier")
 
         full_kelly = calculate_full_kelly(regime_win_pct, KELLY_PAYOUT_RATIO)
         bet_amount = round(EXAMPLE_BANKROLL * full_kelly)
@@ -421,7 +422,8 @@ with st.expander("🍀 Kelly Bet Sizing Model", expanded=False):
             "Game": format_matchup_short(away, home),
             "Pick": pick_text,
             "Regime": regime_name,
-            "Bet $": f"${bet_amount}"
+            "Bet $": f"${bet_amount}",
+            "Models Align": models_allingment,
         })
 
     st.markdown("### Suggested Bet Sizing")
