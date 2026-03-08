@@ -12,7 +12,8 @@ from zoneinfo import ZoneInfo
 # CONFIG
 # --------------------------------------------------
 
-DAILY_DIR = Path("data/daily")
+NBA_DAILY_DIR = Path("data/daily")
+NCAAM_DAILY_DIR = Path("data/ncaam/daily")
 
 # Kelly / execution overlay assumptions
 # Edit these as new backtesting information becomes available.
@@ -39,12 +40,34 @@ EXECUTION_OVERLAY_PERFORMANCE = [
     {"Bucket": "All Games", "Games": 476, "Win%": 0.519, "ROI": -0.001},
 ]
 
+# --------------------------------------------------
+# LOAD FILES
+# --------------------------------------------------
+
+league = st.selectbox("League", ["NBA", "NCAAM"], index=0)
+
+if league == "NBA":
+    DAILY_DIR = NBA_DAILY_DIR
+    file_pattern = "daily_view_*_v1.json"
+else:
+    DAILY_DIR = NCAAM_DAILY_DIR
+    file_pattern = "daily_view_ncaam_*_v1.json"
+
+files = sorted(DAILY_DIR.glob(file_pattern))
+
+
+if league == "NBA":
+    date_map = {f.name.split("_")[2]: f for f in files}
+else:
+    date_map = {f.name.split("_")[3]: f for f in files}
+
 
 # --------------------------------------------------
 # PAGE SETUP
 # --------------------------------------------------
 
-st.set_page_config(page_title="BookieX", layout="wide")
+page_title_text = f"BookieX — {league} Daily View"
+st.set_page_config(page_title = page_title_text , layout="wide")
 
 st.markdown("""
 <style>
@@ -70,7 +93,7 @@ with col1:
 
 with col2:
     st.markdown(
-        "<h1 style='margin-bottom:0;'>BookieX — Today’s Games & Model View</h1>",
+        f"<h1 style='margin-bottom:0;'>{page_title_text}</h1>",
         unsafe_allow_html=True
     )
 
@@ -78,6 +101,24 @@ with col2:
 # --------------------------------------------------
 # HELPERS
 # --------------------------------------------------
+
+
+def safe_round(value, ndigits=2, default=0.0):
+    try:
+        if value in (None, ""):
+            return default
+        return round(float(value), ndigits)
+    except Exception:
+        return default
+
+
+def safe_num(value, default=0.0):
+    try:
+        if value in (None, ""):
+            return default
+        return float(value)
+    except Exception:
+        return default
 
 def format_odds_snapshot_cst(odds_snapshot_utc: str) -> str:
     if not odds_snapshot_utc:
@@ -130,18 +171,6 @@ def get_kelly_regime(g: dict):
 
     return None, None
 
-
-# --------------------------------------------------
-# LOAD FILES
-# --------------------------------------------------
-
-files = sorted(DAILY_DIR.glob("daily_view_*_v1.json"))
-
-if not files:
-    st.error("No DAILY_VIEW files found.")
-    st.stop()
-
-date_map = {f.name.split("_")[2]: f for f in files}
 
 
 # --------------------------------------------------
@@ -493,19 +522,23 @@ if sort_option == "Execution Quality":
     games = sorted(games, key=execution_rank, reverse=True)
 
 elif sort_option == "Parlay Edge":
-    games = sorted(games, key=lambda g: g["edge_metrics"]["parlay_edge_score"], reverse=True)
-
-elif sort_option == "Spread Edge":
-    games = sorted(games, key=lambda g: abs(g["edge_metrics"]["spread_edge"]), reverse=True)
-
-elif sort_option == "Total Edge":
-    games = sorted(games, key=lambda g: abs(g["edge_metrics"]["total_edge"]), reverse=True)
-
-elif sort_option == "Confidence Tier":
-    tier_order = {"HIGH": 3, "MODERATE": 2, "LOW": 1, "IGNORE": 0}
     games = sorted(
         games,
-        key=lambda g: tier_order.get(g["model_output"].get("confidence_tier"), 0),
+        key=lambda g: safe_num((g.get("edge_metrics") or {}).get("parlay_edge_score"), 0.0),
+        reverse=True
+    )
+
+elif sort_option == "Spread Edge":
+    games = sorted(
+        games,
+        key=lambda g: abs(safe_num((g.get("edge_metrics") or {}).get("spread_edge"), 0.0)),
+        reverse=True
+    )
+
+elif sort_option == "Total Edge":
+    games = sorted(
+        games,
+        key=lambda g: abs(safe_num((g.get("edge_metrics") or {}).get("total_edge"), 0.0)),
         reverse=True
     )
 
@@ -546,9 +579,9 @@ for g in games:
     else:
         total_text = "No Total Pick"
 
-    parlay_score = edge.get("parlay_edge_score", 0)
-    spread_edge = edge.get("spread_edge", 0)
-    total_edge = edge.get("total_edge", 0)
+    parlay_score = safe_num(edge.get("parlay_edge_score", 0), 0.0)
+    spread_edge = safe_num(edge.get("spread_edge", 0), 0.0)
+    total_edge = safe_num(edge.get("total_edge", 0), 0.0)
 
     MAX_PARLAY = 20
     MAX_COMPONENT = 12
@@ -641,14 +674,14 @@ for g in games:
         st.subheader("Model vs Market")
 
         st.write("Spread Pick:", model["spread_pick"])
-        st.write("Projected Margin (Home):", round(model["projected_margin_home"], 2))
-        st.write("Spread Edge:", round(spread_edge, 2))
+        st.write("Projected Margin (Home):", safe_round(model.get("projected_margin_home", 0), 2))
+        st.write("Spread Edge:", safe_round(spread_edge, 2))
 
         st.write("Total Pick:", model["total_pick"])
-        st.write("Projected Total:", round(model["projected_total"], 2))
-        st.write("Total Edge:", round(total_edge, 2))
+        st.write("Projected Total:", safe_round(model.get("projected_total", 0), 2))
+        st.write("Total Edge:", safe_round(total_edge, 2))
 
-        st.write("Parlay Edge Score:", round(parlay_score, 2))
+        st.write("Parlay Edge Score:", safe_round(parlay_score, 2))
 
         st.subheader("Structure")
 
@@ -667,7 +700,7 @@ for g in games:
         st.write("Edge Bucket:", calibration["edge_bucket"])
         st.write(
             "Historical Win Rate:",
-            round(calibration["historical_bucket_win_rate"], 3)
+            safe_round(calibration.get("historical_bucket_win_rate", 0), 3)
         )
 
         st.write("Spread Percentile:", edge["spread_edge_percentile"])
@@ -701,9 +734,9 @@ for g in games:
         st.subheader("Why")
 
         st.write(
-            f"Spread edge = {round(spread_edge, 2)} "
-            f"(Bucket {calibration['edge_bucket']} | "
-            f"Historical Win Rate {round(calibration['historical_bucket_win_rate'], 3)})"
+            f"Spread edge = {safe_round(spread_edge, 2)} "
+            f"(Bucket {calibration.get('edge_bucket', 'N/A')} | "
+            f"Historical Win Rate {safe_round(calibration.get('historical_bucket_win_rate', 0), 3)})"
         )
 
         st.write(
@@ -749,15 +782,15 @@ for g in games:
 
                 with st.expander(expander_label):
                     st.write("Spread Pick:", model_spread)
-                    st.write("Spread Edge:", round(model_data.get("spread_edge", 0), 2))
+                    st.write("Spread Edge:", safe_round(model_data.get("spread_edge", 0), 2))
 
                     st.write("Total Pick:", model_total)
-                    st.write("Total Edge:", round(model_data.get("total_edge", 0), 2))
+                    st.write("Total Edge:", safe_round(model_data.get("total_edge", 0), 2))
 
-                    if model_data.get("parlay_edge_score") is not None:
+                    if model_data.get("parlay_edge_score") not in (None, ""):
                         st.write(
                             "Parlay Edge Score:",
-                            round(model_data.get("parlay_edge_score"), 2)
+                            safe_round(model_data.get("parlay_edge_score", 0), 2)
                         )
 
                     context_flags = model_data.get("context_flags")
