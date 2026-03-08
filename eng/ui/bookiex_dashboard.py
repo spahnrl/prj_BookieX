@@ -15,6 +15,9 @@ from zoneinfo import ZoneInfo
 NBA_DAILY_DIR = Path("data/daily")
 NCAAM_DAILY_DIR = Path("data/ncaam/daily")
 
+NBA_HEADER_ICON = "assets/RS_JP_BookieX_v02.png"
+NCAAM_HEADER_ICON = "assets/RS_JP_BookieX_v04_COLLEGE.png"
+
 # Kelly / execution overlay assumptions
 # Edit these as new backtesting information becomes available.
 DUAL_SWEET_SPOT_WIN_PCT = 0.571
@@ -49,9 +52,11 @@ league = st.selectbox("League", ["NBA", "NCAAM"], index=0)
 if league == "NBA":
     DAILY_DIR = NBA_DAILY_DIR
     file_pattern = "daily_view_*_v1.json"
+    header_icon_path = NBA_HEADER_ICON
 else:
     DAILY_DIR = NCAAM_DAILY_DIR
     file_pattern = "daily_view_ncaam_*_v1.json"
+    header_icon_path = NCAAM_HEADER_ICON
 
 files = sorted(DAILY_DIR.glob(file_pattern))
 
@@ -89,7 +94,7 @@ st.markdown("""
 col1, col2 = st.columns([1, 6])
 
 with col1:
-    st.image("assets/RS_JP_BookieX_v02.png", width=90)
+    st.image(header_icon_path, width=90)
 
 with col2:
     st.markdown(
