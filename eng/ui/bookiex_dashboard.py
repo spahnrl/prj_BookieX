@@ -27,8 +27,9 @@ TOTAL_SWEET_SPOT_WIN_PCT = 0.548
 # Standard -110 odds
 KELLY_PAYOUT_RATIO = 100 / 110
 
-# Example bankroll used in Kelly sizing table
-EXAMPLE_BANKROLL = 1000
+# Project root for logs/attribution_report.json
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+ATTRIBUTION_REPORT_PATH = PROJECT_ROOT / "logs" / "attribution_report.json"
 
 # Backtest reference date shown to user
 EXECUTION_OVERLAY_LAST_UPDATED = "3/6/2025"
@@ -66,6 +67,14 @@ if league == "NBA":
 else:
     date_map = {f.name.split("_")[3]: f for f in files}
 
+# Sidebar: current bankroll for Kelly sizing (replaces fixed example bankroll)
+current_bankroll = st.sidebar.number_input(
+    "Current Bankroll ($)",
+    min_value=0,
+    value=1000,
+    step=100,
+    help="Your actual balance for Kelly stake sizing.",
+)
 
 # --------------------------------------------------
 # PAGE SETUP
@@ -100,6 +109,57 @@ with col2:
     st.markdown(
         f"<h1 style='margin-bottom:0;'>{page_title_text}</h1>",
         unsafe_allow_html=True
+    )
+
+# Attribution ingestion: full report for System Health bar
+def load_attribution_report() -> dict | None:
+    """Read logs/attribution_report.json. Returns full report dict or None."""
+    if not ATTRIBUTION_REPORT_PATH.exists():
+        return None
+    try:
+        with open(ATTRIBUTION_REPORT_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else None
+    except Exception:
+        return None
+
+# System Health bar: Strategy B (Kelly) ROI% + Total P&L; green if positive, red if negative
+_attribution = load_attribution_report()
+_sb = (_attribution or {}).get("strategy_b_kelly") or {}
+_kelly_roi = _sb.get("yield_roi_pct")
+_kelly_pnl = _sb.get("total_pnl")
+if _kelly_roi is not None and _kelly_pnl is not None:
+    _roi_color = "#2ecc71" if (_kelly_roi or 0) >= 0 else "#e74c3c"
+    _pnl_color = "#2ecc71" if (_kelly_pnl or 0) >= 0 else "#e74c3c"
+    st.markdown(
+        f"<div style='background: linear-gradient(90deg, #0f1c2e 0%, #1f2f4a 100%); "
+        f"padding: 12px 18px; border-radius: 8px; margin-bottom: 16px;'>"
+        f"<strong style='color: #fff;'>System Health</strong> — "
+        f"<span style='color: #7fdbff;'>Strategy B (Kelly) ROI%</span>: "
+        f"<strong style='color: {_roi_color};'>{_kelly_roi:+.2f}%</strong> &nbsp;|&nbsp; "
+        f"<span style='color: #7fdbff;'>Total P&L</span>: "
+        f"<strong style='color: {_pnl_color};'>${_kelly_pnl:+,.2f}</strong>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+elif _kelly_roi is not None:
+    _roi_color = "#2ecc71" if (_kelly_roi or 0) >= 0 else "#e74c3c"
+    st.markdown(
+        f"<div style='background: linear-gradient(90deg, #0f1c2e 0%, #1f2f4a 100%); "
+        f"padding: 12px 18px; border-radius: 8px; margin-bottom: 16px;'>"
+        f"<strong style='color: #fff;'>System Health</strong> — "
+        f"<span style='color: #7fdbff;'>Strategy B (Kelly) ROI%</span>: "
+        f"<strong style='color: {_roi_color};'>{_kelly_roi:+.2f}%</strong>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+else:
+    st.markdown(
+        "<div style='background: #2d2d2d; padding: 12px 18px; border-radius: 8px; margin-bottom: 16px;'>"
+        "<strong style='color: #fff;'>System Health</strong> — "
+        "<span style='color: #888;'>Strategy B (Kelly) ROI% / Total P&L: n/a</span> "
+        "(run analysis_041_agent_attribution.py to populate)</div>",
+        unsafe_allow_html=True,
     )
 
 
@@ -141,6 +201,13 @@ def format_matchup_short(away_team: str, home_team: str) -> str:
     away_short = away_team.split()[-1][:3].upper()
     home_short = home_team.split()[-1][:3].upper()
     return f"{away_short} @ {home_short}"
+
+
+def format_matchup_attribution(away_team: str, home_team: str) -> str:
+    """Normalize matchup to match attribution report format for seamless tracking (e.g. 'Oregon @ Gonzaga')."""
+    away = (away_team or "").strip()
+    home = (home_team or "").strip()
+    return f"{away} @ {home}"
 
 
 def format_spread_text(home: str, away: str, spread_line, spread_pick: str) -> str:
@@ -263,7 +330,7 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
         f"• **Dual Sweet Spot** win rate = {DUAL_SWEET_SPOT_WIN_PCT:.3f}\n"
         f"• **Spread Sweet Spot** win rate = {SPREAD_SWEET_SPOT_WIN_PCT:.3f}\n"
         f"• **Total Sweet Spot** win rate = {TOTAL_SWEET_SPOT_WIN_PCT:.3f}\n"
-        f"• **Example bankroll** = ${EXAMPLE_BANKROLL:,}\n"
+        f"• **Current bankroll** = ${current_bankroll:,} (set in sidebar)\n"
         "• **Odds assumption** = standard -110"
     )
 
@@ -445,7 +512,7 @@ with st.expander("🍀 KBX Bet Sizing Strateg'ery 🌵", expanded=False):
         models_allingment = model.get("confidence_tier")
 
         full_kelly = calculate_full_kelly(regime_win_pct, KELLY_PAYOUT_RATIO)
-        bet_amount = round(EXAMPLE_BANKROLL * full_kelly)
+        bet_amount = round(current_bankroll * full_kelly)
 
         if regime_name == "Total Sweet Spot":
             pick_text = f"{total_pick} ({total_line})" if total_pick else "No Total Pick"
@@ -476,7 +543,7 @@ with st.expander("🍀 KBX Bet Sizing Strateg'ery 🌵", expanded=False):
 
     st.markdown(
         "<sub>"
-        f"1. Assumes ${EXAMPLE_BANKROLL:,} bankroll. "
+        f"1. Uses current bankroll (sidebar) = ${current_bankroll:,}. "
         "2. Full Kelly shown using the historical win rate of the qualifying regime. "
         "3. Historical win rate is context, not guarantee. "
         "4. Conservative mode should scale all bets evenly, such as 50% Kelly or 25% Kelly."
@@ -617,11 +684,33 @@ for g in games:
     elif overlay.get("spread_avoid") or overlay.get("total_avoid"):
         badge = " 🔴 AVOID"
 
-    with st.expander(
-        f"{away} @ {home}: Take {spread_text} / {total_text}"
-        f"{badge} — {tier} | {parlay_pct}%",
-        expanded=False
-    ):
+    # Agentic: VALUE PEAK REACHED in agent_reasoning or confidence_reason -> TOP AGENT PICK + highlight
+    agent_reasoning = str(model.get("agent_reasoning") or g.get("agent_reasoning") or "")
+    confidence_reason = str(model.get("confidence_reason") or "")
+    explanation = str(model.get("Explanation") or model.get("explanation") or "")
+    is_value_peak = (
+        "VALUE PEAK REACHED" in agent_reasoning
+        or "VALUE PEAK REACHED" in confidence_reason
+        or "VALUE PEAK REACHED" in explanation
+    )
+    if is_value_peak:
+        badge += " 🔥 TOP AGENT PICK"
+
+    # Matchup key: normalized to match attribution report for 1:1 tracking (full "Away @ Home")
+    matchup_label = format_matchup_attribution(away, home)
+
+    expander_label = (
+        f"{matchup_label}: Take {spread_text} / {total_text}"
+        f"{badge} — {tier} | {parlay_pct}%"
+    )
+    if is_value_peak:
+        st.markdown(
+            "<div style='background: linear-gradient(90deg, rgba(46, 204, 113, 0.35) 0%, rgba(46, 204, 113, 0.15) 100%); "
+            "border-left: 5px solid #2ecc71; border-radius: 6px; padding: 6px 12px; margin-bottom: 6px; "
+            "font-weight: 600; color: #1a5f2a;'>🔥 TOP AGENT PICK — VALUE PEAK REACHED</div>",
+            unsafe_allow_html=True,
+        )
+    with st.expander(expander_label, expanded=False):
         st.write(f"Tipoff: {identity.get('tip_time_cst', 'N/A')}")
         st.write(f"Market: {spread_line} | Total {total_line}")
 
@@ -729,8 +818,8 @@ for g in games:
             st.write(f"Historical Win Rate: {regime_win_pct:.3f}")
             st.write(f"Full Kelly: {full_kelly:.3f} (Fraction of bankroll)")
             st.write(
-                f"Example Bet on ${EXAMPLE_BANKROLL:,}: "
-                f"${round(EXAMPLE_BANKROLL * full_kelly)}"
+                f"Example Bet on ${current_bankroll:,}: "
+                f"${round(current_bankroll * full_kelly)}"
             )
 
         st.write("Actionability:", model["actionability"])
