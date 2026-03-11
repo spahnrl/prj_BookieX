@@ -1,7 +1,9 @@
 # daily/build_daily_view.py
 
 """
-build_daily_view.py
+build_daily_view.py — NBA-only.
+
+Invoked by: eng/daily/build_gen_daily_view.py (with --league nba).
 
 Purpose:
 Build DAILY_VIEW_V1 from frozen model artifact.
@@ -29,9 +31,19 @@ import csv
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-MODEL_ARTIFACT_PATH = PROJECT_ROOT / "data/view/final_game_view.json"
-CALIBRATION_PATH = PROJECT_ROOT / "eng/calibration/calibration_snapshot_v1.json"
-OUTPUT_DIR = PROJECT_ROOT / "data/daily"
+def _model_artifact_path():
+    from utils.io_helpers import get_final_view_json_path
+    return get_final_view_json_path("nba")
+
+def _output_dir():
+    from utils.io_helpers import get_daily_view_output_dir
+    return get_daily_view_output_dir("nba")
+
+
+def _calibration_path():
+    from configs.leagues.league_nba import CALIBRATION_SNAPSHOT_PATH
+    return CALIBRATION_SNAPSHOT_PATH
+
 
 SCHEMA_VERSION = "DAILY_VIEW_V1"
 MODEL_VERSION = "MULTI_MODEL_V1"
@@ -76,18 +88,29 @@ def determine_bucket(edge_value):
 
 
 def determine_percentile(edge_value, percentile_definitions):
+    """Use .get() fallbacks so missing snapshot keys (e.g. p90) don't crash the pipeline."""
+    if not percentile_definitions:
+        return 0.10
     abs_edge = abs(edge_value)
+    p90 = percentile_definitions.get("p90", 0)
+    p75 = percentile_definitions.get("p75", 0)
+    p50 = percentile_definitions.get("p50", 0)
+    p25 = percentile_definitions.get("p25", 0)
 
-    if abs_edge >= percentile_definitions["p90"]:
+    if abs_edge >= p90:
         return 0.90
-    elif abs_edge >= percentile_definitions["p75"]:
+    elif abs_edge >= p75:
         return 0.75
-    elif abs_edge >= percentile_definitions["p50"]:
+    elif abs_edge >= p50:
         return 0.50
-    elif abs_edge >= percentile_definitions["p25"]:
+    elif abs_edge >= p25:
         return 0.25
     else:
         return 0.10
+
+# ------------------------------------------------------------
+# EXECUTION OVERLAY (Deterministic, Read-Only)
+# ------------------------------------------------------------
 
 
 # ------------------------------------------------------------
@@ -182,8 +205,8 @@ def flatten_for_csv(structured_games):
 
 def build_daily_view():
 
-    model_data = load_json(MODEL_ARTIFACT_PATH)
-    calibration = load_json(CALIBRATION_PATH)
+    model_data = load_json(_model_artifact_path())
+    calibration = load_json(_calibration_path())
 
     # Handle multi-model payload wrapper
     if isinstance(model_data, dict) and "games" in model_data:
@@ -256,6 +279,7 @@ def build_daily_view():
             calibration["total_edge_percentiles"]
         )
 
+
         bucket_win_rate = calibration["spread_bucket_win_rates"].get(
             spread_bucket,
             None
@@ -313,7 +337,8 @@ def build_daily_view():
                 "spread_home_consensus_all_time": g.get("spread_home_consensus_all_time"),
                 "total_consensus_all_time": g.get("total_consensus_all_time"),
                 "consensus_book_count": g.get("consensus_book_count"),
-                "all_time_snapshot_count": g.get("all_time_snapshot_count")
+                "all_time_snapshot_count": g.get("all_time_snapshot_count"),
+                "odds_snapshot_last_utc": g.get("odds_snapshot_last_utc")
             },
 
             # ------------------------------------------------
@@ -381,6 +406,11 @@ def build_daily_view():
             },
 
             # ------------------------------------------------
+            # EXECUTION OVERLAY
+            # ------------------------------------------------
+            "execution_overlay": g.get("execution_overlay"),
+
+            # ------------------------------------------------
             # CALIBRATION TAGS
             # ------------------------------------------------
             "calibration_tags": {
@@ -403,7 +433,9 @@ def build_daily_view():
             },
         })
 
-    artifact_hash = compute_sha256(MODEL_ARTIFACT_PATH)
+    artifact_hash = compute_sha256(_model_artifact_path())
+
+    build_timestamp_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     final_output = {
         "schema_version": SCHEMA_VERSION,
@@ -411,12 +443,13 @@ def build_daily_view():
         "calibration_version": CALIBRATION_VERSION,
         "generated_from_artifact_hash": artifact_hash,
         "date": target_date,
+        "build_timestamp_utc": build_timestamp_utc,
         "games": structured_games
     }
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    _output_dir().mkdir(parents=True, exist_ok=True)
 
-    output_path = OUTPUT_DIR / f"daily_view_{target_date}_v1.json"
+    output_path = _output_dir() / f"daily_view_{target_date}_v1.json"
 
     with output_path.open("w", encoding="utf-8") as f:
         json.dump(final_output, f, indent=2)
@@ -432,7 +465,7 @@ def build_daily_view():
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 
-    csv_output_path = OUTPUT_DIR / f"daily_view_{target_date}_v1_{timestamp}.csv"
+    csv_output_path = _output_dir() / f"daily_view_{target_date}_v1_{timestamp}.csv"
 
     if csv_rows:
 

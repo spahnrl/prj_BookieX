@@ -1,6 +1,7 @@
 # prj_BookieX/eng/analysis/analysis_017_confidence_backtest_v2.py
 
 import json
+import sys
 from pathlib import Path
 from collections import defaultdict
 import statistics
@@ -10,9 +11,13 @@ import statistics
 # -------------------------------------------------------
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-MULTI_MODEL_PATH = PROJECT_ROOT / "data/view/nba_games_multi_model_v1.json"
-BACKTEST_ROOT = PROJECT_ROOT / "eng/outputs/backtests"
+from configs.leagues.league_nba import MULTI_MODEL_JSON_PATH
+from utils.io_helpers import get_backtest_output_root
+
+MULTI_MODEL_PATH = MULTI_MODEL_JSON_PATH
 
 
 # -------------------------------------------------------
@@ -27,11 +32,12 @@ def load_json(path: Path):
 
 
 def get_latest_backtest_file() -> Path:
-    if not BACKTEST_ROOT.exists():
+    backtest_root = get_backtest_output_root("nba")
+    if not backtest_root.exists():
         raise FileNotFoundError("No backtests directory found.")
 
     subdirs = [
-        d for d in BACKTEST_ROOT.iterdir()
+        d for d in backtest_root.iterdir()
         if d.is_dir() and not d.name.startswith("zzz")
     ]
 
@@ -119,7 +125,7 @@ def main():
         models_dict = multi_game.get("models", {})
         tier = classify_game(models_dict)
 
-        result = bt_game.get("total_result")
+        result = (bt_game.get("selected_total_result") or bt_game.get("total_result") or "").strip()
 
         if result not in ("WIN", "LOSS"):
             continue

@@ -1,4 +1,4 @@
-# 000_RUN_ALL.py
+# 000_RUN_ALL_NBA.py
 # ============================================================
 # BookieX Official Order-of-Operations Runner
 # Supports:
@@ -36,23 +36,23 @@ QUIET = args.quiet
 # ------------------------------------------------------------
 
 INGESTION = [
-    "a_data_static_000_nba_team_map.py",
+    "eng/pipelines/nba/a_data_static_000_nba_team_map.py",
     ("eng/pipelines/shared/b_gen_001_ingest_schedule.py", ["--league", "nba"]),
     ("eng/pipelines/shared/b_gen_003_join_schedule_teams.py", ["--league", "nba"]),
     ("eng/pipelines/shared/b_gen_004_ingest_boxscores.py", ["--league", "nba"]),
-    "b_data_005_ingest_player_boxscores.py",
-    "b_data_006_aggregate_team_3pt.py",
-    "b_data_007_ingest_injuries.py",
+    "eng/pipelines/nba/b_data_005_ingest_player_boxscores.py",
+    "eng/pipelines/nba/b_data_006_aggregate_team_3pt.py",
+    "eng/pipelines/nba/b_data_007_ingest_injuries.py",
 ]
 
 FEATURES = [
-    "c_calc_010_add_team_rest_days.py",
-    "c_calc_011_flag_back_to_backs.py",
-    "c_calc_012_compute_fatigue_score.py",
-    "c_calc_013_calc_rest_home_away_averages.py",
-    "c_calc_014_rolling_team_averages.py",
-    "c_calc_015_build_last5_momentum.py",
-    "c_calc_020_build_team_injury_impact.py",
+    "eng/pipelines/nba/c_calc_010_add_team_rest_days.py",
+    "eng/pipelines/nba/c_calc_011_flag_back_to_backs.py",
+    "eng/pipelines/nba/c_calc_012_compute_fatigue_score.py",
+    "eng/pipelines/nba/c_calc_013_calc_rest_home_away_averages.py",
+    "eng/pipelines/nba/c_calc_014_rolling_team_averages.py",
+    "eng/pipelines/nba/c_calc_015_build_last5_momentum.py",
+    "eng/pipelines/nba/c_calc_020_build_team_injury_impact.py",
 ]
 
 CANONICAL = [

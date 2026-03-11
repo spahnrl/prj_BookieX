@@ -4893,3 +4893,2309 @@ Away @ Home: Take Spread / Total — TIER | % Strength
 
 **Status: Goal 1 Approved & Complete**
 ```
+## 📘 CHANGELOG — 2026-02-26
+
+**Milestone: Public Deployment + Operator Automation**
+
+---
+
+### 🚀 Deployment & Versioning
+
+* Created public GitHub repository: `spahnrl/prj_BookieX`
+* Completed initial commit (core ETL, models, arbitration, dashboard, backtest engine)
+* Tagged and published **v1.0 release**
+* Added formal release notes
+* Established semantic version baseline
+
+---
+
+### 🌐 Streamlit Cloud Deployment
+
+* Deployed `eng/ui/bookiex_dashboard.py` to Streamlit Community Cloud
+* Secured production URL:
+
+  ```
+  https://bookiex.streamlit.app
+  ```
+* Resolved missing data issue by:
+
+  * Modifying `.gitignore`
+  * Allowing production `data/daily/` artifacts
+  * Committing `.keep` and daily JSON files
+* Confirmed live dashboard operational
+
+---
+
+### ⚙️ Online Update Automation
+
+* Created `tools/update_and_push_daily.py`
+
+  * Builds daily view
+  * Adds artifacts
+  * Commits with timestamp
+  * Pushes to GitHub
+  * Triggers auto-redeploy
+* Verified successful automated update cycle
+
+---
+
+### 🖥 Control Panel Enhancements (`000_bookiex_launcher_ui.py`)
+
+Added:
+
+* **Online Deployment section**
+
+  * 🌐 Update Online Dashboard (Build + Push)
+
+Renamed:
+
+* 📈 Launch Streamlit Dashboard →
+  📈 Launch Streamlit Dashboard (Local)
+
+Added:
+
+* 🌍 Launch Streamlit Dashboard (Online)
+
+Refined:
+
+* Section spacing
+* Vertical padding
+* Button grouping
+* Visual balance without changing window size
+
+---
+
+### 🧱 System Status
+
+BookieX now includes:
+
+* Deterministic pipeline
+* Multi-model arbitration
+* Confidence gating
+* Backtest engine
+* Calibration snapshot
+* Public GitHub repo
+* Versioned release (v1.0)
+* Live hosted dashboard
+* One-click production update
+* Unified operations control panel
+
+---
+
+### ✅ Operational Workflow (Established)
+
+To update production:
+
+```
+Click:
+🌐 Update Online Dashboard (Build + Push)
+```
+
+No terminal required.
+
+---
+
+**End of Session State:**
+System is stable, deployed, versioned, and operator-friendly.
+
+---
+
+# 📜 CHANGELOG
+
+## Phase: Multi-Model Expansion – Market Integration Layer
+
+**Date:** 2026-02-27
+
+---
+
+## 1️⃣ Added New Model: `MarketBlend_v1`
+
+### Purpose
+
+Introduced a blended projection model combining:
+
+* Joel baseline projections
+* Vegas implied scoring
+
+Weighted using inverse-error logic (fixed static weights).
+
+### Core Logic
+
+* Converts both baseline and Vegas into implied home/away scores
+* Blends using fixed weights (≈ 49% Vegas / 51% model)
+* Rebuilds full total + spread projections
+* Fully ModelContract_v1 compliant
+
+### Architectural Classification
+
+* Type: Structural Hybrid Model
+* Domain: Spread + Total
+* Role: Stability + variance reduction layer
+
+### Determinism
+
+* No randomness
+* No filtering
+* Fully additive
+
+---
+
+## 2️⃣ Refactored `MarketPressureModel` → `MarketPressure_v2`
+
+### Why
+
+Original version:
+
+* Returned wrong schema (`projection`, `edge`)
+* Referenced flattened finalization fields
+* Not ModelContract_v1 compliant
+* Would fail runner validation
+
+### What Changed
+
+* Updated to full ModelContract_v1 output keys
+* Uses `*_last` fields (correct execution layer)
+* Pulls baseline projection from `model_results`
+* Applies 25% controlled regression toward market total
+* Spread domain preserved (baseline margin)
+
+### Architectural Classification
+
+* Type: Adjustment Model
+* Domain: Total-Focused
+* Role: Bias dampening / market correction
+
+### Determinism
+
+* No randomness
+* No filtering
+* Fully additive
+
+---
+
+## 3️⃣ Registry Integration (Required Step)
+
+To activate new models:
+
+```python
+from eng.models.market_blend_model import MarketBlendModel
+from eng.models.market_pressure_model import MarketPressureModel
+```
+
+Inserted into:
+
+```python
+MODEL_REGISTRY = [
+    JoelBaselineModel,
+    FatiguePlusModel,
+    InjuryModel,
+    MonkeyDartsModel,
+    MarketBlendModel,
+    MarketPressureModel,
+]
+```
+
+---
+
+## 4️⃣ Contract Compliance
+
+Both models now:
+
+* Pass `ModelContract_v1` validation
+* Return all required keys
+* Integrate into multi-model JSON artifact
+* Flow into arbitration layer
+* Appear in CSV output
+* Compatible with confidence gating
+
+No downstream refactors required.
+
+---
+
+## 5️⃣ Strategic Impact
+
+BookieX model taxonomy now includes:
+
+* Structural Model → JoelBaseline
+* Situational Model → FatiguePlus
+* Roster Model → InjuryModel
+* Market Adjustment Model → MarketPressure_v2
+* Market Hybrid Structural Model → MarketBlend_v1
+
+System evolution milestone:
+
+> Transition from single-anchor architecture to multi-domain structured modeling.
+
+---
+
+# 📒 CHANGELOG — 2026-02-28
+
+## 🎯 Objective
+
+Add Momentum5Game model and 5-game averages without breaking deterministic pipeline or downstream artifacts.
+
+---
+
+## 1️⃣ Feature Layer Additions
+
+### Added Fields (Game-Level)
+
+* `home_last5_points_for`
+* `home_last5_points_against`
+* `away_last5_points_for`
+* `away_last5_points_against`
+
+Scope:
+
+* Location agnostic
+* Exactly last 5 games
+* Additive only (no field replacements)
+
+Status: ✅ Passing through full pipeline
+
+---
+
+## 2️⃣ New Model Added
+
+### `Momentum5Game_v1`
+
+File:
+
+```
+eng/models/momentum_5game_model.py
+```
+
+Logic:
+
+* proj_home = (H_off + A_def) / 2
+* proj_away = (A_off + H_def) / 2
+* home_line_proj = proj_away - proj_home
+* Full ModelContract_v1 compliance
+
+Outputs:
+
+* total_projection
+* home_line_proj
+* spread_edge
+* total_edge
+* parlay_edge_score
+* spread_pick
+* total_pick
+* context_flags
+
+Status:
+
+* ✅ Model registry working
+* ✅ Appears in final_game_view.json
+* ✅ Appears in UI
+* ✅ Appears in backtest runner
+
+---
+
+## 3️⃣ Grading Layer Fix
+
+### Problem
+
+Backtest crashed with:
+
+```
+Invalid Total Bet value: PUSH
+```
+
+Root Cause:
+`grade_total_bet()` did not support `"PUSH"` as an input pick.
+
+### Fix Applied
+
+Added guard:
+
+```python
+if total_bet == "PUSH":
+    return "PUSH"
+```
+
+File:
+
+```
+eng/backtest_grader.py
+```
+
+Impact:
+
+* No schema change
+* No logic change
+* Only input validation alignment
+* Fully consistent with spread grading behavior
+
+Status:
+
+* ✅ Backtest runs clean
+* 199 graded games
+* 1097 skipped games
+* Artifacts written correctly
+
+---
+
+## 4️⃣ Pipeline Integrity Verification
+
+Confirmed Working:
+
+* Model → Final Game View
+* Final Game View → Backtest
+* Backtest → Summary
+* Model → UI rendering
+* Selection Authority logic untouched
+* No downstream refactors required
+
+Status: ✅ Deterministic core intact
+
+---
+
+## 5️⃣ Stability Summary
+
+Today’s work preserved:
+
+* Model contract schema
+* Backtest contract schema
+* Confidence layer compatibility
+* UI compatibility
+* Historical model comparability
+
+System state at end of day:
+
+✔ Stable
+✔ Reproducible
+✔ Contract-consistent
+✔ Additive-only changes
+✔ Backtest verified
+
+---
+
+## Change Log — UI-Only Deployment Tool
+
+**Date:** 2026-02-28
+**Scope:** Independent UI deployment pipeline
+
+### Added
+
+* `tools/push_ui_only.py`
+
+  * Stages only `eng/ui/bookiex_dashboard.py`
+  * Commits with timestamp (`UI update YYYY-MM-DD HH:MM`)
+  * Pushes to `main`
+  * Triggers automatic Streamlit redeploy
+
+### Fixed
+
+* Corrected Git path from `bookiex_dashboard.py` → `eng/ui/bookiex_dashboard.py`
+* Ensured script runs from project root (prevents pathspec errors)
+
+### Result
+
+* UI updates deploy independently of daily data builds
+* No dependency on `build_daily_view.py`
+* Faster iteration cycle for dashboard changes
+* Clean, deterministic deployment flow
+
+Status: ✅ Operational and verified (push + Streamlit redeploy successful)
+
+
+---
+
+# 📒 CHANGELOG — Injury Model Context Transparency Update
+
+## Date
+
+2026-03-01
+
+## Scope
+
+`InjuryModel_v2` — context flag enhancement
+(No math changes. No recalibration. No pipeline impact.)
+
+---
+
+## 🎯 Objective
+
+Improve UI transparency by exposing injury counts already present in the data layer:
+
+* `home_num_out`
+* `home_num_questionable`
+* `away_num_out`
+* `away_num_questionable`
+
+This allows users to see *why* injury impact values exist without altering model behavior.
+
+---
+
+## 🔧 Changes Made
+
+### File Modified
+
+`eng/models/injury_model.py`
+
+### Added Variable Extraction
+
+```python
+home_num_out = game.get("home_num_out", 0)
+home_num_questionable = game.get("home_num_questionable", 0)
+away_num_out = game.get("away_num_out", 0)
+away_num_questionable = game.get("away_num_questionable", 0)
+```
+
+### Extended `context_flags` Output
+
+Added:
+
+```python
+"home_num_out": home_num_out,
+"home_num_questionable": home_num_questionable,
+"away_num_out": away_num_out,
+"away_num_questionable": away_num_questionable,
+```
+
+---
+
+## ✅ What Did NOT Change
+
+* Injury weighting logic
+* Spread adjustment formula
+* Total adjustment formula
+* Calibration
+* Backtest logic
+* Daily view build
+* Deterministic behavior
+
+Model outputs remain mathematically identical.
+
+---
+
+## 📊 Impact
+
+### Before
+
+UI showed:
+
+* injury_diff
+* spread_adjustment
+* total_adjustment
+
+But not *why*.
+
+### After
+
+UI now shows:
+
+* Injury impact magnitude
+* Number of players OUT
+* Number of players QUESTIONABLE
+* Adjustment applied
+
+Improves auditability and model explainability.
+
+---
+
+## 🧠 Architectural Status
+
+✔ Deterministic
+✔ Additive only
+✔ No side effects
+✔ Safe for backtests
+✔ Safe for historical rebuild
+
+---
+
+## 🏁 Result
+
+InjuryModel_v2 is now:
+
+* Correct (sign fix complete)
+* Transparent
+* Defensible
+* Joel-ready
+
+---
+
+# 📌 CHANGELOG — 2026-03-01
+
+## 🔁 Joel_Baseline_v1 — Spread Edge Orientation Correction
+
+### 📂 File Modified
+
+`eng/models/joel_baseline_model.py`
+
+---
+
+## 🔧 Change Made
+
+### Before
+
+```python
+spread_edge = (
+    home_line_proj - spread_home
+    if home_line_proj is not None and spread_home is not None
+    else None
+)
+```
+
+### After
+
+```python
+spread_edge = (
+    spread_home - home_line_proj
+    if home_line_proj is not None and spread_home is not None
+    else None
+)
+```
+
+---
+
+## 🎯 Reason for Change
+
+Analysis suite identified that:
+
+* `spread_edge` was defined as `(projection - vegas_line)`
+
+* Backtest grading logic evaluates spread using:
+
+  ```python
+  adjusted = actual_margin + spread_home
+  ```
+
+* This created an **edge sign space mismatch** between:
+
+  * Model projection logic
+  * Vegas spread orientation
+  * Grading evaluation
+
+`analysis_030_projection_math_validation.py` confirmed:
+
+> ✅ spread_edge must equal: `vegas_line - projection`
+
+---
+
+## 📊 Validation Results After Update
+
+* Edge ↔ Pick Sign Mismatch: **0**
+* Projection Direction Accuracy: **74%**
+* True Spread Win Rate: **53.7%**
+* ROI per Bet: **+2.5%**
+* Flip Test ROI: **-11.6%** (confirms correct orientation)
+
+All structural audits now pass:
+
+* Projection math alignment ✅
+* Spread orientation probe ✅
+* Pipeline trace integrity ✅
+
+---
+
+## 🧠 Impact Level
+
+**HIGH**
+
+This change affects:
+
+* Spread edge sign
+* Edge magnitude analytics
+* Bucket performance analysis
+* Cross-model correlation
+* Future arbitration logic
+
+However:
+
+* Pick logic unchanged
+* Grading unchanged
+* Projection math unchanged
+
+Only the **edge representation layer** was corrected.
+
+---
+
+## 🏗 System State After Change
+
+* Deterministic core remains intact
+* Structural consistency restored
+* No inversion needed
+* Model orientation validated
+
+---
+
+## 📘 UI Update — Execution Overlay Integration
+
+**Date:** 2026-03-02
+
+### Added
+
+* **Execution Badge System (Minimal Overlay)**
+
+  * 🟢 EXECUTION+ → Dual sweet spot (Spread + Total)
+  * 🟢 SPREAD+ → Spread sweet spot
+  * 🟢 TOTAL+ → Total sweet spot
+  * 🔴 AVOID → Historically unstable regime
+  * (no badge) → Neutral execution zone
+
+* **Execution Quality Sorting Option**
+
+  * Sort priority:
+
+    1. Dual Sweet Spot
+    2. Single Sweet Spot
+    3. Neutral
+
+* **Execution Overlay Section (Inside Card)**
+
+  * Explicit display of:
+
+    * spread_sweet_spot
+    * total_sweet_spot
+    * dual_sweet_spot
+    * spread_avoid
+    * total_avoid
+
+* **How to Read This Dashboard Enhancements**
+
+  * Added Execution Badge explanation
+  * Added Sweet Spot rule definitions
+  * Clarified Neutral execution meaning
+
+---
+
+### Structural Impact
+
+* No changes to deterministic core
+* No changes to model logic
+* Pure presentation + sorting layer
+* Overlay remains informational (no forced auto-filtering)
+
+---
+
+### Result
+
+Dashboard now reflects a complete decision stack:
+
+1. Confidence Tier (structure)
+2. Signal % (magnitude)
+3. Calibration Win Rate (history)
+4. Execution Regime (sweet spot logic)
+
+---
+
+## 📘 UI Update — Bet-Centric Spread Ranking
+
+**Date:** 2026-03-02
+
+### Added
+
+* **Top 2 Spread Sweet Spots Section**
+
+  * Cross-game ranking of the two strongest spread bets on the slate
+  * Selection criteria:
+
+    * Must qualify as `spread_sweet_spot`
+    * Cannot be flagged `avoid`
+    * Confidence Tier ranked: HIGH > MODERATE > LOW
+    * Larger absolute spread edge ranks higher within tier
+
+* **How to Read Update**
+
+  * Added explanation of bet-centric ranking logic
+  * Clarified difference between game-centric and bet-centric views
+
+---
+
+## 📊 Mathematical Justification
+
+From backtest (422 games):
+
+| Bucket            | Games | Win%      | ROI       |
+| ----------------- | ----- | --------- | --------- |
+| Spread Sweet Spot | 106   | **56.6%** | **+9.0%** |
+| Dual Sweet Spot   | 36    | 55.6%     | +6.1%     |
+| Total Sweet Spot  | 56    | 51.8%     | -1.1%     |
+| Neutral           | 44    | 52.3%     | +2.1%     |
+| Avoid             | 180   | 48.9%     | -6.1%     |
+| All Games         | 422   | 52.1%     | +0.2%     |
+
+### Key Observations
+
+1. **Spread Sweet Spot = strongest regime**
+
+   * 56.6% win rate
+   * +9.0% ROI
+   * Large enough sample (106 games)
+
+2. **Betting everything = near breakeven**
+
+   * 52.1% win rate
+   * +0.2% ROI
+
+3. **Avoid = materially negative**
+
+   * 48.9%
+   * −6.1% ROI
+
+---
+
+## 🧮 Why Top 2 Spreads?
+
+At -110 odds, breakeven is:
+
+[
+52.38%
+]
+
+Spread Sweet Spot:
+
+[
+56.6% - 52.38% = +4.22% \text{ edge over breakeven}
+]
+
+That translates to:
+
+[
+\text{Expected ROI ≈ +9%}
+]
+
+Whereas betting all games:
+
+[
+52.1% - 52.38% = -0.28%
+]
+
+Essentially zero edge.
+
+---
+
+## 🎯 Strategic Impact
+
+This update:
+
+* Concentrates exposure in the highest historical ROI regime
+* Avoids diluting edge with weaker totals
+* Avoids negative regimes (Avoid bucket)
+* Moves from game-centric pairing → bet-centric ranking
+
+The execution layer now:
+
+1. Identifies statistically favorable regimes
+2. Ranks spreads within that regime
+3. Surfaces the top 2 expected value bets per slate
+
+---
+
+## 🔎 Architectural Integrity
+
+* No change to model logic
+* No change to thresholds
+* No change to backtest engine
+* Purely a selection/ranking layer on top of validated performance buckets
+
+---
+
+This change aligns the UI with the strongest empirical result from backtesting:
+
+> Spread Sweet Spot materially outperforms all other buckets.
+
+---
+
+# 📘 CHANGELOG — EV + Kelly Guidance Layer
+
+**Date:** 2026-03-02
+**Scope:** Informational Capital Allocation Overlay (Spread Only)
+
+---
+
+## 🔹 What Was Added
+
+### 1️⃣ Expected Value (EV) Display
+
+For games flagged as:
+
+* `spread_sweet_spot = True`
+* `spread_avoid = False`
+
+UI now displays:
+
+* Historical Spread Sweet Spot Win Rate (0.566)
+* Expected Value per $1 risked
+* Kelly fraction (Full + Half)
+
+This is informational only.
+No automatic bet sizing implemented.
+
+---
+
+## 🔢 Mathematical Basis
+
+### Historical Regime Performance
+
+From backtest:
+
+| Bucket            | Games | Win%      | ROI      |
+| ----------------- | ----- | --------- | -------- |
+| Spread Sweet Spot | 106   | **56.6%** | **~+9%** |
+| All Games         | 422   | 52.1%     | +0.2%    |
+| Avoid             | 180   | 48.9%     | -6.1%    |
+
+---
+
+## 🧮 Expected Value Calculation
+
+Assume -110 odds:
+
+* Risk $110 to win $100
+* Payout ratio ( b = 0.909 )
+* Win rate ( p = 0.566 )
+* Loss rate ( q = 0.434 )
+
+[
+EV = (p \times 0.909) - q
+]
+
+[
+EV = (0.566 \times 0.909) - 0.434
+]
+
+[
+EV ≈ 0.080
+]
+
+**Expected value ≈ +8.0% per bet**
+
+---
+
+## 🏦 Kelly Formula
+
+[
+f = \frac{bp - q}{b}
+]
+
+[
+f ≈ 0.088
+]
+
+Full Kelly = **8.8% of bankroll per bet**
+
+Displayed in UI:
+
+* Full Kelly
+* Half Kelly (conservative recommendation)
+
+No auto-sizing.
+
+---
+
+## 🎯 Strategic Reasoning
+
+This change:
+
+* Translates statistical edge into capital sizing math
+* Reinforces why Spread Sweet Spot is prioritized
+* Provides bankroll guidance grounded in regime performance
+* Does not alter model decisions
+* Does not inflate probability claims
+
+---
+
+## 🏗 Architectural Integrity
+
+* No change to deterministic core
+* No change to backtest engine
+* No change to thresholds
+* Purely informational overlay
+
+Execution layer now supports:
+
+1. Regime filtering
+2. Bet ranking
+3. Expected value transparency
+4. Bankroll guidance
+
+---
+
+## 📒 Change Log — Dashboard Integrity Fix
+
+**File:** `bookiex_dashboard.py`
+**Date:** 2026-03-01
+
+---
+
+### 🎯 Objective
+
+Eliminate misleading inclusion of non-qualifying spreads in the “Top 2 Spread Sweet Spots” section.
+
+---
+
+## ✅ Structural Changes
+
+### 1️⃣ Section Logic Refactor
+
+**Before**
+
+* Always sliced `[:2]` after sorting.
+* Neutral spreads could appear if only one true sweet spot existed.
+* Section title implied two qualifying spreads even when not true.
+
+**After**
+
+* Only spreads meeting:
+
+  * `spread_sweet_spot == True`
+  * `spread_avoid == False`
+* Are eligible.
+* If 1 qualifies → show 1.
+* If 0 qualify → explicit message shown.
+* No filler entries.
+
+---
+
+### 2️⃣ Section Rename
+
+**Old Title**
+
+```
+🔥 Top 2 Spread Sweet Spots
+```
+
+**New Title**
+
+```
+🔥 Top Spread Sweet Spots
+```
+
+Removes implied fixed quantity.
+
+---
+
+### 3️⃣ Clear Execution Labeling Added
+
+Each qualifying entry now explicitly displays:
+
+```
+🟢 SPREAD+ — Take <Team (+Line)>
+```
+
+This:
+
+* Reinforces action clarity
+* Prevents confusion with TOTAL sweet spots
+* Separates spread regime from neutral bets
+
+---
+
+### 4️⃣ Fallback Messaging Added
+
+If only one qualifies:
+
+```
+Only 1 qualifying Spread Sweet Spot on this slate.
+```
+
+If none qualify:
+
+```
+No qualifying Spread Sweet Spots on this slate.
+```
+
+Improves discipline and transparency.
+
+---
+
+## 🛡 Risk Mitigation Impact
+
+* Prevents accidental misinterpretation of neutral spreads as sweet spots
+* Aligns UI with backtested regime logic
+* Preserves statistical integrity
+* Reduces cognitive bias in decision-making
+
+---
+
+## 🧠 System Integrity Level
+
+Before: Soft dilution risk
+After: Regime-pure
+
+---
+
+## CHANGELOG — Execution Overlay Integrity Fix & Daily Redeploy
+
+**Date:** 2026-03-01
+
+---
+
+### 🧠 Architecture Correction
+
+**Issue Identified**
+
+* `build_daily_view.py` was recomputing `execution_overlay`
+* This created a second execution engine with different thresholds
+* Result: Large volatile edges (8+) were incorrectly promoted to `SPREAD+`
+
+**Root Cause**
+
+* Duplicate overlay logic inside daily builder
+* Violated single-source-of-truth rule
+
+---
+
+### ✅ Fix Implemented
+
+1. **Removed duplicate execution logic**
+
+   * Deleted `build_execution_overlay()` from `build_daily_view.py`
+   * Removed recomputation block using percentiles
+
+2. **Restored pass-through architecture**
+
+   ```python
+   "execution_overlay": g.get("execution_overlay"),
+   ```
+
+   * Daily view now strictly inherits execution classification
+   * No threshold drift downstream
+
+3. **Rebuilt daily artifacts**
+
+   * Regenerated DAILY_VIEW files for:
+
+     * 2026-02-20 → 2026-03-03
+   * Confirmed correct sweet spot / avoid alignment
+
+4. **Deployment Fix**
+
+   * Adjusted `.gitignore` to allow `data/daily/*.json`
+   * Forced add of updated artifacts
+   * Committed and pushed to GitHub
+   * Streamlit auto-redeployed successfully
+
+---
+
+### 🎯 Result
+
+* 8+ spread edges no longer misclassified as sweet spots
+* UI now reflects correct pocket-based regime logic
+* Execution layer is single-source and deterministic
+* Live web version matches local artifact
+
+---
+
+### 🔒 System State
+
+Stable.
+Overlay logic centralized.
+Deployment pipeline clean.
+
+---
+
+## 📘 CHANGELOG — BookieX Dashboard Update
+
+**Date:** 03/04/2026
+**Scope:** UI Transparency / Temporal Integrity
+
+---
+
+### ✅ Added
+
+**1. “Last Update” Timestamp (CST) Display**
+
+* Added dynamic file-level timestamp directly under:
+
+  > *BookieX — Today’s Games & Model View*
+* Format:
+
+  ```
+  Last Update: MM/DD/YYYY HH:MM AM/PM CST
+  ```
+
+---
+
+### ✅ Implementation Details
+
+* Uses OS file modified time:
+
+  ```python
+  file_path.stat().st_mtime
+  ```
+* Converted safely:
+
+  * UTC → America/Chicago
+  * DST-aware via `ZoneInfo`
+* Automatically updates when:
+
+  * Scheduler runs (5:00 AM / 5:00 PM)
+  * Manual rebuild occurs
+  * Different date is selected in UI
+
+---
+
+### ✅ Structural Fix
+
+* Reordered execution flow to ensure:
+
+  * `file_path` determined before timestamp calculation
+  * `last_update_str` defined before header rendering
+* Removed duplicate timestamp logic block
+* Eliminated undefined variable reference
+
+---
+
+### 🎯 Result
+
+* Dashboard now clearly communicates snapshot timing.
+* Eliminates ambiguity around line movement changes.
+* Improves operational clarity for Joel + review sessions.
+* Strengthens audit trail visibility for daily runs.
+
+---
+
+## 📘 CHANGELOG — Daily View Timestamp Stabilization
+
+**Date:** 03/04/2026
+**Scope:** Temporal Integrity / UI Accuracy
+**Phase Impact:** Additive, Non-Disruptive
+
+---
+
+### ✅ Added — Deterministic Build Timestamp (Artifact Layer)
+
+**File:** `daily/build_daily_view.py`
+
+* Embedded new field in final JSON output:
+
+  ```json
+  "build_timestamp_utc": "YYYY-MM-DDTHH:MM:SSZ"
+  ```
+
+* Generated using:
+
+  ```python
+  datetime.now(timezone.utc)
+  ```
+
+* ISO-8601 UTC format (explicit, portable, deterministic)
+
+* No model logic altered
+
+* No threshold changes
+
+* Fully read-only relative to model artifacts
+
+---
+
+### ✅ Updated — Dashboard Timestamp Logic (UI Layer)
+
+**File:** `bookiex_dashboard.py`
+
+* Dashboard now:
+
+  1. Prefers `build_timestamp_utc` from artifact
+  2. Converts UTC → CST for display
+  3. Falls back to OS file modified time if field missing
+
+* Removed dependency on file write time as primary source
+
+* Git pushes no longer affect displayed timestamp
+
+* Streamlit reruns no longer affect displayed timestamp
+
+---
+
+### 🎯 Result
+
+* Timestamp now reflects **true pipeline build time**
+* UI deploys do not change "Last Update"
+* Scheduler timing is accurately represented
+* Temporal transparency improved
+* Architecture remains deterministic and layered:
+
+  * Artifact layer → UTC
+  * UI layer → CST rendering
+
+---
+
+### 🧠 Architectural Improvement
+
+Clear separation of concerns:
+
+| Layer       | Responsibility                 |
+| ----------- | ------------------------------ |
+| Build Layer | Generates data + UTC timestamp |
+| UI Layer    | Handles timezone presentation  |
+| OS          | No longer authoritative source |
+
+---
+
+### 🟢 System Status
+
+Stable
+Deterministic
+Temporal integrity restored
+
+---
+
+📊 prj_BookieX — CHANGELOG
+Version: Automation Integration + Venv Rebuild
+
+Date: 2026-03-04
+
+Added
+
+Full automation entry point:
+
+000_AUTO_BOOKIEX.py
+
+Integrated with ScheduleX engine
+
+Confirmed headless execution compatibility
+
+Updated
+
+Rebuilt .venv using standard Python installation (not Windows Store)
+
+Regenerated pyvenv.cfg to:
+
+Point to C:\Users\Rick_DellXPS\AppData\Local\Programs\Python\Python3xx
+
+Remove WindowsApps base interpreter dependency
+
+Validated
+
+Manual UI execution
+
+Direct AUTO script execution
+
+ScheduleX-triggered execution
+
+Clean subprocess return codes
+
+No environment leakage
+
+📈 prj_Jacob_Stocks_v00_tkinter — CHANGELOG
+Version: Automation Integration + Venv Standardization
+
+Date: 2026-03-04
+
+Added
+
+000_AUTO_JACOBSTOCKS_TK.py automation entry script
+
+ScheduleX compatibility
+
+Updated
+
+Deleted legacy .venv
+
+Recreated virtual environment from proper base Python install
+
+Regenerated pyvenv.cfg with correct:
+
+base-executable
+
+base-prefix
+
+base-exec-prefix
+
+Confirmed
+
+Manual UI run passes
+
+Manual AUTO script passes
+
+ScheduleX execution passes
+
+No interpreter contamination
+
+---
+
+# Changelog 2025-03-05
+
+## BookieX Dashboard / Daily View Updates
+
+### 1. Spread display sign logic fixed
+
+* Corrected spread text rendering so the **away team shows the flipped sign** from `spread_home_last`.
+* Prevented incorrect display like:
+
+  * `Dallas Mavericks (-7.5)` when the home team was actually `-7.5`
+* Standardized signed formatting using numeric formatting instead of manual string concatenation.
+* This also avoided malformed outputs like:
+
+  * `+-7.5`
+  * `--7`
+
+### 2. Rich expander detail sections restored / preserved
+
+* Confirmed missing expander details were caused by a **trimmed UI version**, not the spread-sign fix.
+* Restored or preserved the fuller game-detail structure including:
+
+  * signal strength bars
+  * model vs market
+  * structure
+  * history
+  * decision / execution overlay
+  * why section
+  * model details
+
+### 3. New Kelly sizing concept added to the dashboard
+
+* Added a new top-level section:
+
+  * **🍀 Kelly Bet Sizing Model**
+* Positioned it near the top of the page for easier mobile use.
+* Built it as an **educational example section** to translate model outputs into bankroll-based bet sizing.
+
+### 4. Kelly model simplified to Full Kelly only
+
+* Removed the temporary Kelly mode dropdown.
+* Confirmed approved behavior:
+
+  * **Kelly Bet Sizing Model always uses Full Kelly**
+* Kept conservative guidance in the footnotes instead of adding UI complexity.
+
+### 5. Kelly sizing moved from generic regime math to execution-overlay-based sizing
+
+* Reworked Kelly logic so it no longer uses one single win rate for all plays.
+* Kelly bet sizes now use execution regime-specific historical win rates:
+
+  * **Dual Sweet Spot** = `0.571`
+  * **Spread Sweet Spot** = `0.546`
+  * **Total Sweet Spot** = `0.548`
+
+### 6. Kelly table now supports all relevant sweet spot regimes
+
+* Expanded Kelly sizing support to include:
+
+  * **Dual Sweet Spot**
+  * **Spread Sweet Spot**
+  * **Total Sweet Spot**
+* This replaced the older spread-only concept and made the stake-sizing logic much more intuitive.
+
+### 7. Kelly table made mobile-friendly
+
+* Built a compact suggested bet table with columns like:
+
+  * `Game`
+  * `Pick`
+  * `Regime`
+  * `Bet $`
+* Added compact portfolio summary:
+
+  * total plays
+  * total exposure
+* Added concise footnotes for bankroll assumptions and conservative scaling guidance.
+
+### 8. Kelly reference assumptions moved to editable script-level variables
+
+* Moved key Kelly assumptions to the top of the script for easy maintenance:
+
+  * `DUAL_SWEET_SPOT_WIN_PCT`
+  * `SPREAD_SWEET_SPOT_WIN_PCT`
+  * `TOTAL_SWEET_SPOT_WIN_PCT`
+  * `KELLY_PAYOUT_RATIO`
+  * `EXAMPLE_BANKROLL`
+  * `EXECUTION_OVERLAY_LAST_UPDATED`
+* This makes future tuning easier as more backtesting data comes in.
+
+### 9. Execution overlay backtest reference table added to UI
+
+* Added the current overlay performance table directly below the Kelly footnotes.
+* Included:
+
+  * bucket
+  * games
+  * win%
+  * ROI
+* Added a visible:
+
+  * **Last Updated** date for the overlay reference data
+
+### 10. Removed obsolete “Top Spread Sweet Spots” section
+
+* Removed the old spread-only summary block because it became redundant.
+* Reason:
+
+  * Kelly section now explains qualification and stake sizing better
+  * totals are now included
+  * old spread-only callout no longer matched the broader regime logic
+
+### 11. “How to Read This Dashboard” was fully rewritten
+
+* Reworked the guide to match the new dashboard state.
+* Updated documentation now reflects:
+
+  * current roll-up line format
+  * execution badges
+  * signal strength bars
+  * Kelly Bet Sizing Model
+  * Last Odds Update
+  * model details
+  * structure vs decision concepts
+* Removed explanations for no-longer-relevant page elements.
+
+### 12. `odds_snapshot_last_utc` passed into `daily_view`
+
+* Added `odds_snapshot_last_utc` to the `market_state` block in `daily_view_*.json`.
+* This preserved snapshot timing from `final_game_view.json` through to the UI layer.
+
+### 13. Last Odds Update added to UI
+
+* Added a new line directly under **Select Date**:
+
+  * **Last Odds Update:**
+* Converted `odds_snapshot_last_utc` from UTC into **CST** for easier interpretation.
+* Ensured the displayed timezone is explicitly labeled as CST.
+
+### 14. Dashboard top-of-page order cleaned up
+
+* Finalized the top order as:
+
+  1. **How to Read This Dashboard**
+  2. **Select Date**
+  3. **Last Odds Update**
+  4. **🍀 Kelly Bet Sizing Model**
+  5. everything else below unchanged
+
+### 15. Kelly inclusion logic clarified
+
+* Confirmed and implemented regime-based qualification logic for Kelly sizing.
+* Kelly examples now reflect the current execution overlay groups rather than a single blanket spread assumption.
+* Total-only games can now participate when the regime logic supports it.
+
+### 16. Historical daily views prepared for GitHub / Streamlit publishing
+
+* Confirmed previously rebuilt `daily_view` files from **March 1 through March 5** do not need regeneration.
+* Created a dedicated push-only utility to stage, commit, and push selected historical `daily_view` files.
+
+### 17. Push script fixed to work outside project root
+
+* Updated the historical push script so it works when launched directly from the `tools` folder path.
+* Anchored paths using the script location via `__file__`.
+* Set git command execution to use the project root as working directory.
+* This fixed missing-file errors caused by relative path assumptions.
+
+### 18. Overall outcome
+
+* BookieX now has a stronger, clearer, and more educational UI around:
+
+  * spread pick presentation
+  * execution regime interpretation
+  * Kelly stake sizing
+  * historical overlay context
+  * odds update timing
+* The dashboard is now more consistent for both desktop and mobile review, and easier to validate across historical slates.
+
+
+Below is a **ready-to-paste changelog block** for this chat session. It extends your existing logs in `CHANGELOG.MD`  and `CHANGELOG_NCAAM_ALIGNMENT.md`  and focuses on the new NBA/NCAAM parity, NCAAM UI-readiness, combined runner, dashboard compatibility, and deployment tooling.
+
+---
+
+# 2026-03-07 — NCAAM Parity Push, Dual-League Dashboard Support, and Deployment Hardening
+
+**Component:**
+
+* `eng/daily/build_daily_view_ncaam.py`
+* `eng/backtest_runner_ncaam.py`
+* `eng/models/model_0051_runner_ncaam.py`
+* `eng/models/model_0052_add_model_ncaam.py`
+* `c_ncaam_001_build_avg_score_features.py`
+* `c_ncaam_015_build_last5_momentum.py`
+* `c_ncaam_099_merge_model_features.py`
+* `d_ncaam_022_collapse_to_game_level.py`
+* `000_RUN_ALL_NCAAM.py`
+* `000_RUN_ALL_NBA_NCAA.py`
+* `bookiex_dashboard.py`
+* `zzz_debug_shape_x.py`
+* `tools/push_daily.py`
+
+**Type:**
+Architecture alignment / NCAAM expansion / UI compatibility / deployment hardening
+
+**Scope Rule:**
+Preserve NBA behavior and format while bringing NCAAM closer to NBA pipeline contracts.
+
+---
+
+## Summary
+
+This session moved NCAAM from a basic MVP into a much more NBA-aligned structure, while preserving the NBA pipeline as the stable reference implementation.
+
+Main outcomes:
+
+* NCAAM now supports a **multi-model architecture**
+* NCAAM now produces **UI-facing final/view/daily artifacts**
+* The dashboard now supports **league switching between NBA and NCAAM**
+* The JSON debug tool now works across NBA and NCAAM artifact shapes
+* A combined runner was created for **NBA + NCAAM**
+* Daily push workflow was split into a simpler **push-only deployment path**
+* NCAAM daily build now supports **explicit date arguments**
+* Multiple stability fixes were applied for empty-slate and path-resolution edge cases
+
+---
+
+## 1. NCAAM model framework aligned to NBA structure
+
+### Added / Promoted
+
+* Independent NCAA baseline model:
+
+  * `eng/models/ncaam_avg_score_model.py`
+* NCAA multi-model runner:
+
+  * `eng/models/model_0051_runner_ncaam.py`
+
+### Result
+
+NCAAM now follows the NBA pattern more closely:
+
+* registry-driven model execution
+* per-model outputs under `models`
+* multi-model JSON artifact
+* flat CSV export
+* explicit `selection_authority`
+
+This advanced the alignment originally captured in `CHANGELOG_NCAAM_ALIGNMENT.md` and extended it materially beyond the initial MVP state. 
+
+---
+
+## 2. New NCAAM feature stack added for selective NBA reuse
+
+### Added
+
+* `d_ncaam_022_collapse_to_game_level.py`
+* `c_ncaam_001_build_avg_score_features.py`
+* `c_ncaam_015_build_last5_momentum.py`
+* `c_ncaam_099_merge_model_features.py`
+
+### Purpose
+
+Began selective reuse of NBA-style feature engineering for NCAAM, specifically:
+
+* average score / average allowed
+* last-5 momentum
+
+### Design decision
+
+Selective reuse was chosen instead of forced full parity, because college cadence and data coverage differ from NBA. Rest/fatigue/injury logic was intentionally deferred.
+
+### Result
+
+NCAAM model inputs now support:
+
+* baseline avg-score projection model
+* market-pressure variant
+* momentum-5 variant
+
+---
+
+## 3. NCAAM model outputs now flow into final UI-facing artifact
+
+### Added
+
+* `eng/models/model_0052_add_model_ncaam.py`
+
+### Result
+
+NCAAM now writes:
+
+* `data/ncaam/view/final_game_view_ncaam.json`
+* `data/ncaam/view/final_game_view_ncaam.csv`
+* `data/ncaam/view/final_game_view_ncaam_active.json`
+
+This mirrors the NBA `final_game_view` concept and gives the dashboard a stable source for NCAA game-level display.
+
+---
+
+## 4. NCAAM daily view refactored toward NBA contract
+
+### Revised
+
+* `eng/daily/build_daily_view_ncaam.py`
+
+### Major changes
+
+* standardized `selection_authority`
+* added dated JSON naming
+* added timestamped CSV naming
+* added grouped UI-friendly sections:
+
+  * `identity`
+  * `market_state`
+  * `model_output`
+  * `edge_metrics`
+  * `arbitration`
+  * `agent_overrides`
+  * `execution_overlay`
+  * `calibration_tags`
+  * `models`
+  * `temporal_integrity`
+
+### Result
+
+NCAAM daily JSON is now much closer to NBA daily JSON shape, enabling dashboard reuse with minimal renderer branching.
+
+---
+
+## 5. NCAAM backtest runner upgraded to NBA-style artifact pattern
+
+### Revised
+
+* `eng/backtest_runner_ncaam.py`
+
+### Changes
+
+* consumes multi-model JSON
+* respects `selection_authority`
+* writes timestamped backtest folders
+* writes:
+
+  * detail JSON
+  * detail CSV
+  * summary JSON
+* supports per-model grading structure
+
+### Result
+
+NCAAM backtest outputs are now audit-friendlier and structurally more consistent with NBA backtests.
+
+---
+
+## 6. Dashboard now supports both NBA and NCAAM
+
+### Revised
+
+* `bookiex_dashboard.py`
+
+### Added
+
+* league selector:
+
+  * NBA
+  * NCAAM
+* league-aware file loading
+* NCAAM date parsing fix
+* header/title consistency for selected league
+
+### Important rule enforced
+
+**Do not change NBA format.**
+
+All fixes were implemented as UI-side compatibility hardening rather than NBA schema changes.
+
+### Result
+
+Single dashboard can now render both leagues from their respective daily artifacts.
+
+---
+
+## 7. Dashboard numeric hardening added for NCAAM nested model values
+
+### Problem
+
+NCAAM nested `models` values often arrived as strings like:
+
+* `"10"`
+* `"-8.5"`
+* `""`
+
+This caused `round(...)` crashes in the dashboard.
+
+### Fix
+
+Added safe numeric render helpers in `bookiex_dashboard.py`:
+
+* `safe_round()`
+* `safe_num()`
+
+Applied to:
+
+* sort logic
+* game-level display
+* nested model detail display
+
+### Result
+
+Dashboard now tolerates mixed string/blank numeric payloads from NCAAM without breaking NBA behavior.
+
+---
+
+## 8. JSON shape debug tool generalized across NBA and NCAAM
+
+### Revised
+
+* `zzz_debug_shape_x.py`
+
+### Improvement
+
+The debug utility was made more flexible so it can inspect:
+
+* NBA `games` payloads
+* NCAAM `games` payloads
+* NCAAM backtest list payloads
+* final view artifacts
+* daily artifacts
+
+### Result
+
+This became the primary cross-league schema inspection tool for progress validation and UI troubleshooting.
+
+---
+
+## 9. Combined runner created for both leagues
+
+### Added
+
+* `000_RUN_ALL_NBA_NCAA.py`
+
+### Purpose
+
+Runs:
+
+* `000_RUN_ALL.py` for NBA
+* `000_RUN_ALL_NCAAM.py` for NCAAM
+
+in sequence using the same interpreter.
+
+### Result
+
+Created a single orchestration entry point that can later be wired into:
+
+* `000_bookiex_launcher_ui.py`
+
+for dual-league runs.
+
+---
+
+## 10. Push workflow split from build workflow
+
+### Added / Revised
+
+* `tools/update_and_push_daily.py` was recognized as over-scoped
+* created simpler push-only deployment path:
+
+  * `tools/push_daily.py`
+
+### Design decision
+
+Because daily runs are often already complete, deployment should not always trigger a full NBA + NCAAM rebuild.
+
+### Result
+
+Push tooling is now simpler and safer:
+
+* stage selected daily artifacts
+* commit
+* push
+
+without re-running the full pipelines.
+
+---
+
+## 11. NCAAM daily build now supports explicit date argument
+
+### Revised
+
+* `eng/daily/build_daily_view_ncaam.py`
+
+### New behavior
+
+Supports:
+
+```bash
+python eng/daily/build_daily_view_ncaam.py 2026-03-01
+```
+
+If no date is passed, it selects the earliest upcoming available date, mirroring NBA behavior.
+
+### Result
+
+Historical and targeted daily rebuilds are now possible for NCAAM, improving consistency across leagues.
+
+---
+
+## 12. NCAAM empty-slate handling hardened
+
+### Problem
+
+If the selected NCAAM date produced zero signal rows, daily build crashed with:
+
+```python
+ValueError("No CSV rows to write")
+```
+
+### Fix
+
+Reworked CSV writing behavior so empty slates generate valid empty CSVs with headers instead of failing.
+
+### Result
+
+NCAAM daily builder now handles:
+
+* no qualifying rows
+* no actionable games
+* empty signal slates
+
+without crashing the runner.
+
+---
+
+## 13. NCAAM path bootstrap fixed for direct CLI execution
+
+### Problem
+
+Direct execution from project root failed with:
+
+```python
+ModuleNotFoundError: No module named 'configs'
+```
+
+### Fix
+
+Added project-root bootstrap to `eng/daily/build_daily_view_ncaam.py` so `configs.league_ncaam` resolves correctly regardless of launch location.
+
+### Result
+
+The file now works from:
+
+* PyCharm
+* project-root CLI
+* subprocess runners
+
+---
+
+## 14. NCAA/NBA parity direction clarified
+
+### Strategic outcome
+
+This session established a practical parity model:
+
+* preserve NBA as authoritative mature implementation
+* bring NCAAM closer where useful
+* avoid fake parity where college data coverage is weaker
+
+### Reuse implemented now
+
+* avg-score feature stack
+* momentum last-5 feature stack
+* model registry pattern
+* final view pattern
+* daily view pattern
+* backtest folder pattern
+* dashboard compatibility
+
+### Explicitly deferred
+
+* rest-day logic
+* fatigue logic
+* injury logic
+* calibration layer
+* execution overlay
+* confidence/arbitration parity
+
+This remains consistent with the earlier NCAAM alignment log. 
+
+---
+
+## 15. Deployment and operator workflow impact
+
+### New operator options
+
+You now have clearer separation between:
+
+* full NBA run
+* full NCAAM run
+* combined NBA + NCAAM run
+* push-only deployment
+
+### Result
+
+Operational workflow is cleaner and less error-prone, especially while NCAAM remains under active development.
+
+---
+
+## Status at End of Session
+
+| Area                              | Status  |
+| --------------------------------- | ------- |
+| NBA pipeline                      | Stable  |
+| NCAAM multi-model runner          | Working |
+| NCAAM final view                  | Working |
+| NCAAM daily view                  | Working |
+| NCAAM backtest runner             | Working |
+| Combined runner                   | Working |
+| Dashboard league toggle           | Working |
+| JSON shape debug tool             | Working |
+| Push-only deployment script       | Working |
+| NCAAM empty-slate hardening       | Working |
+| NCAAM explicit-date daily rebuild | Working |
+
+---
+
+## Net Effect
+
+This session materially advanced BookieX from:
+
+* **NBA-first with NCAAM MVP fragments**
+
+to:
+
+* **dual-league architecture with a shared dashboard path, shared tooling patterns, and a much clearer NBA ↔ NCAAM parity roadmap**
+
+---
+
+Date: 2026-03-08
+Area: BookieX UI / Assets
+
+Added league-specific header icon support in eng/ui/bookiex_dashboard.py.
+
+Kept the existing NBA header icon unchanged.
+
+Added NCAAM-specific header icon asset:
+assets/RS_JP_BookieX_v04_COLLEGE.png
+
+Updated the dashboard so the header icon switches by League dropdown selection:
+
+NBA → standard BookieX icon
+
+NCAAM → college-themed BookieX icon
+
+NCAAM icon styling uses the new college sweatshirt version with a white background around the circular logo for cleaner header display.
+
+## Changelog — NCAAM Pipeline Cleanup and Recovery
+
+### Fixed core upstream NCAAM pipeline break
+
+Resolved the main NCAAM upstream failure that had been causing blank canonical/history/features/model outputs. The pipeline now builds through schedule ingest, team join, canonical generation, game-level collapse, feature generation, model merge, odds ingest, partial line join, model runner, final view, and daily view without the original hard-stop failure.
+
+### Added NCAA-based authoritative NCAAM team map flow
+
+Added a cleaner NCAAM team-map path based on NCAA source pages:
+
+* `a_data_static_000a_build_ncaam_team_map_from_ncaa.py`
+* `a_data_static_000b_ncaam_team_map.py`
+
+This now writes/publishes:
+
+* `data/ncaam/static/ncaam_team_map.json`
+* `data/ncaam/static/ncaam_team_map.csv`
+* `data/ncaam/raw/ncaam_team_map.json`
+* `data/ncaam/raw/ncaam_team_map.csv`
+
+### Standardized NCAAM team-map schema
+
+Expanded NCAAM team map records to include normalized fields for deterministic matching:
+
+* `team_name_normalized`
+* `team_name_norm_key`
+
+### Improved NCAAM schedule normalization visibility
+
+Updated `b_data_001_ncaam_schedule.py` so the normalized schedule CSV explicitly carries:
+
+* `home_team_normalized`
+* `away_team_normalized`
+* `home_team_norm_key`
+* `away_team_norm_key`
+
+This made schedule-side name matching transparent and easier to debug.
+
+### Rebuilt NCAAM schedule-to-team join logic
+
+Refactored `b_data_003_join_ncaam_schedule_teams.py` to use:
+
+* NCAAM team map normalized keys
+* substring/containment matching for mascot-suffixed ESPN schedule names
+* longest-key priority
+* State/St guard to prevent false matches like:
+
+  * `alabama` matching `alabamast`
+  * non-state school matching a state-suffixed school
+
+Recovered mapping from complete failure to:
+
+* Matched rows: 254
+* Partial rows: 52
+* Unmatched rows: 8
+
+### Restored canonical game creation
+
+Fixed `d_ncaam_021_build_canonical_games.py` so canonical rows are produced again instead of failing with:
+
+* `ValueError: No canonical game rows produced`
+
+Canonical output now builds successfully with:
+
+* `Canonical rows: 254`
+
+### Fixed stale input dependency in NCAAM game-level collapse
+
+Updated `d_ncaam_022_collapse_to_game_level.py` to read from canonical output instead of a stale model-layer file. This restored correct game-level generation:
+
+* Loaded input rows: 254
+* Game-level rows: 254
+
+### Restored avg-score feature generation
+
+Verified `c_ncaam_001_build_avg_score_features.py` now produces real feature coverage again:
+
+* Rows with home avg features: 117
+* Rows with away avg features: 142
+
+### Restored last5 momentum feature generation
+
+Verified `c_ncaam_015_build_last5_momentum.py` now produces real momentum coverage again:
+
+* Rows with home last5: 117
+* Rows with away last5: 142
+
+### Restored merged model input flow
+
+Verified `c_ncaam_099_merge_model_features.py` now produces merged model input again:
+
+* Merged rows: 254
+* Rows with avg features: 117
+* Rows with last5 features: 117
+
+### Refactored NCAAM betting-line join to new team-map architecture
+
+Updated `f_ncaam_041_add_betting_lines.py` to stop depending on the old legacy `ncaam_market_team_map.csv` core path and instead use the new NCAAM team map with normalized containment logic and the same State/St guard.
+
+Recovered line joining from zero matches to partial success:
+
+* previously: 0 matched
+* now: ~12–13 matched depending on current odds snapshot
+
+### Fixed wrong NCAAM model-runner input path
+
+Updated `eng/models/model_0051_runner_ncaam.py` so it reads:
+
+* `data/ncaam/model/ncaam_canonical_games_with_lines.csv`
+
+instead of the earlier pre-line merged file. This allowed matched line fields to flow into the model JSON/final view instead of being silently dropped.
+
+### Added targeted JSON debug-by-date utility
+
+Created a filtered debug script:
+
+* `zzz_debug_shape_example_by_date.py`
+
+This allows inspection of a single date slice from large JSON artifacts and was used to confirm:
+
+* 3/9 rows were present
+* market lines were present for many rows
+* model projections still blank due to zero history counts
+
+### Confirmed current remaining blocker
+
+Documented that the remaining issue is no longer plumbing-related. For 2026-03-09 rows, the pipeline now shows:
+
+* line join matched on many rows
+* market spread/total fields present
+* but `home_games_in_history = 0`, `away_games_in_history = 0`, `has_projection_inputs = False`
+
+So the current blocker is insufficient historical coverage for those teams in the current ingest window, not broken joins/transforms.
+
+### Proposed cleaner NCAAM runner order
+
+Cleaned up the recommended `000_RUN_ALL_NCAAM.py` step order to reflect the repaired architecture and remove legacy market-map scripts from the critical path.
+
+---
+
+## Session 2026-03-09 — NCAAM canonical + line-join consolidation
+
+**Focus:** Increase NCAAM canonical game count, then consolidate line join and model features into a single artifact so the model runner gets features + lines without a separate merge step.
+
+### d_ncaam_021: backfill team IDs from boxscore
+
+* Updated `d_ncaam_021_build_canonical_games.py` to **backfill** missing `home_team_id` / `away_team_id` from the boxscore lookup when a schedule row has `espn_game_id` but is missing one or both team ids.
+* Ensures one canonical row per `espn_game_id` (deduplication).
+* When backfilling team ids, display names are also backfilled from the boxscore when empty.
+* **Diagnostics** added at end of `run()`:
+  * Schedule rows skipped: no `espn_game_id`; no team ids and no boxscore to backfill; count of rows backfilled from boxscore.
+  * Canonical rows with vs without boxscore data.
+* **Forward-only:** Reads only `ncaam_schedule_mapped.csv` and `ncaam_boxscores_raw.csv`; writes `ncaam_canonical_games.csv`.
+* **Result:** Canonical game count increased from 104 to 257.
+
+### f_ncaam_041: single output with features + lines (no f_ncaam_045)
+
+* Consolidated logic into `f_ncaam_041_add_betting_lines.py` so the **model runner does not need a path change** and finds everything in one file.
+* **Inputs (forward-only):**
+  * `data/ncaam/model/ncaam_model_input_v1.csv` (Avg/Last5 features from `c_ncaam_099_merge_model_features.py`)
+  * Latest flattened odds file
+  * Team map for odds resolution
+* **Output:** `data/ncaam/model/ncaam_canonical_games_with_lines.csv` now contains **both** market lines and model features (e.g. `home_avg_points_for`, `home_last5_points_for`, etc.).
+* Replaced `load_canonical_rows()` (canonical only) with `load_model_input_rows()` reading `ncaam_model_input_v1.csv`; join still on `(game_date, home_team_id, away_team_id)`.
+* Renamed `join_lines_to_canonical()` to `join_lines_to_base()`; same join behavior, base is now the feature-rich model input.
+* **No** `f_ncaam_045` created; all logic lives in `f_ncaam_041`.
+
+### b_data_004_ncaam_ingest_boxscores: JSON-first + finalized protection
+
+* Refactored to use **utils/io_helpers** for saving: `save_ncaam_boxscores()`, `load_previous_ncaam_boxscores_by_id()`, `get_ncaam_boxscore_raw_path()`.
+* **Primary output:** `data/ncaam/interim/ncaam_boxscores_raw.json` (JSON-first, NBA boxscore maturity).
+* **Finalized protection:** If a boxscore for a `game_id` is already saved and has final scores (`home_score` / `away_score` present), the script does not re-request it from ESPN or overwrite it; previous run’s row is preserved in the merged output.
+* **Legacy CSV:** `data/ncaam/interim/ncaam_boxscores_raw.csv` still written for downstream/audit compat; **d_ncaam_021** reads JSON when present, falls back to CSV.
+* **Forward-only:** Reads only schedule (mapped CSV) and previous boxscore output (same JSON); writes only boxscore JSON + CSV.
+
+### b_gen_004_ingest_boxscores: unified boxscore ingestion (NBA + NCAAM)
+
+* **Unified script** `b_gen_004_ingest_boxscores.py` replaces `b_data_004_ingest_boxscores.py` (NBA) and `b_data_004_ncaam_ingest_boxscores.py` (NCAAM). Invoked with `--league nba` or `--league ncaam`.
+* **Shared logic:** Finalized protection (do not re-fetch or overwrite when a game already has a final boxscore) and merge (never overwrite a finalized previous row; new rows overwrite non-final only) — same behavior for both leagues.
+* **utils/io_helpers:** League-agnostic boxscore API: `get_boxscore_path(league)`, `save_boxscores(league, rows)`, `load_previous_boxscores_by_id(league, id_key)`. NBA primary path: `data/derived/nba_boxscores_team.json`; NCAAM: `data/ncaam/interim/ncaam_boxscores_raw.json`. NCAAM aliases kept for backward compat (`get_ncaam_boxscore_raw_path`, etc.).
+* **JSON-first:** Both leagues write primary output via `save_boxscores(league, merged)`; legacy CSV retained as audit (same paths as before).
+* **Orchestrators:** `000_RUN_ALL.py` and `000_RUN_ALL_NCAAM.py` call `b_gen_004_ingest_boxscores.py` with the correct `--league` flag. NCAAM runner supports tuple steps `(script_path, extra_args)` for boxscore and existing f_gen_041 step.
+* **Forward-only / no circular deps:** Scripts read only prior artifacts (games/schedule input + previous boxscore JSON); write only boxscore JSON + CSV.
+
+### b_gen_001_ingest_schedule / b_gen_003_join_schedule_teams: unified schedule ingestion and team join
+
+* **b_gen_001_ingest_schedule.py** replaces `b_data_001_nba_schedule.py` and `b_data_001_ncaam_schedule.py`. Invoked with `--league nba` or `--league ncaam`. NCAAM supports `--start-date` / `--end-date` (YYYYMMDD); default last 7 days.
+* **b_gen_003_join_schedule_teams.py** replaces `b_data_003_join_schedule_teams.py` and `b_data_003_join_ncaam_schedule_teams.py`. Invoked with `--league nba` or `--league ncaam`.
+* **utils/io_helpers:** Schedule paths and I/O: `get_schedule_raw_path(league)`, `get_schedule_joined_path(league)`, `save_schedule_raw(league, rows)`, `load_schedule_raw(league)`, `save_schedule_joined(league, rows)`, `get_team_map_path(league)`. All JSON read/write for 001 and 003 goes through io_helpers where applicable.
+* **Team mapping remains league-specific:** NBA uses `data/static/nba_team_map.json` (team_id lookup); NCAAM uses `data/ncaam/raw/ncaam_team_map.csv` (norm_key + state semantics, resolve_team_name). Join logic is shared (load schedule, load team map, join/map, write); resolution and output shape are league-specific.
+* **JSON-first:** 001 writes primary schedule via `save_schedule_raw(league, rows)`; 003 writes primary joined schedule via `save_schedule_joined(league, rows)`. NCAAM 003 also writes `ncaam_schedule_mapped.json` (new) and keeps legacy CSV at `SCHEDULE_MAPPED_PATH` for audit and downstream (d_ncaam_021, b_gen_004).
+* **Orchestrators:** `000_RUN_ALL.py` and `000_RUN_ALL_NCAAM.py` call the generic scripts with the correct `--league` flag; NCAAM runner passes `--start-date` / `--end-date` to b_gen_001 when provided.
+* **Forward-only / no circular deps:** 001 reads only external APIs; 003 reads only schedule raw JSON and team map. No circular dependencies.
+
+### d_gen_021_build_canonical_games: unified canonical games (schedule + boxscore)
+
+* **d_gen_021_build_canonical_games.py** replaces `d_nba_021_build_canonical_games.py` and `d_ncaam_021_build_canonical_games.py`. Invoked with `--league nba` or `--league ncaam`.
+* **utils/io_helpers:** `load_schedule_joined(league)`, `load_boxscores(league)`, `get_canonical_games_csv_path(league)`, `get_canonical_games_json_path(league)`. Joined schedule and boxscores are loaded via io_helpers; canonical output paths unchanged so model runners (0051) and d_022 do not break.
+* **Shared canonical check:** `build_boxscore_lookup(box_rows, id_key)` pairs each scheduled game with its boxscore row (key: `game_id` for NBA, `espn_game_id` for NCAAM). Same lookup used for NBA OT attachment and NCAAM schedule–boxscore merge and backfill.
+* **NBA:** Loads joined games + boxscores + rest/fatigue/rolling/last5 (and optional 3pt/injuries) from derived; builds two canonical rows per game (home/away); writes `data/view/nba_games_canonical.json` and `.csv`.
+* **NCAAM:** Loads joined schedule (JSON) and boxscores (JSON); one canonical row per `espn_game_id` with backfill from boxscore when team ids missing; writes `data/ncaam/canonical/ncaam_canonical_games.csv` only (unchanged path).
+* **Orchestrators:** `000_RUN_ALL.py` and `000_RUN_ALL_NCAAM.py` call `d_gen_021_build_canonical_games.py` with the correct `--league` flag.
+* **Forward-only:** Reads only joined schedule, boxscores, and (NBA) other derived artifacts; writes only canonical JSON/CSV to the same paths as before.
+
+* **Result:** For 2026-03-09, March 9th games now show `has_projection_inputs = true` where sufficient boxscore history exists; runner output shows spread/total picks (e.g. Rows with spread picks: 3, Rows with total picks: 4) instead of zero.
+
+## 2026-03-10 — Agentic Command Center, Live Monitor & NCAAM Intelligence
+
+### eng/backtest_gen_runner.py: unified calibration schema (support for analysis)
+
+* Confirmed that `backtest_gen_runner` writes canonical calibration fields (`selected_spread_result`, `selected_total_result`, `selected_spread_edge`, `selected_total_edge`, `actual_margin_home`, `actual_total`, etc.) used by downstream analysis and agent layers.
+
+### eng/analysis_gen_manager.py: league-agnostic bias + edge calibration
+
+* Added `eng/analysis_gen_manager.py` to provide unified analysis for NBA and NCAAM:
+  * Loads the latest `eng/outputs/backtests/backtest_{league}_*/backtest_games.json`.
+  * Computes bias metrics (Over vs Under, Favorite vs Dog, Home vs Away, Home Favorite/Home Dog/Away Favorite/Away Dog).
+  * Builds Win Probability Curves for spread and total by absolute edge bucket (0–2.5, 2.5–5, 5–7.5, 7.5–10, 10–15, 15–25, 25+).
+  * Identifies “Sweet Spots” where bucket win rate ≥ 55% and bucket edge ≥ 5.0.
+* Writes `eng/outputs/analysis/bias_report_{league}.json` (e.g. `bias_report_ncaam.json`) with:
+  * Bias blocks, edge curves, and a `sweet_spots` list plus definition metadata.
+
+### tools/merge_and_heal.py: Phase 2 NBA odds master
+
+* Extended `tools/merge_and_heal.py` so the merged NBA odds snapshot is written to **both**:
+  * `data/external/odds_api_raw.json` (legacy master).
+  * `data/nba/raw/odds_master_nba.json` (NBA pipeline master for f_gen_041).
+* Ensures that after running `tools/fetch_missing_raw.py` + `tools/merge_and_heal.py`, the NBA odds enrichment script picks up the 3‑season paid history and can backtest >2,000 graded games.
+
+### utils/decorators.py: @agent_reasoning and row-level helper
+
+* Added `utils/decorators.py` with:
+  * `_load_bias_report_ncaam()` and helpers to read `bias_report_ncaam.json`.
+  * `_sweet_spot_reasoning_for_row(row, report)` that emits:
+    * `"Selecting [PICK] because it falls into the [BUCKET] Sweet Spot (Historical Win Rate: [WR]%)"` when a game’s edge falls into a bias-report Sweet Spot bucket.
+  * `add_agent_reasoning_to_rows(rows, league="ncaam")` to attach `agent_reasoning` strings to NCAAM final rows.
+* Wired `run_ncaam()` in `eng/models/model_gen_0052_add_model.py` to:
+  * Initialize `agent_reasoning` on each final row.
+  * Call `add_agent_reasoning_to_rows(final_rows, league="ncaam")` so every Sweet Spot game gets an explicit reasoning string.
+
+### eng/models/model_gen_0052_add_model.py: NCAAM agent reasoning fields
+
+* Ensured NCAAM final view rows include:
+  * `agent_reasoning` field persisted into JSON and CSV output for downstream UI and monitors.
+* Left NBA logic unchanged while making NCAAM compatible with the unified backtester and analysis manager.
+
+### eng/execution/timing_agent.py: Timing Agent (line-movement classifier)
+
+* Implemented `eng/execution/timing_agent.py`:
+  * Computes `timing_recommendation(game)` from current market lines vs `odds_history`.
+  * Classifies:
+    * `EXECUTE` when spread/total has moved in our favor (value increasing).
+    * `HOLD/WAIT` when line has moved against us (value evaporating).
+    * `UNKNOWN` when insufficient history or ambiguous movement.
+  * Handles:
+    * Home vs away spread picks (`HOME`/`AWAY` or team-name side).
+    * OVER/UNDER totals, with value defined as lower totals for OVER and higher totals for UNDER.
+
+### eng/execution/live_monitor_agent.py: live monitor + EXECUTE alerts
+
+* Added `eng/execution/live_monitor_agent.py` to watch for actionable transitions:
+  * Loads `data/ncaam/view/final_game_view_ncaam_active.json` (active games) and the canonical NCAAM game-state JSON (for `odds_history`) via `utils.io_helpers.get_game_state_path("ncaam")`.
+  * Filters to games where:
+    * `max(|Spread Edge|, |Total Edge|) > 10.0`, and
+    * `agent_reasoning` references a 60%+ Sweet Spot from `bias_report_ncaam.json`.
+  * Runs `timing_recommendation(game)` and emits alerts **only** when status is `EXECUTE`.
+* Alert format written to `logs/active_alerts.log`:
+  * `[TIMESTAMP] [MATCHUP] - STATUS: EXECUTE - KELLY SIZE: [x.x]% ($Amount). [PICK] EDGE: [...] REASON: [...] [VALUE PEAK REACHED]`.
+* Tracks previous statuses in `logs/monitor_state.json` and annotates alerts that move from HOLD/WAIT → EXECUTE with “VALUE PEAK REACHED”.
+
+### utils/risk_management.py and configs/bankroll.json: Kelly engine
+
+* Created `utils/risk_management.py`:
+  * `american_to_decimal(american_odds)` converts American odds (e.g. −110 / +150) to decimal.
+  * `kelly_fraction_full(p, decimal_odds)` computes full Kelly `f* = p − (1 − p) / b` with `b = decimal_odds − 1`.
+  * `calculate_kelly_bet(win_probability, market_odds, bankroll, kelly_fraction=0.25)`:
+    * Uses Quarter‑Kelly by default (0.25 × f*) to manage volatility.
+    * Returns `(fraction_of_bankroll, dollar_amount)` with guards for invalid inputs.
+* Added `configs/bankroll.json`:
+  * Stores `total_bankroll` and `currency` so live monitor and dashboards can compute actual bet amounts.
+
+### eng/analysis/analysis_041_agent_attribution.py: Live Monitor attribution audit
+
+* Implemented `eng/analysis/analysis_041_agent_attribution.py`:
+  * Parses `logs/active_alerts.log` to identify all `STATUS: EXECUTE` alerts (including those with Kelly sizing).
+  * Cross-references alerts with `data/ncaam/view/final_game_view_ncaam.json` using normalized matchup keys (`Away @ Home`).
+  * Re-grades alert picks (spread/total) using the same grading contract as `backtest_gen_runner` (win/loss/push).
+* Simulates two strategies:
+  * **Strategy A (Flat):** constant $100 stake per EXECUTE alert.
+  * **Strategy B (Kelly):** stake equals the Kelly dollar amount logged in the alert (fallback to $100 for legacy alerts).
+* Computes metrics for both strategies:
+  * Total wagered, total P&L, Yield (ROI%), Success Rate, Max Drawdown.
+  * Value Peak vs standard EXECUTE win rates by comparing alerts tagged with “VALUE PEAK REACHED”.
+* Outputs:
+  * Console summary table.
+  * JSON report at `logs/attribution_report.json` used by the dashboard System Health bar.
+
+### 000_RUN_ALL_NBA_NCAA.py: --watch mode + Top Agent Picks
+
+* Added `--watch` flag:
+  * After finishing NBA + NCAAM pipelines and integrity audit, `--watch` starts the live monitor loop via `eng.execution.live_monitor_agent.run_loop(interval_minutes=30)`.
+* Introduced `_top_agent_picks(edge_min=10.0)`:
+  * Reads both NBA and NCAAM final views and extracts games with `max(|Spread Edge|, |Total Edge|) > 10`.
+  * Prefers per-row `agent_reasoning` and falls back to `Explanation` when needed.
+  * Prints a “TOP AGENT PICKS (Edge > 10.0)” section in the combined executive summary.
+
+### eng/ui/bookiex_dashboard.py: Agentic Command Center overlay
+
+* Added attribution ingestion at the top:
+  * `load_attribution_report()` reads `logs/attribution_report.json`.
+  * System Health container now shows **Strategy B (Kelly) ROI%** and **Total P&L**, with:
+    * Green metrics for positive ROI/P&L, red for negative.
+* Replaced fixed `EXAMPLE_BANKROLL` with a dynamic sidebar input:
+  * `st.sidebar.number_input("Current Bankroll ($)", ...)` controls all Kelly stake examples.
+  * Kelly sizing table and per‑game “Example Bet” draw from `current_bankroll`.
+* Enhanced agentic logic in the games loop:
+  * Normalizes matchups via `format_matchup_attribution(away, home)` to `"{Away} @ {Home}"` (e.g. `"Oregon @ Gonzaga"`) for 1:1 tracking with attribution and alerts.
+  * Detects “VALUE PEAK REACHED” in:
+    * `model.agent_reasoning`, `model.Explanation`/`model.explanation`, and `model.confidence_reason`, plus top‑level `g.agent_reasoning`.
+  * When present:
+    * Appends a prominent `🔥 TOP AGENT PICK` badge to the expander label.
+    * Renders a high‑contrast green bar (“🔥 TOP AGENT PICK — VALUE PEAK REACHED”) above the game row.
+* Kelly sizing overlay:
+  * Uses execution regimes (Dual/Spread/Total Sweet Spot) and historical win rates to compute **full Kelly** as an example.
+  * Shows suggested bet sizing per game driven by the current bankroll, with clear “this is an example, not advice” copy.
+
+
+---
+# 📘 CHANGELOG — 2026-03-10
+
+## NBA backtest path and grading fixes; Vegas report input update
+
+* **eng/backtest_gen_runner.py — input path:** Backtest runner now resolves NBA multi-model input via `utils.io_helpers.get_model_runner_output_json_path("nba")`, so it reads from `data/nba/view/nba_games_multi_model_v1.json` (current contract) instead of the incorrect `data/nba/model/...` path.
+* **eng/backtest_gen_runner.py — market-line normalization:** In `_normalize_scores()`, spread and total lookups were extended with NBA game-state keys: `spread_home_last` and `total_last` as fallbacks when `market_spread_home`/`spread_home` and `market_total`/`total` are missing, so NBA games are no longer skipped as "Market lines missing."
+* **NBA backtest grading:** After the path and normalization fixes, NBA backtest runs grade a non-zero number of games successfully.
+* **r_101_report_backtest_vegas.py — input root:** Report now reads from `data/nba/backtests/`, selecting the latest `backtest_*` directory by mtime and `backtest_games.json` there, instead of the legacy root `eng/outputs/backtests`.
+* **r_101_report_backtest_vegas.py — schema compatibility:** Added minimal local fallbacks so the report works with the current backtest JSON (e.g. `home_score_final` → `home_points`, `away_score_final` → `away_points`; Vegas/authority fields use `spread_home_last`/`total_last` and `selected_*` where applicable) without changing pipeline flow.
+

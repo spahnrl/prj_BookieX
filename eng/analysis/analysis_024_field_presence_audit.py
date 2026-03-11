@@ -11,8 +11,8 @@ import json
 from pathlib import Path
 from collections import Counter
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-FINAL_PATH = PROJECT_ROOT / "data/view/final_game_view.json"
+from configs.leagues.league_nba import FINAL_VIEW_JSON_PATH
+FINAL_PATH = FINAL_VIEW_JSON_PATH
 
 
 def main():

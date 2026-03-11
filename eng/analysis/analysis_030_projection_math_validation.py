@@ -16,9 +16,8 @@ import json
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-
-MULTI_MODEL_PATH = PROJECT_ROOT / "data/view/nba_games_multi_model_v1.json"
+from configs.leagues.league_nba import MULTI_MODEL_JSON_PATH
+MULTI_MODEL_PATH = MULTI_MODEL_JSON_PATH
 
 
 def load_json(path):

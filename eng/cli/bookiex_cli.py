@@ -16,7 +16,9 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-DAILY_DIR = Path("data/daily")
+from utils.io_helpers import get_daily_view_output_dir
+
+DAILY_DIR = get_daily_view_output_dir("nba")
 
 
 # ------------------------------------------------------------

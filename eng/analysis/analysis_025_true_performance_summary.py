@@ -1,19 +1,28 @@
 # prj_BookieX/eng/analysis/analysis_025_true_performance_summary.py
 
 import json
+import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-BACKTEST_ROOT = PROJECT_ROOT / "eng/outputs/backtests"
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from utils.io_helpers import get_backtest_output_root
 
 WIN_PAYOUT = 0.909  # assuming -110
 LOSS_PAYOUT = -1.0
 
 
 def get_latest_backtest_file():
-    subdirs = [d for d in BACKTEST_ROOT.iterdir() if d.is_dir()]
+    backtest_root = get_backtest_output_root("nba")
+    subdirs = [d for d in backtest_root.iterdir() if d.is_dir()]
     latest_dir = max(subdirs, key=lambda d: d.stat().st_mtime)
     return latest_dir / "backtest_games.json"
+
+
+def _spread_result(g: dict) -> str:
+    return (g.get("selected_spread_result") or g.get("spread_result") or "").strip()
 
 
 def load_json(path):
@@ -30,7 +39,7 @@ def main():
 
     for g in games:
 
-        result = g.get("spread_result")
+        result = _spread_result(g) or None
 
         if result is None:
             skipped += 1

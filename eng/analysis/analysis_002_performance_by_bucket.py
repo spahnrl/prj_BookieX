@@ -1,16 +1,20 @@
 # eng/analysis_002_performance_by_bucket.py
 
 import json
+import sys
 import numpy as np
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-from pathlib import Path
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-BACKTEST_ROOT = PROJECT_ROOT / "eng/outputs/backtests"
+from utils.io_helpers import get_backtest_output_root
+
 
 def get_latest_backtest_file():
-    subdirs = [d for d in BACKTEST_ROOT.iterdir() if d.is_dir()]
+    backtest_root = get_backtest_output_root("nba")
+    subdirs = [d for d in backtest_root.iterdir() if d.is_dir()]
     if not subdirs:
         raise RuntimeError("No backtest directories found.")
 
@@ -22,7 +26,26 @@ def get_latest_backtest_file():
 
     return file_path
 
+
+def _spread_result(g: dict) -> str:
+    return (g.get("selected_spread_result") or g.get("spread_result") or "").strip()
+
+
+def _total_result(g: dict) -> str:
+    return (g.get("selected_total_result") or g.get("total_result") or "").strip()
+
+
+def _spread_edge(g: dict):
+    return g.get("selected_spread_edge") if g.get("selected_spread_edge") is not None else g.get("Spread Edge")
+
+
+def _total_edge(g: dict):
+    return g.get("selected_total_edge") if g.get("selected_total_edge") is not None else g.get("Total Edge")
+
+
 INPUT_PATH = get_latest_backtest_file()
+
+
 def bucket_label(value):
     if value < 1:
         return "0-1"
@@ -36,10 +59,11 @@ def bucket_label(value):
         return "8+"
 
 def evaluate_spread(g):
-    return g.get("spread_result") == "WIN"
+    return _spread_result(g) == "WIN"
+
 
 def evaluate_total(g):
-    return g.get("total_result") == "WIN"
+    return _total_result(g) == "WIN"
 
 def main():
     if not INPUT_PATH.exists():
@@ -51,16 +75,16 @@ def main():
     total_buckets = {}
 
     for g in games:
-        spread_edge = g.get("Spread Edge")
-        spread_result = g.get("spread_result")
+        spread_edge = _spread_edge(g)
+        spread_result = _spread_result(g)
 
         if spread_edge is not None:
             bucket = bucket_label(abs(float(spread_edge)))
             win = (spread_result == "WIN")
             spread_buckets.setdefault(bucket, []).append(win)
 
-        total_edge = g.get("Total Edge")
-        total_result = g.get("total_result")
+        total_edge = _total_edge(g)
+        total_result = _total_result(g)
 
         if total_edge is not None:
             bucket = bucket_label(abs(float(total_edge)))

@@ -4,9 +4,9 @@ import json
 from pathlib import Path
 from collections import defaultdict
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-INPUT_PATH = PROJECT_ROOT / "data/view/nba_games_multi_model_v1.json"
-BASELINE_INPUT = PROJECT_ROOT / "data/view/final_game_view.json"
+from configs.leagues.league_nba import MULTI_MODEL_JSON_PATH, FINAL_VIEW_JSON_PATH
+INPUT_PATH = MULTI_MODEL_JSON_PATH
+BASELINE_INPUT = FINAL_VIEW_JSON_PATH
 
 
 def load_multi():

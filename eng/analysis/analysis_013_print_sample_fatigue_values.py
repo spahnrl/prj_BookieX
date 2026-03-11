@@ -1,8 +1,9 @@
 import json
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-DATA_PATH = BASE_DIR / "data" / "derived" / "nba_games_with_fatigue.json"
+from configs.leagues.league_nba import DERIVED_DIR
+
+DATA_PATH = DERIVED_DIR / "nba_games_with_fatigue.json"
 
 
 def main():

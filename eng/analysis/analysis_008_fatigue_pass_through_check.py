@@ -1,10 +1,10 @@
 import json
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+from configs.leagues.league_nba import DERIVED_DIR, FINAL_VIEW_JSON_PATH
 
-FATIGUE_PATH = PROJECT_ROOT / "data/derived/nba_games_with_fatigue.json"
-FINAL_PATH = PROJECT_ROOT / "data/view/final_game_view.json"
+FATIGUE_PATH = DERIVED_DIR / "nba_games_with_fatigue.json"
+FINAL_PATH = FINAL_VIEW_JSON_PATH
 
 
 def load(path):

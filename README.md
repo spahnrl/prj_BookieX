@@ -253,7 +253,7 @@ BookieX enforces:
 ### Full Pipeline
 
 ```bash
-python 000_RUN_ALL.py
+python 000_RUN_ALL_NBA.py
 
 Launch Dashboard
 streamlit run eng/ui/bookiex_dashboard.py

@@ -1,5 +1,5 @@
 """
-000_RUN_ALL_NBA_NCAA.py
+000_RUN_ALL_NBA_NCAAM.py
 
 Purpose
 -------
@@ -14,8 +14,8 @@ Design goals
 
 Usage
 -----
-  python 000_RUN_ALL_NBA_NCAA.py
-  python 000_RUN_ALL_NBA_NCAA.py --start-date 20260301 --end-date 20260308
+  python 000_RUN_ALL_NBA_NCAAM.py
+  python 000_RUN_ALL_NBA_NCAAM.py --start-date 20260301 --end-date 20260308
 """
 
 import argparse
@@ -30,7 +30,7 @@ from time import perf_counter
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 
-NBA_RUNNER = PROJECT_ROOT / "000_RUN_ALL.py"
+NBA_RUNNER = PROJECT_ROOT / "000_RUN_ALL_NBA.py"
 NCAAM_RUNNER = PROJECT_ROOT / "000_RUN_ALL_NCAAM.py"
 
 

@@ -2,8 +2,9 @@ import json
 from pathlib import Path
 import collections
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-DATA_PATH = BASE_DIR / "data" / "derived" / "nba_games_with_b2b.json"
+from configs.leagues.league_nba import DERIVED_DIR
+
+DATA_PATH = DERIVED_DIR / "nba_games_with_b2b.json"
 
 def main():
     with open(DATA_PATH, "r", encoding="utf-8") as f:

@@ -9,6 +9,7 @@ import subprocess
 import sys
 import threading
 import os
+import webbrowser
 
 # ============================================================
 # COLOR SYSTEM
@@ -108,7 +109,7 @@ def run_command(command_list):
 
 def launch_run_all(extra_args=""):
     mode = "LAB" if lab_mode.get() else "LIVE"
-    command = [sys.executable, "000_RUN_ALL.py", "--mode", mode]
+    command = [sys.executable, "000_RUN_ALL_NBA_NCAAM.py", "--mode", mode]
 
     if extra_args:
         command += extra_args.split()
@@ -129,6 +130,14 @@ def launch_dashboard():
         daemon=True
     ).start()
 
+def update_online_dashboard():
+    command = [sys.executable, "tools/push_daily.py"]
+
+    threading.Thread(
+        target=run_command,
+        args=(command,),
+        daemon=True
+    ).start()
 
 # ============================================================
 # HEADER
@@ -140,7 +149,7 @@ tk.Label(
     font=FONT_HEADER,
     bg=DARK_GREEN,
     fg=WHITE
-).pack(pady=(0, 30))
+).pack(pady=(0, 20))
 
 # ============================================================
 # LAB MODE TOGGLE
@@ -202,7 +211,7 @@ def styled_button(title, args):
         cursor="hand2",
         command=lambda: launch_run_all(args)
     )
-    btn.pack(pady=(0, 15))
+    btn.pack(pady=(0, 10))
     return btn
 
 
@@ -215,6 +224,35 @@ styled_button("📊 Run Pipeline + Analysis", "--analysis")
 styled_button("🔍 Analysis Only", "--analysis-only")
 
 # ============================================================
+# ONLINE UPDATE SECTION
+# ============================================================
+
+tk.Label(
+    control_frame,
+    text="Online Deployment",
+    font=FONT_SECTION,
+    bg=DARK_GREEN,
+    fg=WHITE
+).pack(pady=(25, 8))
+
+update_online_btn = tk.Button(
+    control_frame,
+    text="🌐 Update Online Dashboard (Build + Push)",
+    width=36,
+    font=FONT_BUTTON,
+    bg=BUTTON_GREEN,
+    fg=WHITE,
+    activebackground=ACCENT_GREEN,
+    activeforeground=WHITE,
+    relief="flat",
+    bd=0,
+    cursor="hand2",
+    command=update_online_dashboard
+)
+update_online_btn.pack(pady=(0, 20))
+
+
+# ============================================================
 # DASHBOARD SECTION
 # ============================================================
 
@@ -224,11 +262,11 @@ tk.Label(
     font=FONT_SECTION,
     bg=DARK_GREEN,
     fg=WHITE
-).pack(pady=(40, 15))
+).pack(pady=(20, 8))
 
 dashboard_btn = tk.Button(
     control_frame,
-    text="📈 Launch Streamlit Dashboard",
+    text="📈 Launch Streamlit Dashboard (Local)",
     width=36,
     font=FONT_BUTTON,
     bg=BUTTON_GREEN,
@@ -240,7 +278,26 @@ dashboard_btn = tk.Button(
     cursor="hand2",
     command=launch_dashboard
 )
-dashboard_btn.pack(pady=(0, 20))
+dashboard_btn.pack(pady=(0, 10))
+
+def launch_online_dashboard():
+    webbrowser.open("https://bookiex.streamlit.app")
+
+online_dashboard_btn = tk.Button(
+    control_frame,
+    text="🌍 Launch Streamlit Dashboard (Online)",
+    width=36,
+    font=FONT_BUTTON,
+    bg=BUTTON_GREEN,
+    fg=WHITE,
+    activebackground=ACCENT_GREEN,
+    activeforeground=WHITE,
+    relief="flat",
+    bd=0,
+    cursor="hand2",
+    command=launch_online_dashboard
+)
+online_dashboard_btn.pack(pady=(0, 10))
 
 # ============================================================
 # START UI

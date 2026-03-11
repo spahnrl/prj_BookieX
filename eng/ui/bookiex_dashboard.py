@@ -3,17 +3,20 @@
 
 import streamlit as st
 import json
+from collections import defaultdict
 from pathlib import Path
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
 
 # --------------------------------------------------
-# CONFIG
+# CONFIG (NBA/NCAAM daily dirs: same contract as producer via io_helpers)
 # --------------------------------------------------
 
-NBA_DAILY_DIR = Path("data/daily")
-NCAAM_DAILY_DIR = Path("data/ncaam/daily")
+from utils.io_helpers import get_daily_view_output_dir
+
+NBA_DAILY_DIR = get_daily_view_output_dir("nba")
+NCAAM_DAILY_DIR = get_daily_view_output_dir("ncaam")
 
 NBA_HEADER_ICON = "assets/RS_JP_BookieX_v02.png"
 NCAAM_HEADER_ICON = "assets/RS_JP_BookieX_v04_COLLEGE.png"
@@ -59,13 +62,19 @@ else:
     file_pattern = "daily_view_ncaam_*_v1.json"
     header_icon_path = NCAAM_HEADER_ICON
 
-files = sorted(DAILY_DIR.glob(file_pattern))
+files = list(DAILY_DIR.glob(file_pattern))
 
 
-if league == "NBA":
-    date_map = {f.name.split("_")[2]: f for f in files}
-else:
-    date_map = {f.name.split("_")[3]: f for f in files}
+def _date_from_name(path: Path, is_ncaam: bool) -> str:
+    parts = path.name.split("_")
+    return parts[3] if is_ncaam else parts[2]
+
+
+# For each date, use the file with the latest OS modification time (e.g. 5 AM vs 5 PM run).
+by_date = defaultdict(list)
+for f in files:
+    by_date[_date_from_name(f, league == "NCAAM")].append(f)
+date_map = {d: max(flist, key=lambda p: p.stat().st_mtime) for d, flist in by_date.items()}
 
 # Sidebar: current bankroll for Kelly sizing (replaces fixed example bankroll)
 current_bankroll = st.sidebar.number_input(
@@ -464,6 +473,8 @@ selected_date = st.selectbox(
 )
 
 file_path = date_map[selected_date]
+# Verification: exact file loaded (visible in Streamlit logs).
+print(f"[BookieX Dashboard] Loading: {file_path.resolve()}")
 
 with open(file_path, "r", encoding="utf-8") as f:
     data = json.load(f)

@@ -4,7 +4,7 @@ analysis_015_confidence_backtest.py
 Evaluate historical win rate by confidence tier.
 
 Reads:
-    data/view/final_game_view.json
+    league_nba FINAL_VIEW_JSON_PATH (data/nba/view)
 
 Outputs:
     Console summary of:
@@ -16,8 +16,8 @@ import json
 from pathlib import Path
 from collections import defaultdict
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-INPUT_PATH = PROJECT_ROOT / "data/view/final_game_view.json"
+from configs.leagues.league_nba import FINAL_VIEW_JSON_PATH
+INPUT_PATH = FINAL_VIEW_JSON_PATH
 
 
 def load_json(path):

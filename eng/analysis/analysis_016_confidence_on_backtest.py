@@ -6,6 +6,7 @@ to historical backtest games and measure win rate by tier.
 """
 
 import json
+import sys
 from pathlib import Path
 from collections import defaultdict
 
@@ -14,7 +15,10 @@ from collections import defaultdict
 # ============================================================
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-BACKTEST_DIR = PROJECT_ROOT / "eng/outputs/backtests"
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from utils.io_helpers import get_backtest_output_root
 
 # ============================================================
 # HYBRID CLASSIFIER (Embedded for Stability)
@@ -78,15 +82,19 @@ def load_json(path):
         return json.load(f)
 
 
+def _parlay_result(g: dict) -> str:
+    return (g.get("selected_parlay_result") or g.get("parlay_result") or "").strip()
+
+
 def get_latest_backtest_folder():
     """
     Return most recent backtest folder
     that actually contains backtest_games.json
     """
-
+    backtest_root = get_backtest_output_root("nba")
     valid_folders = []
 
-    for folder in BACKTEST_DIR.iterdir():
+    for folder in backtest_root.iterdir():
         if not folder.is_dir():
             continue
 
@@ -118,12 +126,12 @@ def main():
 
     for game in games:
 
-        models = game.get("models", {})
+        models = game.get("model_results") or game.get("models") or {}
         tier = classify_game(models)
 
         tier_counts[tier] += 1
 
-        if game.get("parlay_result") == "WIN":
+        if _parlay_result(game) == "WIN":
             tier_wins[tier] += 1
 
     print("\n=== CONFIDENCE BACKTEST (HISTORICAL) ===\n")

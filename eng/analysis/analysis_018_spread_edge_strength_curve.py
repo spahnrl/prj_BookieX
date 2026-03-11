@@ -6,12 +6,17 @@ Backtest-only version.
 """
 
 import json
+import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-FINAL_PATH = PROJECT_ROOT / "data/view/final_game_view.json"
-BACKTEST_ROOT = PROJECT_ROOT / "eng/outputs/backtests"
+from configs.leagues.league_nba import FINAL_VIEW_JSON_PATH
+from utils.io_helpers import get_backtest_output_root
+
+FINAL_PATH = FINAL_VIEW_JSON_PATH
 
 
 def load_json(path):
@@ -20,7 +25,8 @@ def load_json(path):
 
 
 def get_latest_backtest():
-    subdirs = [d for d in BACKTEST_ROOT.iterdir() if d.is_dir()]
+    backtest_root = get_backtest_output_root("nba")
+    subdirs = [d for d in backtest_root.iterdir() if d.is_dir()]
     latest = max(subdirs, key=lambda d: d.stat().st_mtime)
     return latest / "backtest_games.json"
 

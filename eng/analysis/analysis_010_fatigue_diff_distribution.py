@@ -1,9 +1,9 @@
 import json
-from pathlib import Path
 import statistics
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-DATA_PATH = BASE_DIR / "data" / "view" / "final_game_view.json"
+from configs.leagues.league_nba import FINAL_VIEW_JSON_PATH
+
+DATA_PATH = FINAL_VIEW_JSON_PATH
 
 def main():
     with open(DATA_PATH, "r", encoding="utf-8") as f:

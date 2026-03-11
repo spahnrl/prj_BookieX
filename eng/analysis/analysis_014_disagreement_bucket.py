@@ -3,9 +3,9 @@
 import json
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-MULTI_PATH = PROJECT_ROOT / "data/view/nba_games_multi_model_v1.json"
-BASELINE_PATH = PROJECT_ROOT / "data/view/final_game_view.json"
+from configs.leagues.league_nba import MULTI_MODEL_JSON_PATH, FINAL_VIEW_JSON_PATH
+MULTI_PATH = MULTI_MODEL_JSON_PATH
+BASELINE_PATH = FINAL_VIEW_JSON_PATH
 
 BASELINE_MODEL = "Joel_Baseline_v1"
 FATIGUE_MODEL = "FatiguePlus_v3"

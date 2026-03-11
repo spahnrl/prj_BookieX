@@ -19,12 +19,10 @@ It verifies:
 import json
 from pathlib import Path
 
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-
-MULTI_MODEL_PATH = PROJECT_ROOT / "data/view/nba_games_multi_model_v1.json"
-FINAL_VIEW_PATH = PROJECT_ROOT / "data/view/final_game_view.json"
-BACKTEST_ROOT = PROJECT_ROOT / "eng/outputs/backtests"
+from configs.leagues.league_nba import MULTI_MODEL_JSON_PATH, FINAL_VIEW_JSON_PATH
+MULTI_MODEL_PATH = MULTI_MODEL_JSON_PATH
+FINAL_VIEW_PATH = FINAL_VIEW_JSON_PATH
+BACKTEST_ROOT = Path(__file__).resolve().parents[2] / "eng/outputs/backtests"
 
 
 def load_json(path):

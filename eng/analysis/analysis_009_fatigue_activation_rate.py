@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-INPUT_PATH = PROJECT_ROOT / "data/view/final_game_view.json"
+from configs.leagues.league_nba import FINAL_VIEW_JSON_PATH
+INPUT_PATH = FINAL_VIEW_JSON_PATH
 
 def main():
     with INPUT_PATH.open("r", encoding="utf-8") as f:
