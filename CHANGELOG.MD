@@ -7199,3 +7199,17 @@ Cleaned up the recommended `000_RUN_ALL_NCAAM.py` step order to reflect the repa
 * **r_101_report_backtest_vegas.py — input root:** Report now reads from `data/nba/backtests/`, selecting the latest `backtest_*` directory by mtime and `backtest_games.json` there, instead of the legacy root `eng/outputs/backtests`.
 * **r_101_report_backtest_vegas.py — schema compatibility:** Added minimal local fallbacks so the report works with the current backtest JSON (e.g. `home_score_final` → `home_points`, `away_score_final` → `away_points`; Vegas/authority fields use `spread_home_last`/`total_last` and `selected_*` where applicable) without changing pipeline flow.
 
+---
+# 📘 CHANGELOG — 2026-03-11
+
+## Repo map, calibration/bias-report migration, analysis script alignment
+
+* **REPO_MAP.md:** Added repo map at project root (purpose, entrypoints, shared/NBA/NCAAM scripts, artifact paths, naming notes, path cautions, cleanup candidates). Later added `000_bookiex_launcher_ui.py` as a primary entrypoint.
+* **NBA-only module docstrings:** Added top-of-file comments to `eng/daily/build_daily_view.py`, `eng/execution/build_execution_overlay.py`, `r_101_report_backtest_vegas.py` stating NBA-only, role, and caller (no logic changes).
+* **Calibration migration:** Moved calibration outputs from `eng/calibration/` to `data/nba/calibration/` and `data/ncaam/calibration/`. Updated `configs/leagues/league_nba.py`, `configs/leagues/league_ncaam.py`, `eng/calibration/build_calibration_snapshot.py`, `eng/daily/build_daily_view.py`. Canonical paths: `data/nba/calibration/calibration_snapshot_v1.json`, `data/ncaam/calibration/calibration_snapshot_ncaam_v1.json`.
+* **build_calibration_snapshot.py:** Added project-root `sys.path` bootstrap so the script runs from repo root without `ModuleNotFoundError: utils`.
+* **eng/analysis_gen_manager.py:** Repointed backtest input from `eng/outputs/backtests` to `data/{league}/backtests` via `get_backtest_output_root(league)`.
+* **eng/analysis/analysis_003_bias_detection.py, analysis_018_spread_edge_strength_curve.py:** Already used canonical backtest root; analysis_003 updated to use current backtest schema (`selected_parlay_result`, `selected_spread_result`, `selected_total_result`, etc.) with fallback to legacy keys to fix `KeyError: parlay_result`.
+* **eng/analysis/analysis_002, 025, 016, 017:** Repointed to `data/nba/backtests` via `get_backtest_output_root("nba")` and added `selected_*` / legacy field fallbacks so scripts work with current backtest JSON.
+* **Bias report migration:** Default bias report output moved from `eng/outputs/analysis/` to `data/{league}/reports/bias_report_{league}.json`. Updated `eng/analysis_gen_manager.py` (writer), `utils/decorators.py`, `eng/execution/live_monitor_agent.py` (NCAAM readers). `--output` override unchanged.
+
