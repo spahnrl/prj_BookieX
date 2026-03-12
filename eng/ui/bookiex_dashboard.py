@@ -1,10 +1,16 @@
 # bookiex_dashboard.py
 # Executive View — Correct Field Mapping
 
+import sys
+from pathlib import Path
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
 import streamlit as st
 import json
 from collections import defaultdict
-from pathlib import Path
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
