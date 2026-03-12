@@ -82,6 +82,14 @@ for f in files:
     by_date[_date_from_name(f, league == "NCAAM")].append(f)
 date_map = {d: max(flist, key=lambda p: p.stat().st_mtime) for d, flist in by_date.items()}
 
+if not date_map:
+    st.error(
+        f"No daily view data for **{league}**. "
+        f"Expected directory: `{DAILY_DIR.resolve()}`. "
+        "Run the pipeline (and build daily view) locally, or deploy with daily view JSON files present."
+    )
+    st.stop()
+
 # Sidebar: current bankroll for Kelly sizing (replaces fixed example bankroll)
 current_bankroll = st.sidebar.number_input(
     "Current Bankroll ($)",
