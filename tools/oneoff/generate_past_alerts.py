@@ -11,7 +11,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 import requests
 
-NBA_VIEW = PROJECT_ROOT / "data" / "nba" / "view" / "final_game_view.json"
+NBA_VIEW = PROJECT_ROOT / "data" / "nba" / "view" / "final_game_view_nba.json"
 
 def backfill_test_alert():
     if not NBA_VIEW.exists():

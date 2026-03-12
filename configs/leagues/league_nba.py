@@ -18,7 +18,7 @@ VIEW_DIR = DATA_ROOT / "view"
 # NBA daily output is canonical under data/nba/daily. Legacy data/daily is not part of the active contract.
 DAILY_DIR = DATA_ROOT / "daily"
 CALIBRATION_DIR = DATA_ROOT / "calibration"
-CALIBRATION_SNAPSHOT_PATH = CALIBRATION_DIR / "calibration_snapshot_v1.json"
+CALIBRATION_SNAPSHOT_PATH = CALIBRATION_DIR / "calibration_snapshot_nba_v1.json"
 
 # Derived: league-scoped root. All NBA derived artifacts live here.
 DERIVED_DIR = PROJECT_ROOT / "data" / "nba" / "derived"
@@ -33,7 +33,7 @@ CANONICAL_CSV_PATH = VIEW_DIR / "nba_games_canonical.csv"
 CANONICAL_JSON_PATH = PROCESSED_DIR / "nba_games_canonical.json"
 GAME_LEVEL_CSV_PATH = VIEW_DIR / "nba_games_game_level.csv"
 GAME_LEVEL_JSON_PATH = VIEW_DIR / "nba_games_game_level.json"
-FINAL_VIEW_JSON_PATH = VIEW_DIR / "final_game_view.json"
+FINAL_VIEW_JSON_PATH = VIEW_DIR / "final_game_view_nba.json"
 FINAL_VIEW_CSV_PATH = VIEW_DIR / "final_game_view.csv"
 MULTI_MODEL_JSON_PATH = VIEW_DIR / "nba_games_multi_model_v1.json"
 MULTI_MODEL_CSV_PATH = VIEW_DIR / "nba_games_multi_model_v1.csv"

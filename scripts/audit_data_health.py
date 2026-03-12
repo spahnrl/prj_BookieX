@@ -8,7 +8,7 @@ Audit NBA and NCAAM data pipeline for "State of Truth" backtest readiness.
 - Join failure analysis: raw schedule game IDs missing from final view
 
 Authority files:
-  data/nba/view/final_game_view.json
+  data/nba/view/final_game_view_nba.json
   data/ncaam/view/final_game_view_ncaam.json
   f_gen_041_add_betting_lines.py (join logic)
 """
@@ -24,7 +24,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 # Authority paths
 NBA_RAW_SCHEDULE = PROJECT_ROOT / "data" / "nba" / "raw" / "nba_schedule.json"
-NBA_FINAL_VIEW = PROJECT_ROOT / "data" / "nba" / "view" / "final_game_view.json"
+NBA_FINAL_VIEW = PROJECT_ROOT / "data" / "nba" / "view" / "final_game_view_nba.json"
 NCAAM_RAW_SCHEDULE_CSV = PROJECT_ROOT / "data" / "ncaam" / "raw" / "ncaam_schedule_raw.csv"
 NCAAM_RAW_SCHEDULE_JSON = PROJECT_ROOT / "data" / "ncaam" / "raw" / "ncaam_schedule_raw_latest.json"
 NCAAM_FINAL_VIEW = PROJECT_ROOT / "data" / "ncaam" / "view" / "final_game_view_ncaam.json"
