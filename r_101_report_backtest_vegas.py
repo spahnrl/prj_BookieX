@@ -13,7 +13,7 @@ from pathlib import Path
 from eng.agent_stub import agent_stub_overrides
 from configs.leagues.league_nba import VIEW_DIR
 
-BACKTEST_ROOT = Path("data/nba/backtests")
+BACKTEST_ROOT = Path("../../data/nba/backtests")
 OUT_CSV = VIEW_DIR / "report_backtest_vegas.csv"
 
 def get_latest_json():
