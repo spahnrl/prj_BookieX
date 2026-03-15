@@ -8,6 +8,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+import re
 import streamlit as st
 import json
 from collections import defaultdict
@@ -19,7 +20,7 @@ from zoneinfo import ZoneInfo
 # CONFIG (NBA/NCAAM daily dirs: same contract as producer via io_helpers)
 # --------------------------------------------------
 
-from utils.io_helpers import get_daily_view_output_dir
+from utils.io_helpers import get_daily_view_output_dir, get_backtest_output_root
 
 NBA_DAILY_DIR = get_daily_view_output_dir("nba")
 NCAAM_DAILY_DIR = get_daily_view_output_dir("ncaam")
@@ -43,14 +44,22 @@ ATTRIBUTION_REPORT_PATH = PROJECT_ROOT / "logs" / "attribution_report.json"
 # Backtest reference date shown to user
 EXECUTION_OVERLAY_LAST_UPDATED = "3/6/2025"
 
-# Execution overlay reference table shown in UI
+# Execution overlay reference table shown in UI (fallback when no JSON)
+BUCKET_EXPLANATIONS_STATIC = {
+    "Dual Sweet Spot": "Spread edge 1-4 pts, total edge 1-4 pts, total 225-242, spread line <10",
+    "Spread Sweet Spot": "Spread edge 1-4 pts, spread line <12",
+    "Total Sweet Spot": "Total edge 1-4 pts, total 225-242, spread line <12",
+    "Neutral": "Outside sweet spot and avoid bands",
+    "Avoid": "Spread edge >6 or spread >=12, or total edge >8 or total <225",
+    "All Games": "All graded games",
+}
 EXECUTION_OVERLAY_PERFORMANCE = [
-    {"Bucket": "Dual Sweet Spot", "Games": 42, "Win%": 0.571, "ROI": 0.091},
-    {"Bucket": "Spread Sweet Spot", "Games": 108, "Win%": 0.546, "ROI": 0.052},
-    {"Bucket": "Total Sweet Spot", "Games": 62, "Win%": 0.548, "ROI": 0.047},
-    {"Bucket": "Neutral", "Games": 50, "Win%": 0.520, "ROI": 0.033},
-    {"Bucket": "Avoid", "Games": 214, "Win%": 0.486, "ROI": -0.068},
-    {"Bucket": "All Games", "Games": 476, "Win%": 0.519, "ROI": -0.001},
+    {"Bucket": "Dual Sweet Spot", "Games": 42, "Win%": 0.571, "ROI": 0.091, "Explanation": BUCKET_EXPLANATIONS_STATIC["Dual Sweet Spot"]},
+    {"Bucket": "Spread Sweet Spot", "Games": 108, "Win%": 0.546, "ROI": 0.052, "Explanation": BUCKET_EXPLANATIONS_STATIC["Spread Sweet Spot"]},
+    {"Bucket": "Total Sweet Spot", "Games": 62, "Win%": 0.548, "ROI": 0.047, "Explanation": BUCKET_EXPLANATIONS_STATIC["Total Sweet Spot"]},
+    {"Bucket": "Neutral", "Games": 50, "Win%": 0.520, "ROI": 0.033, "Explanation": BUCKET_EXPLANATIONS_STATIC["Neutral"]},
+    {"Bucket": "Avoid", "Games": 214, "Win%": 0.486, "ROI": -0.068, "Explanation": BUCKET_EXPLANATIONS_STATIC["Avoid"]},
+    {"Bucket": "All Games", "Games": 476, "Win%": 0.519, "ROI": -0.001, "Explanation": BUCKET_EXPLANATIONS_STATIC["All Games"]},
 ]
 
 # --------------------------------------------------
@@ -207,6 +216,65 @@ def safe_num(value, default=0.0):
         return float(value)
     except Exception:
         return default
+
+def _execution_overlay_backtest_date(league_ui: str) -> str:
+    """Last updated date for Execution Overlay Backtest Reference from latest backtest run; falls back to static constant."""
+    try:
+        league_lower = (league_ui or "").strip().lower()
+        if league_lower not in ("nba", "ncaam"):
+            return EXECUTION_OVERLAY_LAST_UPDATED
+        root = get_backtest_output_root(league_lower)
+        if not root.exists():
+            return EXECUTION_OVERLAY_LAST_UPDATED
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return EXECUTION_OVERLAY_LAST_UPDATED
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        summary_path = latest / "backtest_summary.json"
+        if not summary_path.exists():
+            return EXECUTION_OVERLAY_LAST_UPDATED
+        with open(summary_path, "r", encoding="utf-8") as f:
+            summary = json.load(f)
+        ts = (summary or {}).get("generated_at_utc") or ""
+        if not ts:
+            return EXECUTION_OVERLAY_LAST_UPDATED
+        dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+        return f"{dt.month}/{dt.day}/{dt.year}"
+    except Exception:
+        return EXECUTION_OVERLAY_LAST_UPDATED
+
+
+def _load_execution_overlay_performance(league_ui: str) -> tuple[list[dict] | None, str | None]:
+    """Load execution_overlay_performance.json from latest backtest dir for league. Returns (buckets, date_str) or (None, None)."""
+    try:
+        league_lower = (league_ui or "").strip().lower()
+        if league_lower not in ("nba", "ncaam"):
+            return None, None
+        root = get_backtest_output_root(league_lower)
+        if not root.exists():
+            return None, None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None, None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        perf_path = latest / "execution_overlay_performance.json"
+        if not perf_path.exists():
+            return None, None
+        with open(perf_path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+        buckets = payload.get("buckets")
+        if not buckets or not isinstance(buckets, list):
+            return None, None
+        ts = (payload or {}).get("generated_at_utc") or ""
+        if ts:
+            dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            date_str = f"{dt.month}/{dt.day}/{dt.year}"
+        else:
+            date_str = None
+        return buckets, date_str
+    except Exception:
+        return None, None
+
 
 def format_odds_snapshot_cst(odds_snapshot_utc: str) -> str:
     if not odds_snapshot_utc:
@@ -495,6 +563,55 @@ with open(file_path, "r", encoding="utf-8") as f:
 
 games = data.get("games", [])
 
+# --------------------------------------------------
+# AGENT OVERLAY (read-only): load by league, join by game_id
+# --------------------------------------------------
+_overlay_path = PROJECT_ROOT / "data" / ("ncaam" if league == "NCAAM" else "nba") / "view" / (
+    "ncaam_agent_overlay.json" if league == "NCAAM" else "nba_agent_overlay.json"
+)
+_overlay_by_game_id = {}
+_overlay_data = None
+if _overlay_path.exists():
+    try:
+        with open(_overlay_path, "r", encoding="utf-8") as f:
+            _overlay_data = json.load(f)
+        _overlay_games = _overlay_data.get("games") or []
+        for _og in _overlay_games:
+            _gid = _og.get("game_id")
+            if _gid is not None and str(_gid).strip():
+                _overlay_by_game_id[str(_gid).strip()] = _og
+    except Exception:
+        pass
+
+
+def _overlay_slate_date_from_source_artifact(overlay_root: dict) -> str | None:
+    """Extract slate date (YYYY-MM-DD) from overlay source_artifact path. Returns None if missing or unparseable."""
+    if not overlay_root or not isinstance(overlay_root, dict):
+        return None
+    path_str = overlay_root.get("source_artifact") or ""
+    if not path_str or not isinstance(path_str, str):
+        return None
+    # Basename: daily_view_2026-03-12_v1.json or daily_view_ncaam_2026-03-12_v1.json
+    name = Path(path_str).name
+    match = re.search(r"(\d{4}-\d{2}-\d{2})", name)
+    return match.group(1) if match else None
+
+
+_overlay_status = "missing"  # missing | match | mismatch | unknown
+_overlay_slate_date = None
+if not _overlay_path.exists():
+    _overlay_status = "missing"
+elif _overlay_data is None:
+    _overlay_status = "unknown"
+else:
+    _overlay_slate_date = _overlay_slate_date_from_source_artifact(_overlay_data)
+    if _overlay_slate_date is None:
+        _overlay_status = "unknown"
+    elif _overlay_slate_date == selected_date:
+        _overlay_status = "match"
+    else:
+        _overlay_status = "mismatch"
+
 if not games:
     st.warning("No games available.")
     st.stop()
@@ -509,6 +626,16 @@ for g in games:
 last_odds_update_cst = format_odds_snapshot_cst(odds_snapshot_last_utc)
 
 st.markdown(f"**Last Odds Update:** {last_odds_update_cst}")
+
+# Agent overlay vs selected slate: match / missing / stale (read-only status)
+if _overlay_status == "match":
+    st.caption(f"Agent overlay: matches selected slate ({selected_date})")
+elif _overlay_status == "missing":
+    st.caption("Agent overlay: not loaded")
+elif _overlay_status == "mismatch":
+    st.caption(f"Agent overlay: built for **{_overlay_slate_date}**; selected slate is **{selected_date}** — may be stale")
+else:
+    st.caption("Agent overlay: loaded; slate date unknown — may not match selected slate")
 
 # --------------------------------------------------
 # KELLY BET SIZING MODEL
@@ -577,11 +704,18 @@ with st.expander("🍀 KBX Bet Sizing Strateg'ery 🌵", expanded=False):
     )
 
     st.markdown("---")
+    _overlay_buckets, _overlay_date = _load_execution_overlay_performance(league)
+    _overlay_table = _overlay_buckets if _overlay_buckets else EXECUTION_OVERLAY_PERFORMANCE
+    _overlay_updated = (_overlay_date if _overlay_date else None) or _execution_overlay_backtest_date(league)
     st.markdown(
         f"**Execution Overlay Backtest Reference — Last Updated:** "
-        f"{EXECUTION_OVERLAY_LAST_UPDATED}"
+        f"{_overlay_updated}"
     )
-    st.table(EXECUTION_OVERLAY_PERFORMANCE)
+    if league == "NCAAM" and not _overlay_buckets:
+        st.caption(
+            "NCAAM backtest not run or no overlay JSON. Run backtest_gen_runner and analysis_039 (--league ncaam) for NCAAM-specific metrics."
+        )
+    st.table(_overlay_table)
 
 
 # --------------------------------------------------
@@ -724,6 +858,10 @@ for g in games:
     # Matchup key: normalized to match attribution report for 1:1 tracking (full "Away @ Home")
     matchup_label = format_matchup_attribution(away, home)
 
+    # Agent overlay lookup (used for compact summary at top and detail section at bottom)
+    _game_id = (identity.get("game_id") if isinstance(identity, dict) else None) or g.get("game_id")
+    _agent_row = _overlay_by_game_id.get(str(_game_id).strip(), None) if _game_id else None
+
     expander_label = (
         f"{matchup_label}: Take {spread_text} / {total_text}"
         f"{badge} — {tier} | {parlay_pct}%"
@@ -738,6 +876,19 @@ for g in games:
     with st.expander(expander_label, expanded=False):
         st.write(f"Tipoff: {identity.get('tip_time_cst', 'N/A')}")
         st.write(f"Market: {spread_line} | Total {total_line}")
+
+        # Compact agent summary (read-only); visible at top of expander for quick scan
+        if _agent_row:
+            _pick = _agent_row.get("agent_pick") or "—"
+            _agrees = _agent_row.get("agent_agrees_with_baseline")
+            _agrees_txt = "Yes" if _agrees is True else ("No" if _agrees is False else "—")
+            _action = _agent_row.get("agent_recommended_action") or "—"
+            _override = "Yes" if _agent_row.get("agent_override_applied") else "No"
+            st.caption(
+                f"**Agent (read-only):** Pick: {_pick} | Agrees: {_agrees_txt} | Action: {_action} | Override: {_override}"
+            )
+        else:
+            st.caption("**Agent (read-only):** — (no overlay for this game)")
 
         st.markdown(f"### 🔥 Signal Strength — {tier}")
 
@@ -915,6 +1066,22 @@ for g in games:
                     context_flags = model_data.get("context_flags")
                     if context_flags:
                         st.write("Context Flags:", context_flags)
+
+        # Agent overlay (read-only): detail section (compact summary is at top of expander)
+        st.subheader("Agent (read-only)")
+        if _agent_row:
+            st.write("Agent Pick:", _agent_row.get("agent_pick"), f"({_agent_row.get('agent_pick_type', '')})")
+            st.write("Agrees with baseline:", _agent_row.get("agent_agrees_with_baseline"))
+            st.write("Agent reasoning:", _agent_row.get("agent_reasoning") or "—")
+            st.write("Recommended action:", _agent_row.get("agent_recommended_action") or "—")
+            if _agent_row.get("agent_override_applied"):
+                st.write("Override applied: Yes")
+                if _agent_row.get("agent_override_reason"):
+                    st.write("Override reason:", _agent_row.get("agent_override_reason"))
+            else:
+                st.write("Override applied: No")
+        else:
+            st.caption("No overlay data for this game.")
 
 # --------------------------------------------------
 # GAMES LOOP END

@@ -7314,3 +7314,15 @@ Cleaned up the recommended `000_RUN_ALL_NCAAM.py` step order to reflect the repa
 - **model_gen_0051_runner.py (NCAAM):** Merged avg_score features from `data/ncaam/model/ncaam_model_input_v1.csv` into games loaded from 041 before running the model registry. Fields merged: `home_avg_points_for`, `home_avg_points_against`, `away_avg_points_for`, `away_avg_points_against`, and optionally `home_games_in_history` / `away_games_in_history`. Games already containing non-empty values are not overwritten. Log counts added: enriched (all four avg fields present) and still_missing_avg.
 - March 13 NCAAM daily view now produces actual spread/total picks and non-IGNORE confidence tiers for games that have both lines (041) and avg features (001/099). Active rows and daily rows with picks restored.
 - Remaining optional follow-up: coverage (more games in feature table or run order), ranking/presentation polish; odds-feed coverage limits for some matchups remain a data constraint, not a pipeline bug.
+
+---
+## 2026-03-15 — NCAAM backtest score normalization (backtest_gen_runner)
+
+- **eng/backtest/backtest_gen_runner.py:** In `_normalize_scores`, added fallbacks for NCAAM-typical score keys so games with `box_home_score`/`box_away_score` or `schedule_home_score`/`schedule_away_score` (and no `home_points`/`away_points`) are still graded. Primary keys (`home_score`, `home_points`, `away_score`, `away_points`) unchanged; NBA behavior preserved. Fixes empty or inconsistent NCAAM `backtest_games.json` when multi-model input uses those keys.
+
+---
+## 2026-03-15 — NCAAM Execution Overlay independent of NBA
+
+- **eng/analysis/analysis_039_execution_overlay_performance.py:** When league is NCAAM, backtest games missing `execution_overlay` are now filled using NCAAM overlay logic (`get_ncaam_execution_overlay_from_edges` / `data/ncaam/reports/bias_report_ncaam.json`) instead of NBA's `compute_overlay_from_edges`. NBA path unchanged. Added float coercion for spread/total edge values from backtest rows to avoid TypeError when values are strings.
+- **eng/ui/bookiex_dashboard.py:** When league NCAAM is selected and no NCAAM `execution_overlay_performance.json` exists, a caption prompts running `backtest_gen_runner` and `analysis_039 --league ncaam` for league-specific metrics.
+- NCAAM backtest and `analysis_039 --league ncaam` were run successfully; `execution_overlay_performance.json` written to latest NCAAM backtest dir.
