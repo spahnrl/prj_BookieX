@@ -37,9 +37,8 @@ TOTAL_SWEET_SPOT_WIN_PCT = 0.548
 # Standard -110 odds
 KELLY_PAYOUT_RATIO = 100 / 110
 
-# Project root for logs/attribution_report.json
+# Project root; attribution report path is league-specific (see _attribution_report_path_for_league).
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-ATTRIBUTION_REPORT_PATH = PROJECT_ROOT / "logs" / "attribution_report.json"
 
 # Backtest reference date shown to user
 EXECUTION_OVERLAY_LAST_UPDATED = "3/6/2025"
@@ -146,20 +145,27 @@ with col2:
         unsafe_allow_html=True
     )
 
-# Attribution ingestion: full report for System Health bar
-def load_attribution_report() -> dict | None:
-    """Read logs/attribution_report.json. Returns full report dict or None."""
-    if not ATTRIBUTION_REPORT_PATH.exists():
+# Attribution ingestion: full report for System Health bar (league-specific path).
+def _attribution_report_path_for_league(league_ui: str) -> Path:
+    """Return logs/attribution_report_<league>.json for the selected league."""
+    name = "attribution_report_ncaam.json" if league_ui == "NCAAM" else "attribution_report_nba.json"
+    return PROJECT_ROOT / "logs" / name
+
+
+def load_attribution_report(path: Path) -> dict | None:
+    """Read attribution report JSON. Returns full report dict or None."""
+    if not path.exists():
         return None
     try:
-        with open(ATTRIBUTION_REPORT_PATH, "r", encoding="utf-8") as f:
+        with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
         return data if isinstance(data, dict) else None
     except Exception:
         return None
 
+
 # System Health bar: Strategy B (Kelly) ROI% + Total P&L; green if positive, red if negative
-_attribution = load_attribution_report()
+_attribution = load_attribution_report(_attribution_report_path_for_league(league))
 _sb = (_attribution or {}).get("strategy_b_kelly") or {}
 _kelly_roi = _sb.get("yield_roi_pct")
 _kelly_pnl = _sb.get("total_pnl")
