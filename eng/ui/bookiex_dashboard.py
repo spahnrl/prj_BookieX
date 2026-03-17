@@ -449,7 +449,7 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
 
     st.markdown("---")
 
-    st.markdown("## 🍀 Kelly Bet Sizing Strategy")
+    st.markdown("## 🍀 Kelly BookieX (KBX) Bet Sizing System")
 
     st.write(
         "The Kelly section shows a **full Kelly example** using historical win rates from the current execution regime."
@@ -693,7 +693,7 @@ else:
 # KELLY BET SIZING MODEL
 # --------------------------------------------------
 
-with st.expander("🍀 KBX Bet Sizing Strateg'ery 🌵", expanded=False):
+with st.expander("🍀 KBX Bet Sizing System 🌵", expanded=False):
     if _overlay_buckets is None:
         st.warning(
             "Dynamic overlay data is unavailable for the latest backtest. "
