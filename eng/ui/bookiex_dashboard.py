@@ -164,44 +164,44 @@ def load_attribution_report(path: Path) -> dict | None:
         return None
 
 
-# System Health bar: Strategy B (Kelly) ROI% + Total P&L; green if positive, red if negative
-_attribution = load_attribution_report(_attribution_report_path_for_league(league))
-_sb = (_attribution or {}).get("strategy_b_kelly") or {}
-_kelly_roi = _sb.get("yield_roi_pct")
-_kelly_pnl = _sb.get("total_pnl")
-if _kelly_roi is not None and _kelly_pnl is not None:
-    _roi_color = "#2ecc71" if (_kelly_roi or 0) >= 0 else "#e74c3c"
-    _pnl_color = "#2ecc71" if (_kelly_pnl or 0) >= 0 else "#e74c3c"
-    st.markdown(
-        f"<div style='background: linear-gradient(90deg, #0f1c2e 0%, #1f2f4a 100%); "
-        f"padding: 12px 18px; border-radius: 8px; margin-bottom: 16px;'>"
-        f"<strong style='color: #fff;'>System Health</strong> — "
-        f"<span style='color: #7fdbff;'>Strategy B (Kelly) ROI%</span>: "
-        f"<strong style='color: {_roi_color};'>{_kelly_roi:+.2f}%</strong> &nbsp;|&nbsp; "
-        f"<span style='color: #7fdbff;'>Total P&L</span>: "
-        f"<strong style='color: {_pnl_color};'>${_kelly_pnl:+,.2f}</strong>"
-        f"</div>",
-        unsafe_allow_html=True,
-    )
-elif _kelly_roi is not None:
-    _roi_color = "#2ecc71" if (_kelly_roi or 0) >= 0 else "#e74c3c"
-    st.markdown(
-        f"<div style='background: linear-gradient(90deg, #0f1c2e 0%, #1f2f4a 100%); "
-        f"padding: 12px 18px; border-radius: 8px; margin-bottom: 16px;'>"
-        f"<strong style='color: #fff;'>System Health</strong> — "
-        f"<span style='color: #7fdbff;'>Strategy B (Kelly) ROI%</span>: "
-        f"<strong style='color: {_roi_color};'>{_kelly_roi:+.2f}%</strong>"
-        f"</div>",
-        unsafe_allow_html=True,
-    )
-else:
-    st.markdown(
-        "<div style='background: #2d2d2d; padding: 12px 18px; border-radius: 8px; margin-bottom: 16px;'>"
-        "<strong style='color: #fff;'>System Health</strong> — "
-        "<span style='color: #888;'>Strategy B (Kelly) ROI% / Total P&L: n/a</span> "
-        "(run analysis_041_agent_attribution.py to populate)</div>",
-        unsafe_allow_html=True,
-    )
+# # System Health bar: Strategy B (Kelly) ROI% + Total P&L; green if positive, red if negative
+# _attribution = load_attribution_report(_attribution_report_path_for_league(league))
+# _sb = (_attribution or {}).get("strategy_b_kelly") or {}
+# _kelly_roi = _sb.get("yield_roi_pct")
+# _kelly_pnl = _sb.get("total_pnl")
+# if _kelly_roi is not None and _kelly_pnl is not None:
+#     _roi_color = "#2ecc71" if (_kelly_roi or 0) >= 0 else "#e74c3c"
+#     _pnl_color = "#2ecc71" if (_kelly_pnl or 0) >= 0 else "#e74c3c"
+#     st.markdown(
+#         f"<div style='background: linear-gradient(90deg, #0f1c2e 0%, #1f2f4a 100%); "
+#         f"padding: 12px 18px; border-radius: 8px; margin-bottom: 16px;'>"
+#         f"<strong style='color: #fff;'>System Health</strong> — "
+#         f"<span style='color: #7fdbff;'>Strategy B (Kelly) ROI%</span>: "
+#         f"<strong style='color: {_roi_color};'>{_kelly_roi:+.2f}%</strong> &nbsp;|&nbsp; "
+#         f"<span style='color: #7fdbff;'>Total P&L</span>: "
+#         f"<strong style='color: {_pnl_color};'>${_kelly_pnl:+,.2f}</strong>"
+#         f"</div>",
+#         unsafe_allow_html=True,
+#     )
+# elif _kelly_roi is not None:
+#     _roi_color = "#2ecc71" if (_kelly_roi or 0) >= 0 else "#e74c3c"
+#     st.markdown(
+#         f"<div style='background: linear-gradient(90deg, #0f1c2e 0%, #1f2f4a 100%); "
+#         f"padding: 12px 18px; border-radius: 8px; margin-bottom: 16px;'>"
+#         f"<strong style='color: #fff;'>System Health</strong> — "
+#         f"<span style='color: #7fdbff;'>Strategy B (Kelly) ROI%</span>: "
+#         f"<strong style='color: {_roi_color};'>{_kelly_roi:+.2f}%</strong>"
+#         f"</div>",
+#         unsafe_allow_html=True,
+#     )
+# else:
+#     st.markdown(
+#         "<div style='background: #2d2d2d; padding: 12px 18px; border-radius: 8px; margin-bottom: 16px;'>"
+#         "<strong style='color: #fff;'>System Health</strong> — "
+#         "<span style='color: #888;'>Strategy B (Kelly) ROI% / Total P&L: n/a</span> "
+#         "(run analysis_041_agent_attribution.py to populate)</div>",
+#         unsafe_allow_html=True,
+#     )
 
 
 # --------------------------------------------------
