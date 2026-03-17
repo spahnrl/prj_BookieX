@@ -108,6 +108,9 @@ current_bankroll = st.sidebar.number_input(
     help="Your actual balance for Kelly stake sizing.",
 )
 
+qr_code_path = PROJECT_ROOT / "assets" / "qr-code_bookiex_v01.png"
+if qr_code_path.exists():
+    st.sidebar.image(str(qr_code_path), width=220)
 # --------------------------------------------------
 # PAGE SETUP
 # --------------------------------------------------
