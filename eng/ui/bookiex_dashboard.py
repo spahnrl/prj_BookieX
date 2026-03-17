@@ -257,7 +257,9 @@ def _load_execution_overlay_performance(league_ui: str) -> tuple[list[dict] | No
         if not subdirs:
             return None, None
         latest = max(subdirs, key=lambda d: d.stat().st_mtime)
-        perf_path = latest / "execution_overlay_performance.json"
+        dynamic_path = latest / "execution_overlay_performance_dynamic.json"
+        fixed_path = latest / "execution_overlay_performance.json"
+        perf_path = dynamic_path if dynamic_path.exists() else fixed_path
         if not perf_path.exists():
             return None, None
         with open(perf_path, "r", encoding="utf-8") as f:
