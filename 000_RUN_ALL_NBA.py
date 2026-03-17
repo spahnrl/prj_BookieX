@@ -77,9 +77,18 @@ ARBITRATION = [
 
 EVALUATION = [
     "eng/backtest/backtest_gen_runner.py",
+    ("eng/analysis/analysis_039a_dynamic_sweetspot_discovery.py", ["--league", "nba"]),
+    "eng/analysis/analysis_039b_execution_overlay_performance.py",
+    ("eng/analysis/analysis_039b_execution_overlay_performance.py", ["--league", "nba", "--use-dynamic-sweetspots"]),
     "eng/calibration/build_calibration_snapshot.py",
     "r_101_report_backtest_vegas.py",
 ]
+
+# Best-effort: on failure print warning and continue (do not fail the pipeline).
+BEST_EFFORT_EVALUATION = frozenset([
+    ("eng/analysis/analysis_039a_dynamic_sweetspot_discovery.py", ("--league", "nba")),
+    ("eng/analysis/analysis_039b_execution_overlay_performance.py", ("--league", "nba", "--use-dynamic-sweetspots")),
+])
 
 EXECUTION = [
     "eng/execution/build_execution_overlay.py",
@@ -124,10 +133,10 @@ ANALYSIS = [
     "eng/analysis/analysis_033_edge_magnitude_profit_curve.py",
     "eng/analysis/analysis_034_projection_vs_straight_up_result.py",
     "eng/analysis/analysis_035_projection_component_breakdown.py",
-    "eng/analysis/analysis_036_spread_orientation_sample.py",
+    "eng/analysis/analysis_036a_spread_orientation_sample.py",
     "eng/analysis/analysis_037_projection_error_by_spread.py",
     "eng/analysis/analysis_038_total_direction_bias.py",
-    "eng/analysis/analysis_039_execution_overlay_performance.py",
+    "eng/analysis/analysis_039b_execution_overlay_performance.py",
     "eng/analysis/analysis_040_clv_analysis.py",
 ]
 
@@ -210,6 +219,7 @@ def run(script_spec):
         cmd = [sys.executable, script] + extra_args
     else:
         script = script_spec
+        extra_args = []
         cmd = [sys.executable, script]
     start = datetime.now()
 
@@ -235,6 +245,9 @@ def run(script_spec):
     })
 
     if code != 0:
+        if (script, tuple(extra_args)) in BEST_EFFORT_EVALUATION:
+            print(f"\n[WARN] Step failed (best-effort); continuing pipeline: {script}", file=sys.stderr)
+            return
         print(f"\n[FAIL] FAILED: {script}")
         sys.exit(code)
 

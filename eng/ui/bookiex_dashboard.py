@@ -245,7 +245,8 @@ def _execution_overlay_backtest_date(league_ui: str) -> str:
 
 
 def _load_execution_overlay_performance(league_ui: str) -> tuple[list[dict] | None, str | None]:
-    """Load execution_overlay_performance.json from latest backtest dir for league. Returns (buckets, date_str) or (None, None)."""
+    """Load execution_overlay_performance_dynamic.json only from latest backtest dir. No fallback to fixed.
+    Returns (buckets, date_str) or (None, None) if dynamic file is missing, invalid, empty, or unusable."""
     try:
         league_lower = (league_ui or "").strip().lower()
         if league_lower not in ("nba", "ncaam"):
@@ -258,11 +259,9 @@ def _load_execution_overlay_performance(league_ui: str) -> tuple[list[dict] | No
             return None, None
         latest = max(subdirs, key=lambda d: d.stat().st_mtime)
         dynamic_path = latest / "execution_overlay_performance_dynamic.json"
-        fixed_path = latest / "execution_overlay_performance.json"
-        perf_path = dynamic_path if dynamic_path.exists() else fixed_path
-        if not perf_path.exists():
+        if not dynamic_path.exists():
             return None, None
-        with open(perf_path, "r", encoding="utf-8") as f:
+        with open(dynamic_path, "r", encoding="utf-8") as f:
             payload = json.load(f)
         buckets = payload.get("buckets")
         if not buckets or not isinstance(buckets, list):
@@ -276,6 +275,29 @@ def _load_execution_overlay_performance(league_ui: str) -> tuple[list[dict] | No
         return buckets, date_str
     except Exception:
         return None, None
+
+
+# Load overlay performance once: dynamic-only (no fallback to fixed/stale). Used for Execution Overlay table and Kelly Win%.
+_overlay_buckets, _overlay_date = _load_execution_overlay_performance(league)
+_overlay_table = _overlay_buckets
+_overlay_win_rate_by_bucket = {row["Bucket"]: row["Win%"] for row in _overlay_table if row.get("Win%") is not None} if _overlay_table else None
+# Status by bucket: only active buckets drive authoritative Kelly sizing.
+_overlay_status_by_bucket = {row["Bucket"]: row.get("status") for row in _overlay_table} if _overlay_table else {}
+# Display table: all rows, null Win%/ROI as "—", Status when present (per 039b schema).
+_overlay_table_display = None
+if _overlay_table:
+    _overlay_table_display = []
+    for row in _overlay_table:
+        r = {
+            "Bucket": row.get("Bucket", ""),
+            "Games": row.get("Games", 0),
+            "Win%": row["Win%"] if row.get("Win%") is not None else "—",
+            "ROI": row["ROI"] if row.get("ROI") is not None else "—",
+            "Explanation": row.get("Explanation", ""),
+        }
+        if row.get("status") is not None:
+            r["Status"] = row["status"]
+        _overlay_table_display.append(r)
 
 
 def format_odds_snapshot_cst(odds_snapshot_utc: str) -> str:
@@ -322,17 +344,23 @@ def calculate_full_kelly(win_pct: float, b: float) -> float:
     return max(kelly, 0)
 
 
-def get_kelly_regime(g: dict):
+def get_kelly_regime(g: dict, win_rate_by_bucket: dict | None = None):
     overlay = g.get("execution_overlay", {}) or {}
 
     if overlay.get("dual_sweet_spot"):
-        return "Dual Sweet Spot", DUAL_SWEET_SPOT_WIN_PCT
+        name = "Dual Sweet Spot"
+        w = win_rate_by_bucket.get(name) if win_rate_by_bucket is not None else None
+        return name, (w if w is not None else DUAL_SWEET_SPOT_WIN_PCT)
 
     if overlay.get("spread_sweet_spot") and not overlay.get("spread_avoid"):
-        return "Spread Sweet Spot", SPREAD_SWEET_SPOT_WIN_PCT
+        name = "Spread Sweet Spot"
+        w = win_rate_by_bucket.get(name) if win_rate_by_bucket is not None else None
+        return name, (w if w is not None else SPREAD_SWEET_SPOT_WIN_PCT)
 
     if overlay.get("total_sweet_spot") and not overlay.get("total_avoid"):
-        return "Total Sweet Spot", TOTAL_SWEET_SPOT_WIN_PCT
+        name = "Total Sweet Spot"
+        w = win_rate_by_bucket.get(name) if win_rate_by_bucket is not None else None
+        return name, (w if w is not None else TOTAL_SWEET_SPOT_WIN_PCT)
 
     return None, None
 
@@ -418,14 +446,27 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
         "The Kelly section shows a **full Kelly example** using historical win rates from the current execution regime."
     )
 
-    st.write(
-        "The current regime assumptions are:\n"
-        f"• **Dual Sweet Spot** win rate = {DUAL_SWEET_SPOT_WIN_PCT:.3f}\n"
-        f"• **Spread Sweet Spot** win rate = {SPREAD_SWEET_SPOT_WIN_PCT:.3f}\n"
-        f"• **Total Sweet Spot** win rate = {TOTAL_SWEET_SPOT_WIN_PCT:.3f}\n"
-        f"• **Current bankroll** = ${current_bankroll:,} (set in sidebar)\n"
-        "• **Odds assumption** = standard -110"
-    )
+    if _overlay_win_rate_by_bucket is not None:
+        _dual_wr = _overlay_win_rate_by_bucket.get("Dual Sweet Spot", DUAL_SWEET_SPOT_WIN_PCT)
+        _spread_wr = _overlay_win_rate_by_bucket.get("Spread Sweet Spot", SPREAD_SWEET_SPOT_WIN_PCT)
+        _total_wr = _overlay_win_rate_by_bucket.get("Total Sweet Spot", TOTAL_SWEET_SPOT_WIN_PCT)
+        st.write(
+            "The current regime assumptions are:\n"
+            f"• **Dual Sweet Spot** win rate = {_dual_wr:.3f}\n"
+            f"• **Spread Sweet Spot** win rate = {_spread_wr:.3f}\n"
+            f"• **Total Sweet Spot** win rate = {_total_wr:.3f}\n"
+            f"• **Current bankroll** = ${current_bankroll:,} (set in sidebar)\n"
+            "• **Odds assumption** = standard -110"
+        )
+    else:
+        st.warning(
+            "Dynamic overlay data is unavailable for the latest backtest. "
+            "Regime win rates and Kelly sizing are not from current backtest data and should not be treated as authoritative."
+        )
+        st.write(
+            f"• **Current bankroll** = ${current_bankroll:,} (set in sidebar)\n"
+            "• **Odds assumption** = standard -110"
+        )
 
     st.write(
         "This means different regimes can produce different Kelly bet sizes. "
@@ -644,42 +685,54 @@ else:
 # --------------------------------------------------
 
 with st.expander("🍀 KBX Bet Sizing Strateg'ery 🌵", expanded=False):
-    kelly_rows = []
+    if _overlay_buckets is None:
+        st.warning(
+            "Dynamic overlay data is unavailable for the latest backtest. "
+            "Suggested Bet Sizing is not available — sweet-spot-based Kelly assumptions are not shown as authoritative."
+        )
+        st.markdown(
+            "Run backtest and analysis_039b with `--use-dynamic-sweetspots` for this league to enable Execution Overlay and Kelly sizing from current backtest data."
+        )
+        kelly_rows = []
+    else:
+        kelly_rows = []
+        for g in games:
+            identity = g.get("identity", {})
+            market = g.get("market_state", {})
+            model = g.get("model_output", {})
+            regime_name, regime_win_pct = get_kelly_regime(g, _overlay_win_rate_by_bucket)
 
-    for g in games:
-        identity = g.get("identity", {})
-        market = g.get("market_state", {})
-        model = g.get("model_output", {})
-        regime_name, regime_win_pct = get_kelly_regime(g)
+            if regime_name is None:
+                continue
+            # Only treat buckets with status == "active" as authoritative for Kelly sizing.
+            if _overlay_status_by_bucket.get(regime_name) != "active":
+                continue
 
-        if regime_name is None:
-            continue
+            away = identity.get("away_team", "Away")
+            home = identity.get("home_team", "Home")
 
-        away = identity.get("away_team", "Away")
-        home = identity.get("home_team", "Home")
+            spread_line = market.get("spread_home_last")
+            total_line = market.get("total_last")
 
-        spread_line = market.get("spread_home_last")
-        total_line = market.get("total_last")
+            spread_pick = model.get("spread_pick")
+            total_pick = model.get("total_pick")
+            models_allingment = model.get("confidence_tier")
 
-        spread_pick = model.get("spread_pick")
-        total_pick = model.get("total_pick")
-        models_allingment = model.get("confidence_tier")
+            full_kelly = calculate_full_kelly(regime_win_pct, KELLY_PAYOUT_RATIO)
+            bet_amount = round(current_bankroll * full_kelly)
 
-        full_kelly = calculate_full_kelly(regime_win_pct, KELLY_PAYOUT_RATIO)
-        bet_amount = round(current_bankroll * full_kelly)
+            if regime_name == "Total Sweet Spot":
+                pick_text = f"{total_pick} ({total_line})" if total_pick else "No Total Pick"
+            else:
+                pick_text = format_spread_text(home, away, spread_line, spread_pick)
 
-        if regime_name == "Total Sweet Spot":
-            pick_text = f"{total_pick} ({total_line})" if total_pick else "No Total Pick"
-        else:
-            pick_text = format_spread_text(home, away, spread_line, spread_pick)
-
-        kelly_rows.append({
-            "Game": format_matchup_short(away, home),
-            "Pick": pick_text,
-            "Regime": regime_name,
-            "Bet $": f"${bet_amount}",
-            "Models Align": models_allingment,
-        })
+            kelly_rows.append({
+                "Game": format_matchup_short(away, home),
+                "Pick": pick_text,
+                "Regime": regime_name,
+                "Bet $": f"${bet_amount}",
+                "Models Align": models_allingment,
+            })
 
     st.markdown("### Suggested Bet Sizing")
 
@@ -692,7 +745,7 @@ with st.expander("🍀 KBX Bet Sizing Strateg'ery 🌵", expanded=False):
         st.markdown(
             f"**Portfolio:** {total_plays} plays | **Exposure:** ${total_exposure}"
         )
-    else:
+    elif _overlay_buckets is not None:
         st.write("No qualifying Sweet Spot bets to size.")
 
     st.markdown(
@@ -706,18 +759,18 @@ with st.expander("🍀 KBX Bet Sizing Strateg'ery 🌵", expanded=False):
     )
 
     st.markdown("---")
-    _overlay_buckets, _overlay_date = _load_execution_overlay_performance(league)
-    _overlay_table = _overlay_buckets if _overlay_buckets else EXECUTION_OVERLAY_PERFORMANCE
     _overlay_updated = (_overlay_date if _overlay_date else None) or _execution_overlay_backtest_date(league)
     st.markdown(
         f"**Execution Overlay Backtest Reference — Last Updated:** "
         f"{_overlay_updated}"
     )
-    if league == "NCAAM" and not _overlay_buckets:
-        st.caption(
-            "NCAAM backtest not run or no overlay JSON. Run backtest_gen_runner and analysis_039 (--league ncaam) for NCAAM-specific metrics."
+    if _overlay_buckets is None:
+        st.info(
+            "Dynamic sweet-spot data is unavailable for the latest backtest. "
+            "Run backtest and analysis_039b with `--use-dynamic-sweetspots` to populate this section."
         )
-    st.table(_overlay_table)
+    else:
+        st.table(_overlay_table_display)
 
 
 # --------------------------------------------------
@@ -987,7 +1040,7 @@ for g in games:
         st.write("Spread Avoid:", overlay.get("spread_avoid"))
         st.write("Total Avoid:", overlay.get("total_avoid"))
 
-        regime_name, regime_win_pct = get_kelly_regime(g)
+        regime_name, regime_win_pct = get_kelly_regime(g, _overlay_win_rate_by_bucket)
         if regime_name is not None:
             full_kelly = calculate_full_kelly(regime_win_pct, KELLY_PAYOUT_RATIO)
 

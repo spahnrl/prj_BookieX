@@ -38,7 +38,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Run both NBA and NCAAM pipelines")
     parser.add_argument("--mode", choices=["LIVE", "LAB"], default="LIVE", help="NBA mode only")
     parser.add_argument("--analysis", action="store_true", help="NBA only")
-    parser.add_argument("--analysis-only", action="store_true", help="NBA only")
+    parser.add_argument("--analysis-only", action="store_true", help="Run analysis-only for both NBA and NCAAM")
     parser.add_argument("--start-date", dest="start_date", type=str, help="NCAAM schedule start YYYYMMDD")
     parser.add_argument("--end-date", dest="end_date", type=str, help="NCAAM schedule end YYYYMMDD")
     parser.add_argument("--watch", action="store_true", help="Run pipelines then start live monitor loop (Timing Agent EXECUTE alerts every 30 min)")
@@ -60,6 +60,8 @@ def build_ncaam_command(args) -> list[str]:
         raise ValueError("Both --start-date and --end-date must be provided together for NCAAM.")
     if args.start_date and args.end_date:
         cmd.extend(["--start-date", args.start_date, "--end-date", args.end_date])
+    if args.analysis_only:
+        cmd.append("--analysis-only")
     return cmd
 
 

@@ -234,29 +234,70 @@ def run_nba() -> None:
 # NCAAM: Schedule + boxscore by espn_game_id -> one row per game
 # =============================================================================
 
+def _ncaam_excluded_record(
+    row: dict,
+    exclusion_reason: str,
+    mapping_source_used: str,
+    static_cached_consulted: bool,
+    refresh_re_resolve_skipped: bool,
+) -> dict:
+    """Build one diagnostic record for an excluded schedule row (stale-data diagnostic)."""
+    def _v(key: str) -> str:
+        v = row.get(key)
+        if v is None:
+            return ""
+        return str(v).strip()
+    return {
+        "game_id": _v("espn_game_id") or _v("game_id"),
+        "away_team_raw": _v("away_team_raw"),
+        "home_team_raw": _v("home_team_raw"),
+        "game_date": _v("game_date"),
+        "requested_date": _v("requested_date"),
+        "exclusion_reason": exclusion_reason,
+        "mapping_source_used": mapping_source_used,
+        "static_cached_consulted": static_cached_consulted,
+        "refresh_re_resolve_skipped": refresh_re_resolve_skipped,
+    }
+
+
 def _ncaam_build_canonical_games(
     schedule_rows: list[dict],
     box_lookup: dict[str, dict],
-) -> tuple[list[dict], dict[str, int]]:
-    """One canonical row per espn_game_id; backfill team ids from boxscore when needed."""
+) -> tuple[list[dict], dict[str, int], list[dict]]:
+    """One canonical row per espn_game_id; backfill team ids from boxscore when needed.
+    Returns (canonical_rows, count_diagnostics, excluded_row_diagnostics).
+    """
     out = []
     seen_espn_ids: set[str] = set()
     diagnostics = {
         "skip_no_espn_game_id": 0,
+        "skip_duplicate_espn_game_id": 0,
         "skip_no_team_ids_no_backfill": 0,
         "backfilled_from_boxscore": 0,
+        "admitted_tbd_placeholder_home": 0,
+        "admitted_tbd_placeholder_away": 0,
+        "boxscore_only_added": 0,
     }
+    excluded_diagnostics: list[dict] = []
+    _MAP_SOURCE = "schedule_joined_from_003_team_map_csv"
+    _STATIC_CONSULTED = True  # 003 uses data/ncaam/raw/ncaam_team_map.csv
+    _REFRESH_SKIPPED = True  # 021 does not re-resolve team names; uses 003 output as-is
 
     for row in schedule_rows:
         mapping_status = (row.get("mapping_status") or "").strip().lower()
         home_team_id = (row.get("home_team_id") or "").strip()
         away_team_id = (row.get("away_team_id") or "").strip()
         espn_game_id = (row.get("espn_game_id") or "").strip()
+        mapping_source_used = _MAP_SOURCE + " home=" + str((row.get("home_lookup_source") or "").strip() or "unmatched") + " away=" + str((row.get("away_lookup_source") or "").strip() or "unmatched")
+        tbd_placeholder_side = ""
 
         if not espn_game_id:
             diagnostics["skip_no_espn_game_id"] += 1
+            excluded_diagnostics.append(_ncaam_excluded_record(row, "no_espn_game_id", mapping_source_used, _STATIC_CONSULTED, _REFRESH_SKIPPED))
             continue
         if espn_game_id in seen_espn_ids:
+            diagnostics["skip_duplicate_espn_game_id"] += 1
+            excluded_diagnostics.append(_ncaam_excluded_record(row, "duplicate_espn_game_id", mapping_source_used, _STATIC_CONSULTED, _REFRESH_SKIPPED))
             continue
 
         has_both_ids = bool(home_team_id and away_team_id)
@@ -277,8 +318,24 @@ def _ncaam_build_canonical_games(
                     if not (row.get("away_team_display") or "").strip():
                         row["away_team_display"] = (box.get("away_team_display") or "").strip()
             if not row_is_usable:
-                diagnostics["skip_no_team_ids_no_backfill"] += 1
-                continue
+                # NCAAM tournament TBD placeholder: allow one resolved + one TBD (do not admit both unresolved)
+                has_one_id = bool(home_team_id or away_team_id)
+                if has_one_id:
+                    if not home_team_id:
+                        home_team_id = f"tbd_{espn_game_id}_home"
+                        row["home_team_display"] = "TBD_HOME"
+                        tbd_placeholder_side = "home"
+                        diagnostics["admitted_tbd_placeholder_home"] += 1
+                    if not away_team_id:
+                        away_team_id = f"tbd_{espn_game_id}_away"
+                        row["away_team_display"] = "TBD_AWAY"
+                        tbd_placeholder_side = "away"
+                        diagnostics["admitted_tbd_placeholder_away"] += 1
+                    row_is_usable = True
+                if not row_is_usable:
+                    diagnostics["skip_no_team_ids_no_backfill"] += 1
+                    excluded_diagnostics.append(_ncaam_excluded_record(row, "no_team_ids_no_backfill", mapping_source_used, _STATIC_CONSULTED, _REFRESH_SKIPPED))
+                    continue
 
         seen_espn_ids.add(espn_game_id)
         box = box_lookup.get(espn_game_id, {})
@@ -323,21 +380,75 @@ def _ncaam_build_canonical_games(
             "source_system_schedule": _s("source_system"),
             "source_system_boxscore": _b("source_system"),
             "mapping_status": mapping_status or "matched",
+            "admission_tbd_placeholder": tbd_placeholder_side,
+        })
+
+    # Add canonical rows for completed boxscore games not already in schedule-driven output,
+    # so 022 -> 001 see full season history and can compute prior avg for scheduled games.
+    def _box_str(key: str) -> str:
+        v = box.get(key)
+        if v is None:
+            return ""
+        if isinstance(v, (int, float)):
+            return str(v)
+        return str(v).strip()
+
+    for espn_game_id, box in sorted(box_lookup.items(), key=lambda x: ((x[1].get("game_date") or ""), x[0])):
+        if espn_game_id in seen_espn_ids:
+            continue
+        home_team_id = _box_str("home_team_id")
+        away_team_id = _box_str("away_team_id")
+        box_home_score = _box_str("home_score")
+        box_away_score = _box_str("away_score")
+        if not home_team_id or not away_team_id:
+            continue
+        if not box_home_score and not box_away_score:
+            continue
+        seen_espn_ids.add(espn_game_id)
+        diagnostics["boxscore_only_added"] += 1
+        out.append({
+            "canonical_game_id": f"ncaam_{espn_game_id}",
+            "game_source_id": _box_str("game_source_id") or espn_game_id,
+            "espn_game_id": espn_game_id,
+            "game_date": _box_str("game_date"),
+            "season": "",
+            "season_type": "",
+            "status_name": "STATUS_FINAL",
+            "status_state": "post",
+            "completed_flag": "1",
+            "neutral_site_flag": "",
+            "venue_name": "",
+            "home_team_id": home_team_id,
+            "away_team_id": away_team_id,
+            "home_team_display": _box_str("home_team_display"),
+            "away_team_display": _box_str("away_team_display"),
+            "schedule_home_team_raw": "",
+            "schedule_away_team_raw": "",
+            "schedule_home_score": "",
+            "schedule_away_score": "",
+            "box_home_score": box_home_score,
+            "box_away_score": box_away_score,
+            "box_home_winner": _box_str("home_winner"),
+            "box_away_winner": _box_str("away_winner"),
+            "source_system_schedule": "",
+            "source_system_boxscore": _box_str("source_system"),
+            "mapping_status": "matched",
+            "admission_tbd_placeholder": "",
         })
 
     out.sort(key=lambda r: (r["game_date"], r["espn_game_id"]))
-    return out, diagnostics
+    return out, diagnostics, excluded_diagnostics
 
 
 def run_ncaam() -> None:
-    from configs.leagues.league_ncaam import ensure_ncaam_dirs
+    from configs.leagues.league_ncaam import ensure_ncaam_dirs, INTERIM_DIR
 
     ensure_ncaam_dirs()
     schedule_rows = load_schedule_joined("ncaam")
     box_rows = load_boxscores("ncaam")
     box_lookup = build_boxscore_lookup(box_rows, "espn_game_id")
 
-    canonical_rows, diagnostics = _ncaam_build_canonical_games(schedule_rows, box_lookup)
+    canonical_rows, diagnostics, excluded_diagnostics = _ncaam_build_canonical_games(schedule_rows, box_lookup)
 
     if not canonical_rows:
         raise ValueError("No canonical game rows produced")
@@ -370,8 +481,53 @@ def run_ncaam() -> None:
     log_info("---")
     log_info("Diagnostics (schedule rows skipped):")
     log_info(f"  No espn_game_id:           {diagnostics['skip_no_espn_game_id']}")
+    log_info(f"  Duplicate espn_game_id:    {diagnostics.get('skip_duplicate_espn_game_id', 0)}")
     log_info(f"  No team ids, no backfill:  {diagnostics['skip_no_team_ids_no_backfill']}")
     log_info(f"  Rows backfilled from box:  {diagnostics['backfilled_from_boxscore']}")
+    log_info(f"  Admitted TBD placeholder (home): {diagnostics.get('admitted_tbd_placeholder_home', 0)}")
+    log_info(f"  Admitted TBD placeholder (away): {diagnostics.get('admitted_tbd_placeholder_away', 0)}")
+    log_info(f"  Boxscore-only rows added (history): {diagnostics.get('boxscore_only_added', 0)}")
+
+    # Stale-data root-cause diagnostic: excluded rows + March 13 focus
+    MARCH13_FOCUS_IDS = {"401851720", "401851411", "401851474", "401851734"}
+    march13_date = "2026-03-13"
+    by_reason = {}
+    for ex in excluded_diagnostics:
+        r = ex.get("exclusion_reason") or "unknown"
+        by_reason[r] = by_reason.get(r, 0) + 1
+    focus_excluded = [ex for ex in excluded_diagnostics if (ex.get("game_id") or "").strip() in MARCH13_FOCUS_IDS]
+    focus_included = [r for r in canonical_rows if (r.get("espn_game_id") or "").strip() in MARCH13_FOCUS_IDS]
+    march13_tbd_excluded = [
+        ex for ex in excluded_diagnostics
+        if (ex.get("game_date") or "").strip() == march13_date
+        and ((ex.get("away_team_raw") or "").strip().upper() == "TBD" or (ex.get("home_team_raw") or "").strip().upper() == "TBD")
+    ]
+    tbd_expected_source = (
+        "Team names are resolved only in b_gen_003 via ncaam_team_map.csv (static). "
+        "TBD never matches the map; d_gen_021 can backfill only from boxscores (played games). "
+        "Future/unplayed March 13 games stay TBD unless the map is updated or a refresh path re-resolves names."
+    )
+    diagnostic_path = INTERIM_DIR / "ncaam_canonical_excluded_diagnostics.json"
+    diagnostic_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(diagnostic_path, "w", encoding="utf-8") as f:
+        json.dump({
+            "summary": {
+                "excluded_total": len(excluded_diagnostics),
+                "excluded_by_reason": by_reason,
+                "static_cached_consulted": True,
+                "refresh_re_resolve_skipped": True,
+            },
+            "excluded_rows": excluded_diagnostics,
+            "march13_focus": {
+                "requested_game_ids": list(MARCH13_FOCUS_IDS),
+                "included_rows_for_focus_ids": focus_included,
+                "excluded_rows_for_focus_ids": focus_excluded,
+                "march13_tbd_excluded_count": len(march13_tbd_excluded),
+                "march13_tbd_excluded_rows": march13_tbd_excluded,
+                "march13_tbd_expected_source_explanation": tbd_expected_source,
+            },
+        }, f, indent=2)
+    log_info(f"Excluded diagnostics (stale-data): {diagnostic_path}")
 
 
 # =============================================================================

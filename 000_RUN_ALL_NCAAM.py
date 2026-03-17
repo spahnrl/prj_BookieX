@@ -61,6 +61,14 @@ STEPS = [
     ("eng/models/shared/model_gen_0052_add_model.py", ["--league", "ncaam"]),
     ("eng/daily/build_gen_daily_view.py", ["--league", "ncaam"]),
     ("eng/backtest/backtest_gen_runner.py", ["--league", "ncaam"]),
+    ("eng/analysis/analysis_039a_dynamic_sweetspot_discovery.py", ["--league", "ncaam"]),
+    ("eng/analysis/analysis_039b_execution_overlay_performance.py", ["--league", "ncaam"]),
+    ("eng/analysis/analysis_039b_execution_overlay_performance.py", ["--league", "ncaam", "--use-dynamic-sweetspots"]),
+]
+
+ANALYSIS = [
+    ("eng/analysis/analysis_039b_execution_overlay_performance.py", ["--league", "ncaam"]),
+    "eng/analysis/analysis_041_agent_attribution.py",
 ]
 
 
@@ -68,6 +76,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Run the NCAA MVP pipeline end-to-end")
     parser.add_argument("--start-date", dest="start_date", type=str, help="Schedule start date in YYYYMMDD")
     parser.add_argument("--end-date", dest="end_date", type=str, help="Schedule end date in YYYYMMDD")
+    parser.add_argument("--analysis-only", action="store_true", help="Run only analysis scripts using existing artifacts (no ingestion/build)")
     parser.add_argument("--quiet", action="store_true", help="Suppress banners and step lines (for combined orchestrator)")
     return parser.parse_args()
 
@@ -83,14 +92,14 @@ def build_step_command(step_spec, args) -> list[str]:
 
     cmd = [sys.executable, str(script_path)]
 
-    # Schedule step: date-window overrides (unified 001). Default 2025-10-01 to today when not set.
+    # Schedule step: date-window overrides (unified 001). When not set, do NOT pass dates so 001 uses its default (today+14 for March Madness).
     if "b_gen_001_ingest_schedule.py" in step_path:
         if args.start_date and args.end_date:
             cmd.extend(["--start-date", args.start_date, "--end-date", args.end_date])
-        else:
-            from datetime import datetime, timezone
-            today = datetime.now(timezone.utc).strftime("%Y%m%d")
-            cmd.extend(["--start-date", "20251001", "--end-date", today])
+        # else: no date args → b_gen_001 defaults to 20251001 .. today+14
+    # Daily view: pass same date window so one file per date is built (launcher "Include Future Day").
+    if "build_gen_daily_view.py" in step_path and args.start_date and args.end_date:
+        cmd.extend(["--start-date", args.start_date, "--end-date", args.end_date])
     # Unified add-betting-lines: league flag (if not already in extra_args)
     if "f_gen_041_add_betting_lines.py" in step_path and "--league" not in extra_args:
         cmd.extend(["--league", "ncaam"])
@@ -137,27 +146,42 @@ def run_inline_audit_after_step(step_path: str) -> None:
         print(f"INTEGRITY CHECK: PASS [{r['label']}] primary={r['primary_count']} derived={r['derived_count']}")
 
 
+def _is_best_effort_step(step_spec) -> bool:
+    """True if this step is best-effort (warn-and-continue on failure)."""
+    step_path = step_spec[0] if isinstance(step_spec, (list, tuple)) else step_spec
+    extra_args = list(step_spec[1]) if isinstance(step_spec, (list, tuple)) and len(step_spec) > 1 else []
+    if "analysis_039a_dynamic_sweetspot_discovery.py" in step_path:
+        return True
+    if "analysis_039b_execution_overlay_performance.py" in step_path and "--use-dynamic-sweetspots" in extra_args:
+        return True
+    return False
+
+
 def run_step(step_spec, step_num: int, total_steps: int, args, quiet: bool = False) -> float:
     step_path = step_spec[0] if isinstance(step_spec, (list, tuple)) else step_spec
     cmd = build_step_command(step_spec, args)
+    best_effort = _is_best_effort_step(step_spec)
 
     if not quiet:
         print("=" * 80)
-        print(f"[{step_num}/{total_steps}] RUNNING: {step_path}")
+        print(f"[{step_num}/{total_steps}] RUNNING: {step_path}" + (" (best-effort)" if best_effort else ""))
         print(f"COMMAND: {' '.join(cmd)}")
         print("=" * 80)
 
     start = perf_counter()
 
-    subprocess.run(
+    result = subprocess.run(
         cmd,
         cwd=str(PROJECT_ROOT),
-        check=True,
+        check=not best_effort,
     )
 
     elapsed = perf_counter() - start
 
-    if not quiet:
+    if best_effort and result.returncode != 0:
+        if not quiet:
+            print(f"WARNING: [{step_num}/{total_steps}] {step_path} exited with code {result.returncode}; continuing pipeline.")
+    elif not quiet:
         print(f"[{step_num}/{total_steps}] SUCCESS: {step_path} | {elapsed:.2f}s")
     if any(x in step_path for x in (
         "b_gen_001_ingest_schedule.py",
@@ -169,7 +193,8 @@ def run_step(step_spec, step_num: int, total_steps: int, args, quiet: bool = Fal
 
 
 def run_all(args) -> None:
-    total_steps = len(STEPS)
+    steps_to_run = ANALYSIS if getattr(args, "analysis_only", False) else STEPS
+    total_steps = len(steps_to_run)
     total_elapsed = 0.0
     quiet = getattr(args, "quiet", False)
 
@@ -186,7 +211,7 @@ def run_all(args) -> None:
     if (args.start_date and not args.end_date) or (args.end_date and not args.start_date):
         raise ValueError("Both --start-date and --end-date must be provided together")
 
-    for idx, step in enumerate(STEPS, start=1):
+    for idx, step in enumerate(steps_to_run, start=1):
         elapsed = run_step(step, idx, total_steps, args, quiet=quiet)
         total_elapsed += elapsed
 
