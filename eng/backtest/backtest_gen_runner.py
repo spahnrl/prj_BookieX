@@ -107,8 +107,14 @@ def _safe_float(value: Any) -> Optional[float]:
 
 def _normalize_scores(game: dict) -> tuple[Optional[float], Optional[float], Optional[float], Optional[float]]:
     """Return (home_score, away_score, spread_home, market_total)."""
-    home = _safe_float(game.get("home_score") or game.get("home_points"))
-    away = _safe_float(game.get("away_score") or game.get("away_points"))
+    home = _safe_float(
+        game.get("home_score") or game.get("home_points")
+        or game.get("box_home_score") or game.get("schedule_home_score")
+    )
+    away = _safe_float(
+        game.get("away_score") or game.get("away_points")
+        or game.get("box_away_score") or game.get("schedule_away_score")
+    )
     spread = _safe_float(
         game.get("market_spread_home") or game.get("spread_home") or game.get("spread_home_last")
     )
@@ -120,7 +126,10 @@ def _is_final_game(game: dict) -> bool:
     completed = str(game.get("completed_flag", "")).strip()
     status_state = str(game.get("status_state", "")).strip().lower()
     status_name = str(game.get("status_name", "")).strip().upper()
+    status = str(game.get("status", "")).strip().lower()
     if completed == "1" or status_state == "post" or "FINAL" in status_name:
+        return True
+    if status in ("final", "completed", "finalized", "post"):
         return True
     home, away, _, _ = _normalize_scores(game)
     return home is not None and away is not None
@@ -342,19 +351,70 @@ def build_summary(
     }
 
 
-def build_csv_rows(backtest_rows: list[dict], selection_authority: str) -> list[dict]:
-    """Flatten to one row per game per model for CSV."""
+# Keys we explicitly map in CSV (game- or result-derived). Nested keys excluded from passthrough.
+_CSV_SKIP_KEYS = frozenset({"model_results", "models"})
+
+
+def _scalar_value_for_csv(v: Any) -> Any:
+    """Use value as-is for CSV; None -> empty string for consistent columns."""
+    if v is None:
+        return ""
+    if isinstance(v, (dict, list)):
+        return None  # caller should skip
+    return v
+
+
+def build_csv_rows(
+    backtest_rows: list[dict],
+    selection_authority: str,
+    *,
+    league: str = "",
+    build_timestamp: str = "",
+) -> list[dict]:
+    """
+    Flatten to one row per game per model for CSV. Includes league and build_timestamp.
+    All top-level scalar/string/number/bool fields from backtest JSON rows are included
+    via passthrough; nested dict/list (e.g. model_results, models) are excluded.
+    """
+    # Fixed column order (identity/audit then game/result fields)
+    fixed_order = [
+        "selection_authority", "league", "build_timestamp",
+        "canonical_game_id", "game_source_id", "espn_game_id", "game_date",
+        "away_team_display", "home_team_display", "away_team", "home_team",
+        "home_score", "away_score", "actual_margin_home", "actual_total",
+        "market_spread_home", "market_total",
+        "model_name", "home_line_proj", "total_projection",
+        "spread_edge", "total_edge", "parlay_edge_score",
+        "spread_pick", "spread_result", "total_pick", "total_result", "parlay_result",
+    ]
+    fixed_set = set(fixed_order)
+
+    # Collect any extra top-level scalar keys from backtest rows (passthrough for human review)
+    extra_keys: set[str] = set()
+    for game in backtest_rows:
+        for k, v in game.items():
+            if k in _CSV_SKIP_KEYS or k in fixed_set:
+                continue
+            if isinstance(v, (dict, list)):
+                continue
+            extra_keys.add(k)
+    extra_order = sorted(extra_keys)
+
     rows = []
     for game in backtest_rows:
         for model_name, result in (game.get("model_results") or {}).items():
-            rows.append({
+            row = {
                 "selection_authority": game.get("selection_authority", ""),
+                "league": league,
+                "build_timestamp": build_timestamp,
                 "canonical_game_id": game.get("canonical_game_id") or game.get("game_id", ""),
                 "game_source_id": game.get("game_source_id", ""),
                 "espn_game_id": game.get("espn_game_id", ""),
                 "game_date": game.get("game_date", ""),
                 "away_team_display": game.get("away_team_display", ""),
                 "home_team_display": game.get("home_team_display", ""),
+                "away_team": game.get("away_team", ""),
+                "home_team": game.get("home_team", ""),
                 "home_score": game.get("home_score") or game.get("home_points", ""),
                 "away_score": game.get("away_score") or game.get("away_points", ""),
                 "actual_margin_home": game.get("actual_margin_home", ""),
@@ -372,7 +432,11 @@ def build_csv_rows(backtest_rows: list[dict], selection_authority: str) -> list[
                 "total_pick": result.get("total_pick", ""),
                 "total_result": result.get("total_result", ""),
                 "parlay_result": result.get("parlay_result", ""),
-            })
+            }
+            for k in extra_order:
+                v = game.get(k)
+                row[k] = _scalar_value_for_csv(v) if not isinstance(v, (dict, list)) else ""
+            rows.append(row)
     rows.sort(key=lambda r: (r["game_date"], r["canonical_game_id"], r["model_name"]))
     return rows
 
@@ -387,6 +451,9 @@ def write_outputs(
     backtest_rows: list[dict],
     summary: dict,
     csv_rows: list[dict],
+    *,
+    league: str = "",
+    run_ts: str = "",
 ) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     with open(out_dir / "backtest_games.json", "w", encoding="utf-8") as f:
@@ -395,7 +462,8 @@ def write_outputs(
         json.dump(summary, f, indent=2)
     if csv_rows:
         fieldnames = list(csv_rows[0].keys())
-        with open(out_dir / "backtest_games.csv", "w", newline="", encoding="utf-8") as f:
+        csv_name = f"backtest_games_{league}_{run_ts}.csv" if (league and run_ts) else "backtest_games.csv"
+        with open(out_dir / csv_name, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(csv_rows)
@@ -419,12 +487,18 @@ def run(league: str) -> Path:
     games = load_games(league)
     backtest_rows, skipped = build_backtest_rows(games, league, engine)
     summary = build_summary(backtest_rows, skipped, league, engine.selection_authority)
-    csv_rows = build_csv_rows(backtest_rows, engine.selection_authority)
+    csv_rows = build_csv_rows(
+        backtest_rows,
+        engine.selection_authority,
+        league=league,
+        build_timestamp=summary["generated_at_utc"],
+    )
 
     run_ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     out_root = get_output_root(league)
     out_dir = out_root / f"backtest_{run_ts}"
-    write_outputs(out_dir, backtest_rows, summary, csv_rows)
+    csv_filename = f"backtest_games_{league}_{run_ts}.csv"
+    write_outputs(out_dir, backtest_rows, summary, csv_rows, league=league, run_ts=run_ts)
 
     print(f"League:              {league}")
     print(f"Selection authority: {engine.selection_authority}")
@@ -434,6 +508,7 @@ def run(league: str) -> Path:
     print(f"Skipped games:       {len(skipped)}")
     print(f"Detail JSON:         {out_dir / 'backtest_games.json'}")
     print(f"Summary JSON:        {out_dir / 'backtest_summary.json'}")
+    print(f"Detail CSV:          {out_dir / csv_filename}")
     print(f"Detail CSV rows:     {len(csv_rows)}")
 
     return out_dir
