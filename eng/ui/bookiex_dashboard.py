@@ -713,8 +713,11 @@ with st.expander("🍀 KBX Bet Sizing System 🌵", expanded=False):
 
             if regime_name is None:
                 continue
-            # Only treat buckets with status == "active" as authoritative for Kelly sizing.
-            if _overlay_status_by_bucket.get(regime_name) != "active":
+            # Kelly eligibility gate:
+            # - NBA: require bucket status == "active" (existing behavior).
+            # - NCAAM: allow sizing for per-game sweet-spot regimes even if the latest
+            #   bucket classification is "near_miss" (per-game badge qual != bucket status).
+            if league == "NBA" and _overlay_status_by_bucket.get(regime_name) != "active":
                 continue
 
             away = identity.get("away_team", "Away")
