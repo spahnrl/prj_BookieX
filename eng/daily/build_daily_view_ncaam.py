@@ -223,11 +223,21 @@ def build_daily_rows(games: list[dict]) -> list[dict]:
         # Completed-game S/T results for UI title-line suffix.
         selected_spread_result = ""
         selected_total_result = ""
+        selected_spread_margin_abs = None
+        selected_total_margin_abs = None
 
         completed_flag = safe_text(game.get("completed_flag")).strip()
-        status_state = safe_text(game.get("status_state")).strip().lower()
+        status_state_raw = safe_text(game.get("status_state")).strip()
+        status_state = status_state_raw.lower()
         status_name = safe_text(game.get("status_name")).strip().upper()
         is_final = completed_flag == "1" or status_state == "post" or "FINAL" in status_name
+        home_points_passthrough = safe_float(game.get("home_points"))
+        away_points_passthrough = safe_float(game.get("away_points"))
+        actual_total_passthrough = (
+            home_points_passthrough + away_points_passthrough
+            if home_points_passthrough is not None and away_points_passthrough is not None
+            else None
+        )
 
         if is_final:
             home_points = safe_float(game.get("home_points"))
@@ -281,6 +291,17 @@ def build_daily_rows(games: list[dict]) -> list[dict]:
                 selected_spread_result = spread_res or ""
                 selected_total_result = total_res or ""
 
+                # Point distance vs. line (mirrors grade_spread_bet / grade_total_bet arithmetic).
+                if spread_res is not None and line_bet in ("HOME", "AWAY") and spread_home_line is not None:
+                    hi = int(home_points)
+                    ai = int(away_points)
+                    adjusted = float(hi - ai) + float(spread_home_line)
+                    selected_spread_margin_abs = abs(adjusted)
+                if total_res is not None and total_bet in ("OVER", "UNDER", "PUSH") and total_line is not None:
+                    # Use the same numeric inputs (no truncation) as total grading.
+                    actual_total = float(home_points) + float(away_points)
+                    selected_total_margin_abs = abs(actual_total - float(total_line))
+
         projected_margin_home = safe_num(selected_model.get("home_line_proj"), default=0.0)
         projected_total = safe_num(selected_model.get("total_projection"), default=0.0)
 
@@ -293,6 +314,10 @@ def build_daily_rows(games: list[dict]) -> list[dict]:
             "primary_model_source": SELECTION_AUTHORITY,
             "selected_spread_result": selected_spread_result,
             "selected_total_result": selected_total_result,
+            "status_state": status_state_raw,
+            "home_points": home_points_passthrough,
+            "away_points": away_points_passthrough,
+            "actual_total": actual_total_passthrough,
 
             "identity": {
                 "game_id": safe_text(game.get("canonical_game_id")).strip(),
@@ -402,6 +427,11 @@ def build_daily_rows(games: list[dict]) -> list[dict]:
             "Explanation": build_explanation(game, selected_model),
             "Decision Factors": {},
         }
+
+        if selected_spread_margin_abs is not None:
+            row["selected_spread_margin_abs"] = selected_spread_margin_abs
+        if selected_total_margin_abs is not None:
+            row["selected_total_margin_abs"] = selected_total_margin_abs
 
         out.append(row)
 
