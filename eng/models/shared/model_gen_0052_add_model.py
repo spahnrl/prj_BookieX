@@ -293,6 +293,8 @@ def run_ncaam() -> None:
                 "game_source_id": _s(game.get("game_source_id")),
                 "espn_game_id": _s(game.get("espn_game_id")),
                 "game_date": _s(game.get("game_date")),
+                "odds_commence_time_cst": _s(game.get("odds_commence_time_cst")),
+                "odds_commence_time_utc": _s(game.get("odds_commence_time_utc")),
                 "away_team": _s(game.get("away_team_display")),
                 "home_team": _s(game.get("home_team_display")),
                 "away_team_id": _s(game.get("away_team_id")),
