@@ -929,9 +929,19 @@ for g in games:
     _game_id = (identity.get("game_id") if isinstance(identity, dict) else None) or g.get("game_id")
     _agent_row = _overlay_by_game_id.get(str(_game_id).strip(), None) if _game_id else None
 
+    result_suffix = ""
+    if league == "NCAAM":
+        sr = str(g.get("selected_spread_result") or "").strip()
+        tr = str(g.get("selected_total_result") or "").strip()
+        # Completed-game grading for title-line display (compact).
+        if sr or tr:
+            sr_disp = sr if sr else "—"
+            tr_disp = tr if tr else "—"
+            result_suffix = f" || S = {sr_disp} / T = {tr_disp}"
+
     expander_label = (
         f"{matchup_label}: Take {spread_text} / {total_text}"
-        f"{badge} — {tier} | {parlay_pct}%"
+        f"{badge} — {tier} | {parlay_pct}%{result_suffix}"
     )
     if is_value_peak:
         st.markdown(

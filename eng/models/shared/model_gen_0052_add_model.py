@@ -279,6 +279,15 @@ def run_ncaam() -> None:
                         models[SELECTION_AUTHORITY] = v
                         break
             selected_model = models.get(SELECTION_AUTHORITY, {}) or {}
+            # NCAAM completed-game grading uses home_points/away_points.
+            # In some upstream artifacts, final scores live under away_points/home_points
+            # or box_/schedule_ score keys instead of away_score/home_score.
+            raw_away_points = game.get("away_score")
+            if raw_away_points in (None, ""):
+                raw_away_points = game.get("away_points") or game.get("box_away_score") or game.get("schedule_away_score")
+            raw_home_points = game.get("home_score")
+            if raw_home_points in (None, ""):
+                raw_home_points = game.get("home_points") or game.get("box_home_score") or game.get("schedule_home_score")
             row = {
                 "game_id": _s(game.get("canonical_game_id")),
                 "game_source_id": _s(game.get("game_source_id")),
@@ -290,6 +299,8 @@ def run_ncaam() -> None:
                 "home_team_id": _s(game.get("home_team_id")),
                 "away_score": _s(game.get("away_score")),
                 "home_score": _s(game.get("home_score")),
+                "away_points": _s(raw_away_points),
+                "home_points": _s(raw_home_points),
                 "spread_home": _s(game.get("market_spread_home")),
                 "spread_away": _s(game.get("market_spread_away")),
                 "total": _s(game.get("market_total")),

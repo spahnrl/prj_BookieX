@@ -27,6 +27,8 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from configs.leagues.league_ncaam import DAILY_DIR, MODEL_DIR, ensure_ncaam_dirs
 
+from eng.backtest.backtest_grader import grade_spread_bet, grade_total_bet
+
 INPUT_PATH = MODEL_DIR / "ncaam_games_multi_model_v1.json"
 
 SELECTION_AUTHORITY = "ncaam_avg_score_model"
@@ -45,8 +47,12 @@ def load_payload() -> dict:
     with open(INPUT_PATH, "r", encoding="utf-8") as f:
         payload = json.load(f)
 
+    # final_game_view_ncaam.json is sometimes emitted as a list of rows.
+    if isinstance(payload, list):
+        return {"games": payload}
+
     if not isinstance(payload, dict):
-        raise ValueError("Expected JSON payload to be a dict")
+        raise ValueError("Expected JSON payload to be a dict or a list of rows")
 
     games = payload.get("games", [])
     if not isinstance(games, list):
@@ -199,6 +205,67 @@ def build_daily_rows(games: list[dict]) -> list[dict]:
         confidence_reason = compute_confidence_reason(selected_model)
         actionability = compute_actionability(selected_model)
 
+        # Completed-game S/T results for UI title-line suffix.
+        selected_spread_result = ""
+        selected_total_result = ""
+
+        completed_flag = safe_text(game.get("completed_flag")).strip()
+        status_state = safe_text(game.get("status_state")).strip().lower()
+        status_name = safe_text(game.get("status_name")).strip().upper()
+        is_final = completed_flag == "1" or status_state == "post" or "FINAL" in status_name
+
+        if is_final:
+            home_points = safe_float(game.get("home_points"))
+            away_points = safe_float(game.get("away_points"))
+
+            if home_points is not None and away_points is not None:
+                spread_home_line = safe_float(game.get("market_spread_home"))
+                if spread_home_line is None:
+                    spread_home_line = safe_float(game.get("spread_home_last"))
+                if spread_home_line is None:
+                    spread_home_line = safe_float(game.get("spread_home"))
+
+                total_line = safe_float(game.get("market_total"))
+                if total_line is None:
+                    total_line = safe_float(game.get("total_last"))
+                if total_line is None:
+                    total_line = safe_float(game.get("total"))
+
+                spread_pick = safe_text(selected_model.get("spread_pick")).strip().upper()
+                total_pick = safe_text(selected_model.get("total_pick")).strip().upper()
+
+                # NCAAM pick may be a team name while the grading contract expects HOME/AWAY.
+                # Final view uses `home_team`/`away_team` (not always *_display), so fall back safely.
+                home_team = safe_text(game.get("home_team_display") or game.get("home_team")).strip().upper()
+                away_team = safe_text(game.get("away_team_display") or game.get("away_team")).strip().upper()
+
+                if spread_pick in ("HOME", "AWAY"):
+                    line_bet = spread_pick
+                elif spread_pick == home_team:
+                    line_bet = "HOME"
+                elif spread_pick == away_team:
+                    line_bet = "AWAY"
+                else:
+                    line_bet = None
+
+                total_bet = total_pick if total_pick in ("OVER", "UNDER", "PUSH") else None
+
+                spread_res = grade_spread_bet(
+                    line_bet,
+                    spread_home_line,
+                    home_points,
+                    away_points,
+                )
+                total_res = grade_total_bet(
+                    total_bet,
+                    total_line,
+                    home_points,
+                    away_points,
+                )
+
+                selected_spread_result = spread_res or ""
+                selected_total_result = total_res or ""
+
         projected_margin_home = safe_num(selected_model.get("home_line_proj"), default=0.0)
         projected_total = safe_num(selected_model.get("total_projection"), default=0.0)
 
@@ -209,6 +276,8 @@ def build_daily_rows(games: list[dict]) -> list[dict]:
         row = {
             "selection_authority": SELECTION_AUTHORITY,
             "primary_model_source": SELECTION_AUTHORITY,
+            "selected_spread_result": selected_spread_result,
+            "selected_total_result": selected_total_result,
 
             "identity": {
                 "game_id": safe_text(game.get("canonical_game_id")).strip(),
@@ -222,11 +291,11 @@ def build_daily_rows(games: list[dict]) -> list[dict]:
             },
 
             "market_state": {
-                "spread_home_last": safe_num(game.get("market_spread_home"), default=0.0),
-                "spread_away_last": safe_num(game.get("market_spread_away"), default=0.0),
-                "total_last": safe_num(game.get("market_total"), default=0.0),
-                "moneyline_home_last": safe_num(game.get("market_home_moneyline"), default=0.0),
-                "moneyline_away_last": safe_num(game.get("market_away_moneyline"), default=0.0),
+                "spread_home_last": safe_num(game.get("market_spread_home") or game.get("spread_home"), default=0.0),
+                "spread_away_last": safe_num(game.get("market_spread_away") or game.get("spread_away"), default=0.0),
+                "total_last": safe_num(game.get("market_total") or game.get("total"), default=0.0),
+                "moneyline_home_last": safe_num(game.get("market_home_moneyline") or game.get("moneyline_home"), default=0.0),
+                "moneyline_away_last": safe_num(game.get("market_away_moneyline") or game.get("moneyline_away"), default=0.0),
 
                 "spread_home_consensus": 0.0,
                 "spread_away_consensus": 0.0,
