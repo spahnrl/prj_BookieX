@@ -972,6 +972,12 @@ for g in games:
     with st.expander(expander_label, expanded=False):
         st.write(f"Tipoff: {identity.get('tip_time_cst', 'N/A')}")
         st.write(f"Market: {spread_line} | Total {total_line}")
+        if league == "NCAAM" and str(g.get("status_state") or "").strip().lower() == "post":
+            away_points = g.get("away_points")
+            home_points = g.get("home_points")
+            actual_total = g.get("actual_total")
+            if away_points is not None and home_points is not None and actual_total is not None:
+                st.write(f"Final: Score {away_points:g} @ {home_points:g} | Total {actual_total:g}")
 
         # Compact agent summary (read-only); visible at top of expander for quick scan
         if _agent_row:
