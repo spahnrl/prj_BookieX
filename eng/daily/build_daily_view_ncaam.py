@@ -85,6 +85,21 @@ def safe_text(value, default=""):
     return str(value)
 
 
+def identity_team_name(display_val, base_name_val, team_id_val) -> str:
+    for candidate in (
+        safe_text(display_val).strip(),
+        safe_text(base_name_val).strip(),
+    ):
+        if candidate:
+            return candidate
+    tid = safe_text(team_id_val).strip()
+    if not tid:
+        return ""
+    return " ".join(
+        part.capitalize() for part in tid.replace("-", "_").split("_") if part
+    )
+
+
 def abs_edge_sort_value(game_row: dict) -> float:
     edge_metrics = game_row.get("edge_metrics", {}) or {}
     spread_edge = safe_float(edge_metrics.get("spread_edge"))
@@ -282,8 +297,16 @@ def build_daily_rows(games: list[dict]) -> list[dict]:
             "identity": {
                 "game_id": safe_text(game.get("canonical_game_id")).strip(),
                 "game_date_local": safe_text(game.get("game_date")).strip(),
-                "away_team": safe_text(game.get("away_team_display")).strip(),
-                "home_team": safe_text(game.get("home_team_display")).strip(),
+                "away_team": identity_team_name(
+                    game.get("away_team_display"),
+                    game.get("away_team"),
+                    game.get("away_team_id"),
+                ),
+                "home_team": identity_team_name(
+                    game.get("home_team_display"),
+                    game.get("home_team"),
+                    game.get("home_team_id"),
+                ),
                 "away_team_id": safe_text(game.get("away_team_id")).strip(),
                 "home_team_id": safe_text(game.get("home_team_id")).strip(),
                 "tip_time_cst": "",
