@@ -862,13 +862,23 @@ def _ncaam_result_with_margin(result_txt: str, margin_raw):
     r = (result_txt or "").strip()
     if not r:
         return "—"
+    ru = r.upper()
+    if ru == "WIN":
+        prefix = "✅ "
+    elif ru == "LOSS":
+        prefix = "❌ "
+    elif ru == "PUSH":
+        prefix = "➖ "
+    else:
+        prefix = ""
     if margin_raw is None:
-        return r
+        return f"{prefix}{r}" if prefix else r
     try:
         mv = float(margin_raw)
     except (TypeError, ValueError):
-        return r
-    return f"{r}x{mv:g}"
+        return f"{prefix}{r}" if prefix else r
+    body = f"{r}x{mv:g}"
+    return f"{prefix}{body}" if prefix else body
 
 
 for g in games:

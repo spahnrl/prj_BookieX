@@ -334,7 +334,7 @@ def build_daily_rows(games: list[dict]) -> list[dict]:
                 ),
                 "away_team_id": safe_text(game.get("away_team_id")).strip(),
                 "home_team_id": safe_text(game.get("home_team_id")).strip(),
-                "tip_time_cst": "",
+                "tip_time_cst": safe_text(game.get("odds_commence_time_cst") or game.get("tip_time_cst") or "").strip(),
                 "season_type": safe_text(game.get("season_type")).strip(),
             },
 
