@@ -340,9 +340,14 @@ def format_spread_text(home: str, away: str, spread_line, spread_pick: str) -> s
     except (TypeError, ValueError):
         return "No Spread Pick"
 
-    if spread_pick == "HOME":
+    pick_raw = (spread_pick or "").strip()
+    pick_norm = pick_raw.upper()
+    home_norm = (home or "").strip().upper()
+    away_norm = (away or "").strip().upper()
+
+    if pick_norm == "HOME" or (pick_raw and pick_raw.upper() == home_norm):
         return f"{home} ({spread_line:+.1f})"
-    if spread_pick == "AWAY":
+    if pick_norm == "AWAY" or (pick_raw and pick_raw.upper() == away_norm):
         return f"{away} ({-spread_line:+.1f})"
     return "No Spread Pick"
 
