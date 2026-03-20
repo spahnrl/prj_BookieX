@@ -852,6 +852,20 @@ elif sort_option == "Calibration Win Rate":
 # GAMES LOOP START
 # --------------------------------------------------
 
+
+def _ncaam_result_with_margin(result_txt: str, margin_raw):
+    r = (result_txt or "").strip()
+    if not r:
+        return "—"
+    if margin_raw is None:
+        return r
+    try:
+        mv = float(margin_raw)
+    except (TypeError, ValueError):
+        return r
+    return f"{r}x{mv:g}"
+
+
 for g in games:
     identity = g["identity"]
     market = g["market_state"]
@@ -935,8 +949,8 @@ for g in games:
         tr = str(g.get("selected_total_result") or "").strip()
         # Completed-game grading for title-line display (compact).
         if sr or tr:
-            sr_disp = sr if sr else "—"
-            tr_disp = tr if tr else "—"
+            sr_disp = _ncaam_result_with_margin(sr, g.get("selected_spread_margin_abs")) if sr else "—"
+            tr_disp = _ncaam_result_with_margin(tr, g.get("selected_total_margin_abs")) if tr else "—"
             result_suffix = f" || S = {sr_disp} / T = {tr_disp}"
 
     expander_label = (
