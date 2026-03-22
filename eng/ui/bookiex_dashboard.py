@@ -1001,7 +1001,7 @@ for g in games:
             )
         else:
             st.caption("**Agent (read-only):** — (no overlay for this game)")
-
+        st.markdown(f'ID:{_game_id}')
         st.markdown(f"### 🔥 Signal Strength — {tier}")
 
         st.markdown(
