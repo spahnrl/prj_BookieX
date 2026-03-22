@@ -9,7 +9,11 @@ Behavior
 --------
 - Supports optional CLI date argument:
     python eng/daily/build_daily_view_ncaam.py 2026-03-08
-- If no date is passed, selects the earliest upcoming available date
+- If no date is passed, selects the earliest game_date on or after "today"
+  in America/Chicago (same slate rule as datetime_bridge), not UTC — avoids
+  missing the slate when UTC is already the next calendar day.
+  If none qualify, falls back to the latest game_date in the input so a file
+  still writes when the artifact has no future rows (e.g. slate ended).
 - Includes all games for the selected date, even if no picks exist yet
 - Writes dashboard-safe JSON/CSV artifacts
 - Preserves NBA dashboard compatibility patterns without changing NBA format
@@ -26,6 +30,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from configs.leagues.league_ncaam import DAILY_DIR, MODEL_DIR, ensure_ncaam_dirs
+from utils.datetime_bridge import get_default_target_slate_date
 
 from eng.backtest.backtest_grader import grade_spread_bet, grade_total_bet
 
@@ -558,20 +563,28 @@ def run() -> None:
     if len(sys.argv) > 1:
         target_date = sys.argv[1]
     else:
-        today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        today_str = get_default_target_slate_date()
 
-        available_dates = sorted({
-            safe_text(g.get("game_date")).strip()
-            for g in games
-            if safe_text(g.get("game_date")).strip()
-            and safe_text(g.get("game_date")).strip() >= today_str
+        all_dates = sorted({
+            d for d in (
+                safe_text(g.get("game_date")).strip()
+                for g in games
+            ) if d
         })
 
-        if not available_dates:
-            print("No upcoming games available.")
-            return
+        available_dates = [d for d in all_dates if d >= today_str]
 
-        target_date = available_dates[0]
+        if available_dates:
+            target_date = available_dates[0]
+        elif all_dates:
+            target_date = all_dates[-1]
+            print(
+                f"No game_date on or after slate today ({today_str} America/Chicago); "
+                f"using latest date in input: {target_date}"
+            )
+        else:
+            print("No games with game_date in input; cannot build daily view.")
+            return
 
     csv_path, json_path = get_output_paths(target_date)
 

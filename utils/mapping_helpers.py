@@ -19,6 +19,30 @@ NCAAM_ALIAS_MAP = {
     "UConn": "Connecticut",
     "UNC": "North Carolina",
     "Penn St": "Pennsylvania State",
+    # Odds/schedule raw -> canonical display for join (diagnostic 2026-03)
+    "IUPUI Jaguars": "Indiana",  # IU Indianapolis
+    "Queens University Royals": "Queens (NC)",  # Queens (Charlotte); do not map to UNI
+    # ESPN scoreboard display variants (mascot/campus qualifier) -> team-map display
+    # so schedule rows resolve via substring contains rules in b_gen_003.
+    "Saint Mary's Gaels": "Saint Mary's (CA)",
+    # 003 resolution hardening: ESPN display names -> map-friendly (team_map norm_key)
+    "Southern Jaguars": "Southern U.",
+    "Arkansas-Pine Bluff Golden Lions": "Ark.-Pine Bluff",
+    "Western Kentucky Hilltoppers": "Western Ky.",
+    "Kennesaw State Owls": "Kennesaw St.",
+    "California Baptist": "California Baptist",
+    "CBU Lancers": "California Baptist",
+    "Cal Baptist Lancers": "California Baptist",
+    "California Baptist Lancers": "California Baptist",
+    # Odds API / ESPN wording (2026-03 slate): align with team_map norm_key contains
+    "Seattle Redhawks": "Seattle U Redhawks",
+    "GW Revolutionaries": "George Washington Revolutionaries",
+    "Oklahoma St Cowboys": "Oklahoma State Cowboys",
+    "Wichita St Shockers": "Wichita State Shockers",
+    # Wake Forest: ESPN "…Demon Deacons" norm_key lacks the map's "-st" state flag;
+    # map norm_key wakeforest is treated as state-school (ends in st). Alias → Wake Forest
+    # so raw and map both use wakeforest and the filter allows the match.
+    "Wake Forest Demon Deacons": "Wake Forest",
 }
 
 
@@ -163,6 +187,24 @@ def _ncaam_row_has_odds(row: dict) -> bool:
     )
 
 
+def _ncaam_row_completeness_score(row: dict) -> tuple[int, int, int]:
+    """
+    Prefer more complete odds coverage when multiple rows match a game.
+
+    Score is lexicographically compared:
+    - spread coverage (home+away) first
+    - then total
+    - then moneyline coverage
+    """
+    def _present(v: Any) -> bool:
+        return v not in (None, "")
+
+    spread_score = int(_present(row.get("spread_home"))) + int(_present(row.get("spread_away")))
+    total_score = int(_present(row.get("market_total")))
+    moneyline_score = int(_present(row.get("home_moneyline"))) + int(_present(row.get("away_moneyline")))
+    return (spread_score, total_score, moneyline_score)
+
+
 def find_best_market_match(
     game: dict,
     market_rows: list[dict],
@@ -191,7 +233,7 @@ def find_best_market_match(
             return None
         low, high = _window_nba(game_day, window_hours)
     else:
-        game_date_s = (game.get("game_date") or "").strip()[:10]
+        game_date_s = (game.get("slate_date_cst") or game.get("game_date") or "").strip()[:10]
         home_id = (game.get("home_team_id") or "").strip()
         away_id = (game.get("away_team_id") or "").strip()
         if not game_date_s or not home_id or not away_id:
@@ -203,7 +245,7 @@ def find_best_market_match(
 
     best = None
     best_diff: float | None = None
-    game_dt = _game_day_to_dt((game.get("nba_game_day_local") or game.get("game_date") or "").strip()[:10])
+    game_dt = _game_day_to_dt((game.get("slate_date_cst") or game.get("nba_game_day_local") or game.get("game_date") or "").strip()[:10])
 
     for row in market_rows:
         if not _teams_match(game, row, league):
@@ -222,4 +264,8 @@ def find_best_market_match(
         if best_diff is None or diff < best_diff:
             best_diff = diff
             best = row
+        elif league == "ncaam" and best_diff is not None and diff == best_diff:
+            # Tie-break: when time closeness is equal, prefer rows with spreads populated.
+            if _ncaam_row_completeness_score(row) > _ncaam_row_completeness_score(best):
+                best = row
     return best
