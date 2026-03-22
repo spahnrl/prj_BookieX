@@ -325,7 +325,9 @@ def build_daily_rows(games: list[dict]) -> list[dict]:
             "actual_total": actual_total_passthrough,
 
             "identity": {
-                "game_id": safe_text(game.get("canonical_game_id")).strip(),
+                "game_id": safe_text(
+                    game.get("canonical_game_id") or game.get("game_id")
+                ).strip(),
                 "game_date_local": safe_text(game.get("game_date")).strip(),
                 "away_team": identity_team_name(
                     game.get("away_team_display"),

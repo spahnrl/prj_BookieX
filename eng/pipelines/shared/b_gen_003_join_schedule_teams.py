@@ -37,6 +37,7 @@ from utils.io_helpers import (
     load_schedule_raw,
     save_schedule_joined,
 )
+from utils.mapping_helpers import NCAAM_ALIAS_MAP, ncaam_fuzzy_match_enabled, ncaam_fuzzy_resolve_team
 from utils.run_log import set_silent, log_info
 
 
@@ -130,8 +131,9 @@ def run_nba() -> None:
 # =============================================================================
 
 def _ncaam_has_state_suffix_semantics(norm_key: str) -> bool:
+    """True if key looks like a 'State' school (suffix or contains 'state') for match disambiguation."""
     v = (norm_key or "").strip().lower()
-    return v.endswith("state") or v.endswith("st")
+    return v.endswith("state") or v.endswith("st") or ("state" in v)
 
 
 def _ncaam_normalize_name(value: str) -> str:
@@ -172,6 +174,8 @@ def _ncaam_load_team_lookup() -> list[dict]:
 def _ncaam_resolve_team_name(raw_name: str, team_lookup: list[dict]) -> dict | None:
     if not raw_name:
         return None
+    # Apply same aliases as f_gen_041 so schedule and odds resolve to same team_id
+    raw_name = (NCAAM_ALIAS_MAP.get((raw_name or "").strip()) or raw_name).strip()
     raw_norm_key = _ncaam_build_team_norm_key(raw_name)
     if not raw_norm_key:
         return None
@@ -187,6 +191,10 @@ def _ncaam_resolve_team_name(raw_name: str, team_lookup: list[dict]) -> dict | N
         if map_key in raw_norm_key:
             matches.append(candidate)
     if not matches:
+        if ncaam_fuzzy_match_enabled():
+            hit = ncaam_fuzzy_resolve_team(raw_name, team_lookup)
+            if hit:
+                return hit
         return None
     exact = [m for m in matches if m["team_name_norm_key"] == raw_norm_key]
     if len(exact) == 1:
@@ -253,14 +261,84 @@ def _ncaam_build_unmatched_audit(mapped_rows: list[dict]) -> list[dict]:
     return audit
 
 
+def _ncaam_is_tbd(name: str) -> bool:
+    return (name or "").strip().upper() == "TBD"
+
+
+def _ncaam_build_unresolved_diagnostics(mapped_rows: list[dict]) -> tuple[list[dict], list[dict], list[str], dict]:
+    """Split unresolved rows into true TBD vs named-but-unresolved; build diagnostic records and candidate alias list."""
+    tbd_rows: list[dict] = []
+    named_unresolved_rows: list[dict] = []
+    candidate_aliases: list[str] = []
+    seen_raw: set[str] = set()
+
+    for row in mapped_rows:
+        status = (row.get("mapping_status") or "").strip().lower()
+        if status == "matched":
+            continue
+        home_raw = (row.get("home_team_raw") or "").strip()
+        away_raw = (row.get("away_team_raw") or "").strip()
+        home_tbd = _ncaam_is_tbd(home_raw)
+        away_tbd = _ncaam_is_tbd(away_raw)
+        game_id = (row.get("espn_game_id") or row.get("game_id") or "").strip()
+        game_date = (row.get("game_date") or "").strip()
+        requested_date = (row.get("requested_date") or "").strip()
+        away_norm = _ncaam_build_team_norm_key(away_raw)
+        home_norm = _ncaam_build_team_norm_key(home_raw)
+        away_src = (row.get("away_lookup_source") or "").strip() or "unmatched"
+        home_src = (row.get("home_lookup_source") or "").strip() or "unmatched"
+
+        rec = {
+            "game_id": game_id,
+            "away_team_raw": away_raw,
+            "home_team_raw": home_raw,
+            "game_date": game_date,
+            "requested_date": requested_date,
+            "away_norm_key": away_norm,
+            "home_norm_key": home_norm,
+            "away_lookup_source": away_src,
+            "home_lookup_source": home_src,
+            "exclusion_class": "tbd" if (away_tbd or home_tbd) else "named_unresolved",
+        }
+        if away_tbd or home_tbd:
+            tbd_rows.append(rec)
+        else:
+            named_unresolved_rows.append(rec)
+            for name in (away_raw, home_raw):
+                if name and name not in seen_raw:
+                    seen_raw.add(name)
+                    candidate_aliases.append(name)
+
+    candidate_aliases.sort()
+    summary = {
+        "total_unresolved": len(tbd_rows) + len(named_unresolved_rows),
+        "tbd_count": len(tbd_rows),
+        "named_unresolved_count": len(named_unresolved_rows),
+        "candidate_alias_count": len(candidate_aliases),
+    }
+    return tbd_rows, named_unresolved_rows, candidate_aliases, summary
+
+
 def run_ncaam() -> None:
-    from configs.leagues.league_ncaam import SCHEDULE_MAPPED_PATH, MARKET_AUDIT_DIR, ensure_ncaam_dirs
+    from configs.leagues.league_ncaam import SCHEDULE_MAPPED_PATH, MARKET_AUDIT_DIR, INTERIM_DIR, ensure_ncaam_dirs
 
     ensure_ncaam_dirs()
     schedule_rows = load_schedule_raw("ncaam")
     team_lookup = _ncaam_load_team_lookup()
     mapped_rows = _ncaam_map_schedule_rows(schedule_rows, team_lookup)
     unmatched_audit = _ncaam_build_unmatched_audit(mapped_rows)
+
+    tbd_rows, named_unresolved_rows, candidate_aliases, unres_summary = _ncaam_build_unresolved_diagnostics(mapped_rows)
+    unresolved_diagnostic_path = INTERIM_DIR / "ncaam_schedule_unresolved_diagnostics.json"
+    unresolved_diagnostic_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(unresolved_diagnostic_path, "w", encoding="utf-8") as f:
+        json.dump({
+            "summary": unres_summary,
+            "tbd_rows": tbd_rows,
+            "named_unresolved_rows": named_unresolved_rows,
+            "candidate_alias_map_add_list": candidate_aliases,
+        }, f, indent=2)
+    log_info(f"Unresolved diagnostics: {unresolved_diagnostic_path}")
 
     save_schedule_joined("ncaam", mapped_rows)
     write_legacy_csv(mapped_rows, SCHEDULE_MAPPED_PATH)
@@ -275,11 +353,20 @@ def run_ncaam() -> None:
     matched = sum(1 for r in mapped_rows if (r.get("mapping_status") or "") == "matched")
     partial = sum(1 for r in mapped_rows if (r.get("mapping_status") or "") == "partial")
     unmatched = sum(1 for r in mapped_rows if (r.get("mapping_status") or "") == "unmatched")
+    named_unresolved_count = unres_summary["named_unresolved_count"]
+    tbd_count = unres_summary["tbd_count"]
 
     log_info(f"Schedule JSON: {get_schedule_joined_path('ncaam')}")
     log_info(f"Legacy CSV:   {SCHEDULE_MAPPED_PATH}")
     log_info(f"Unmatched audit: {unmatched_path}")
     log_info(f"Schedule rows: {len(schedule_rows)}; team map: {len(team_lookup)}; matched: {matched}; partial: {partial}; unmatched: {unmatched}")
+    log_info("---")
+    log_info("NCAAM resolution (unresolved):")
+    log_info(f"  True TBD rows (cannot resolve yet):     {tbd_count}")
+    log_info(f"  NAMED-BUT-UNRESOLVED rows (map gap):   {named_unresolved_count}")
+    if named_unresolved_count > 0:
+        log_info(f"  -> See named_unresolved_rows in {unresolved_diagnostic_path}")
+        log_info(f"  -> Candidate alias/map-add list: {len(candidate_aliases)} unique team names")
 
 
 # =============================================================================

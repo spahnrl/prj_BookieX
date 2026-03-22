@@ -24,6 +24,7 @@ import sys
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from typing import Callable
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -31,14 +32,21 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from utils.io_helpers import (
+    get_canonical_games_csv_path,
     get_game_state_path,
     load_previous_game_state_by_id,
     save_game_state,
 )
 from utils.mapping_helpers import (
+    NCAAM_ALIAS_MAP,
+    _get_market_commence_dt,
+    _ncaam_row_has_odds,
+    _window_ncaam,
+    build_ncaam_team_normalization_key,
     find_best_market_match,
     normalize_ncaam_team_for_match,
-    build_ncaam_team_normalization_key,
+    ncaam_fuzzy_match_enabled,
+    ncaam_fuzzy_resolve_team,
 )
 from utils.run_log import set_silent, log_info
 
@@ -424,6 +432,11 @@ def _ncaam_resolve_team_name(raw_name: str, team_lookup: list[dict]) -> dict | N
         if map_norm_key in raw_norm_key:
             matches.append(candidate)
     if not matches:
+        if ncaam_fuzzy_match_enabled():
+            aliased = (NCAAM_ALIAS_MAP.get((raw_name or "").strip()) or raw_name).strip()
+            hit = ncaam_fuzzy_resolve_team(aliased, team_lookup)
+            if hit:
+                return hit
         return None
     exact_matches = [m for m in matches if m["team_name_norm_key"] == raw_norm_key]
     if len(exact_matches) == 1:
@@ -595,6 +608,91 @@ def _ncaam_build_event_lookup(collapsed_rows: list[dict], base_rows: list[dict])
     return lookup
 
 
+def _ncaam_one_sided_fallback(
+    collapsed_rows: list[dict],
+    base_rows: list[dict],
+    odds_index: dict[tuple[str, str, str], dict],
+    window_hours: int = 24,
+) -> tuple[dict[tuple[str, str, str], dict], set[tuple[str, str, str]], set[str], set[str]]:
+    """
+    For games with exactly one placeholder (tbd_*_home or tbd_*_away), try to match
+    market rows by known team + slate/date. If exactly one candidate: use it.
+    Returns (updated odds_index, fallback_matched_keys, fallback_ambiguous_ids, fallback_miss_ids).
+    """
+    fallback_matched_keys: set[tuple[str, str, str]] = set()
+    fallback_ambiguous_ids: set[str] = set()
+    fallback_miss_ids: set[str] = set()
+    out_index = dict(odds_index)
+
+    for game in base_rows:
+        game_date = (game.get("game_date") or "").strip()[:10]
+        home_id = (game.get("home_team_id") or "").strip()
+        away_id = (game.get("away_team_id") or "").strip()
+        join_key = (game_date, home_id, away_id)
+        cid = (game.get("canonical_game_id") or "").strip()
+
+        if join_key in out_index:
+            continue
+        home_tbd = home_id.startswith("tbd_")
+        away_tbd = away_id.startswith("tbd_")
+        if not (home_tbd != away_tbd and (home_id or away_id)):
+            continue
+        known_id = away_id if home_tbd else home_id
+        if not known_id:
+            continue
+
+        game_date_s = (game.get("slate_date_cst") or game.get("game_date") or "").strip()[:10]
+        if not game_date_s:
+            fallback_miss_ids.add(cid)
+            continue
+        low, high = _window_ncaam(game_date_s, window_hours)
+        if low is None or high is None:
+            fallback_miss_ids.add(cid)
+            continue
+
+        candidates = []
+        for row in collapsed_rows:
+            if not _ncaam_row_has_odds(row):
+                continue
+            m_h = (row.get("home_team_id") or "").strip()
+            m_a = (row.get("away_team_id") or "").strip()
+            if m_h != known_id and m_a != known_id:
+                continue
+            comm = _get_market_commence_dt(row, "ncaam")
+            if not comm:
+                continue
+            if comm.tzinfo:
+                comm = comm.replace(tzinfo=None)
+            if not (low <= comm <= high):
+                continue
+            candidates.append(row)
+
+        if len(candidates) == 1:
+            out_index[join_key] = candidates[0]
+            fallback_matched_keys.add(join_key)
+        elif len(candidates) > 1:
+            # Tie-break: only treat as matchable when all candidates are same matchup
+            # (multiple bookmakers). Different matchups = truly ambiguous, do not match.
+            unique_matchups = set(
+                ((r.get("home_team_id") or "").strip(), (r.get("away_team_id") or "").strip())
+                for r in candidates
+            )
+            if len(unique_matchups) == 1:
+                # Same matchup, multiple bookmakers: pick one deterministically (latest capture, then bookmaker_key).
+                chosen = sorted(
+                    candidates,
+                    key=lambda r: ((r.get("captured_at_utc") or "").strip(), (r.get("bookmaker_key") or "").strip()),
+                )[-1]
+                out_index[join_key] = chosen
+                fallback_matched_keys.add(join_key)
+            else:
+                fallback_ambiguous_ids.add(cid)
+        else:
+            fallback_miss_ids.add(cid)
+
+    return out_index, fallback_matched_keys, fallback_ambiguous_ids, fallback_miss_ids
+
+
 def _ncaam_is_finalized(row: dict) -> bool:
     completed = row.get("completed_flag")
     if completed is not None and completed != "":
@@ -625,11 +723,35 @@ def _ncaam_snapshot(market_row: dict) -> dict:
     }
 
 
+def _ncaam_utc_to_cst(ts) -> str:
+    """Return ISO string in America/Chicago or empty string. Same semantics as NBA 0052."""
+    if not ts:
+        return ""
+    try:
+        dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+        return dt.astimezone(ZoneInfo("America/Chicago")).isoformat()
+    except Exception:
+        return ""
+
+
 def _ncaam_apply_odds(game: dict, market: dict) -> None:
     game["line_join_status"] = "matched"
+    game["line_join_method"] = game.get("line_join_method") or "full_match"
     game["bookmaker_key"] = market.get("bookmaker_key", "")
     game["bookmaker_title"] = market.get("bookmaker_title", "")
     game["captured_at_utc"] = market.get("captured_at_utc", "")
+    commence_utc = (market.get("commence_time") or "").strip()
+    game["odds_commence_time_utc"] = commence_utc
+    cst = _ncaam_utc_to_cst(commence_utc) if commence_utc else ""
+    game["odds_commence_time_cst"] = cst
+    # Prefer canonical game_date for slate (schedule authority); fallback to odds-derived CST date
+    gd = (game.get("game_date") or "").strip()[:10]
+    if len(gd) >= 10 and gd[4] == "-" and gd[7] == "-" and gd[:4].isdigit():
+        game["slate_date_cst"] = gd
+    elif cst and len(cst) >= 10 and cst[4] == "-" and cst[7] == "-":
+        game["slate_date_cst"] = cst[:10]
+    else:
+        game["slate_date_cst"] = ""
     game["market_spread_home"] = market.get("spread_home", "")
     game["market_spread_away"] = market.get("spread_away", "")
     game["market_total"] = market.get("market_total", "")
@@ -639,9 +761,13 @@ def _ncaam_apply_odds(game: dict, market: dict) -> None:
 
 def _ncaam_set_missing_odds(game: dict) -> None:
     game["line_join_status"] = "unmatched"
+    game["line_join_method"] = game.get("line_join_method") or ""
     game["bookmaker_key"] = ""
     game["bookmaker_title"] = ""
     game["captured_at_utc"] = ""
+    game["odds_commence_time_utc"] = ""
+    game["odds_commence_time_cst"] = ""
+    game["slate_date_cst"] = ""
     game["market_spread_home"] = ""
     game["market_spread_away"] = ""
     game["market_total"] = ""
@@ -650,7 +776,8 @@ def _ncaam_set_missing_odds(game: dict) -> None:
 
 
 NCAAM_PREVIOUS_ODDS_KEYS = [
-    "line_join_status", "bookmaker_key", "bookmaker_title", "captured_at_utc",
+    "line_join_status", "line_join_method", "bookmaker_key", "bookmaker_title", "captured_at_utc",
+    "odds_commence_time_utc", "odds_commence_time_cst", "slate_date_cst",
     "market_spread_home", "market_spread_away", "market_total",
     "market_home_moneyline", "market_away_moneyline",
 ]
@@ -664,14 +791,17 @@ def run_ncaam() -> None:
         RAW_DIR,
         ensure_ncaam_dirs,
     )
-    MODEL_INPUT_V1_PATH = MODEL_DIR / "ncaam_model_input_v1.csv"
+    ncaam_canonical_path = get_canonical_games_csv_path("ncaam")
     TEAM_MAP_PATH = RAW_DIR / "ncaam_team_map.csv"
     OUTPUT_CSV_PATH = MODEL_DIR / "ncaam_canonical_games_with_lines.csv"
 
     ensure_ncaam_dirs()
+    log_info(f"NCAAM 041 input (canonical from 021): {ncaam_canonical_path}")
 
-    with open(MODEL_INPUT_V1_PATH, "r", encoding="utf-8", newline="") as f:
+    with open(ncaam_canonical_path, "r", encoding="utf-8", newline="") as f:
         base_rows = list(csv.DictReader(f))
+    ncaam_dates_in = [(r.get("game_date") or "").strip()[:10] for r in base_rows if (r.get("game_date") or "").strip()[:10]]
+    log_info(f"NCAAM 041 diagnostic: base_rows={len(base_rows)}, game_date range={min(ncaam_dates_in) if ncaam_dates_in else 'N/A'} .. {max(ncaam_dates_in) if ncaam_dates_in else 'N/A'}")
     with open(TEAM_MAP_PATH, "r", encoding="utf-8", newline="") as f:
         team_map_rows = list(csv.DictReader(f))
 
@@ -714,6 +844,9 @@ def run_ncaam() -> None:
     team_lookup = _ncaam_build_team_lookup(team_map_rows)
     collapsed_rows = _ncaam_collapse_odds_rows(odds_rows, team_lookup)
     odds_index = _ncaam_build_event_lookup(collapsed_rows, base_rows)
+    odds_index, fallback_matched_keys, fallback_ambiguous_ids, fallback_miss_ids = _ncaam_one_sided_fallback(
+        collapsed_rows, base_rows, odds_index, window_hours=24
+    )
     previous_by_id = load_previous_game_state_by_id("ncaam", "canonical_game_id")
 
     result = join_odds_with_drift_and_finalized(
@@ -722,7 +855,7 @@ def run_ncaam() -> None:
         previous_by_id,
         get_game_id=lambda r: r.get("canonical_game_id") or "",
         get_join_key=lambda r: (
-            (r.get("game_date") or "").strip(),
+            (r.get("game_date") or "").strip()[:10],
             (r.get("home_team_id") or "").strip(),
             (r.get("away_team_id") or "").strip(),
         ),
@@ -732,6 +865,24 @@ def run_ncaam() -> None:
         apply_odds=_ncaam_apply_odds,
         set_missing_odds=_ncaam_set_missing_odds,
     )
+    result_dates = [(r.get("game_date") or "").strip()[:10] for r in result if (r.get("game_date") or "").strip()[:10]]
+    log_info(f"NCAAM 041 diagnostic: result rows={len(result)}, game_date range={min(result_dates) if result_dates else 'N/A'} .. {max(result_dates) if result_dates else 'N/A'}")
+
+    for g in result:
+        cid = (g.get("canonical_game_id") or "").strip()
+        join_key = (
+            (g.get("game_date") or "").strip()[:10],
+            (g.get("home_team_id") or "").strip(),
+            (g.get("away_team_id") or "").strip(),
+        )
+        if join_key in fallback_matched_keys:
+            g["line_join_method"] = "one_sided_known_team_fallback"
+        elif cid in fallback_ambiguous_ids:
+            g["line_join_method"] = "one_sided_known_team_ambiguous"
+        elif cid in fallback_miss_ids:
+            g["line_join_method"] = "one_sided_fallback_miss"
+        elif (g.get("line_join_status") or "") == "matched":
+            g["line_join_method"] = "full_match"
 
     save_game_state("ncaam", result)
     write_csv(result, OUTPUT_CSV_PATH)
@@ -756,6 +907,11 @@ def run_ncaam() -> None:
     log_info(f"Line-unmatched rows:        {unmatched_count}")
     log_info(f"Rows with odds_history:     {with_history}")
     log_info(f"Finalized (locked):         {finalized_locked}")
+    log_info("---")
+    log_info("One-sided TBD fallback:")
+    log_info(f"  Fallback matched:         {len(fallback_matched_keys)}")
+    log_info(f"  Fallback ambiguous:       {len(fallback_ambiguous_ids)}")
+    log_info(f"  Fallback miss:            {len(fallback_miss_ids)}")
 
 
 # =============================================================================
