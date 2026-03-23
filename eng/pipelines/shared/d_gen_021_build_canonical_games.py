@@ -260,6 +260,21 @@ def _ncaam_excluded_record(
     }
 
 
+def _ncaam_row_schedule_score_str(row: dict, side: str) -> str:
+    """Schedule joined row: 001 uses home_team_score/away_team_score; NBA-style rows use home_score/away_score."""
+    keys = ("home_score", "home_team_score") if side == "home" else ("away_score", "away_team_score")
+    for key in keys:
+        v = row.get(key)
+        if v is None or v == "":
+            continue
+        if isinstance(v, (int, float)):
+            return str(v)
+        s = str(v).strip()
+        if s:
+            return s
+    return ""
+
+
 def _ncaam_build_canonical_games(
     schedule_rows: list[dict],
     box_lookup: dict[str, dict],
@@ -371,8 +386,8 @@ def _ncaam_build_canonical_games(
             "away_team_display": _s("away_team_display"),
             "schedule_home_team_raw": _s("home_team_raw"),
             "schedule_away_team_raw": _s("away_team_raw"),
-            "schedule_home_score": _s("home_score"),
-            "schedule_away_score": _s("away_score"),
+            "schedule_home_score": _ncaam_row_schedule_score_str(row, "home"),
+            "schedule_away_score": _ncaam_row_schedule_score_str(row, "away"),
             "box_home_score": _b("home_score"),
             "box_away_score": _b("away_score"),
             "box_home_winner": _b("home_winner"),

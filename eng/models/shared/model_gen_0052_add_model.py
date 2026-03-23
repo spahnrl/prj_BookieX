@@ -5,8 +5,9 @@ Unified finalization layer: read multi-model artifact (0051 output), apply
 league-specific selection/arbitration, write final game view JSON/CSV for UI.
 
 Uses safe string normalization (_s) for all fields that may be int/float
-so downstream .strip() never crashes. Output structure per league is unchanged
-for Streamlit UI compatibility.
+so downstream .strip() never crashes. NCAAM final rows merge upstream game dicts (NBA-style fat rows) with authority
+overlays. Final-view CSV for both leagues uses the same column strategy
+(preferred keys first, then sorted union of all row keys).
 
 Usage:
   python eng/models/model_gen_0052_add_model.py --league nba
@@ -49,6 +50,32 @@ def safe_float(value):
         return float(value)
     except Exception:
         return None
+
+
+# Column order for final-view CSV: shared with NBA (preferred keys first, then sorted remainder).
+FINAL_VIEW_CSV_PREFERRED_ORDER = [
+    "game_id", "game_date", "home_team", "away_team",
+    "spread_home", "spread_away", "total",
+    "Total Projection", "Line Bet", "Spread Edge", "Total Edge", "Parlay Edge Score",
+    "confidence_tier", "selection_authority", "primary_model_source",
+]
+
+
+def write_final_view_csv(rows: list[dict], out_path: Path) -> None:
+    """Write final game rows to CSV: union of all keys, NBA-aligned column order."""
+    if not rows:
+        return
+    all_fields: set[str] = set()
+    for g in rows:
+        all_fields.update(g.keys())
+    final_fields = FINAL_VIEW_CSV_PREFERRED_ORDER + sorted(
+        all_fields - set(FINAL_VIEW_CSV_PREFERRED_ORDER)
+    )
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=final_fields, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 # =============================================================================
@@ -173,22 +200,7 @@ def run_nba() -> None:
     with open(OUT_JSON, "w", encoding="utf-8") as f:
         json.dump(games, f, indent=2)
 
-    flat_rows = list(games)
-    all_fields = set()
-    for g in games:
-        all_fields.update(g.keys())
-    PREFERRED_ORDER = [
-        "game_id", "game_date", "home_team", "away_team",
-        "spread_home", "spread_away", "total",
-        "Total Projection", "Line Bet", "Spread Edge", "Total Edge", "Parlay Edge Score",
-        "confidence_tier", "selection_authority", "primary_model_source",
-    ]
-    final_fields = PREFERRED_ORDER + sorted(all_fields - set(PREFERRED_ORDER))
-    if flat_rows:
-        with open(OUT_CSV, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=final_fields, extrasaction="ignore")
-            writer.writeheader()
-            writer.writerows(flat_rows)
+    write_final_view_csv(list(games), OUT_CSV)
 
     summary = summarize_actions(games)
     if summary:
@@ -216,6 +228,21 @@ def run_ncaam() -> None:
     OUTPUT_JSON_ACTIVE = get_final_view_active_json_path("ncaam")
     OUTPUT_CSV = get_final_view_csv_path("ncaam")
     SELECTION_AUTHORITY = "ncaam_avg_score_model"
+
+    def utc_to_cst(ts):
+        if not ts:
+            return None
+        try:
+            dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+            return dt.astimezone(ZoneInfo("America/Chicago")).isoformat()
+        except Exception:
+            return None
+
+    def line_from_last_or_market(g: dict, last_key: str, market_key: str) -> str:
+        v = g.get(last_key)
+        if v not in (None, ""):
+            return _s(v)
+        return _s(g.get(market_key))
 
     def load_payload() -> dict:
         if not INPUT_PATH.exists():
@@ -280,64 +307,70 @@ def run_ncaam() -> None:
                         break
             selected_model = models.get(SELECTION_AUTHORITY, {}) or {}
             # NCAAM completed-game grading uses home_points/away_points.
-            # In some upstream artifacts, final scores live under away_points/home_points
-            # or box_/schedule_ score keys instead of away_score/home_score.
+            # Prefer ESPN scoreboard schedule scores over summary box (004) when both exist — box can be stale/wrong.
             raw_away_points = game.get("away_score")
             if raw_away_points in (None, ""):
-                raw_away_points = game.get("away_points") or game.get("box_away_score") or game.get("schedule_away_score")
+                raw_away_points = (
+                    game.get("schedule_away_score")
+                    or game.get("away_points")
+                    or game.get("box_away_score")
+                )
             raw_home_points = game.get("home_score")
             if raw_home_points in (None, ""):
-                raw_home_points = game.get("home_points") or game.get("box_home_score") or game.get("schedule_home_score")
-            row = {
-                "game_id": _s(game.get("canonical_game_id")),
-                "game_source_id": _s(game.get("game_source_id")),
-                "espn_game_id": _s(game.get("espn_game_id")),
-                "game_date": _s(game.get("game_date")),
-                "odds_commence_time_cst": _s(game.get("odds_commence_time_cst")),
-                "odds_commence_time_utc": _s(game.get("odds_commence_time_utc")),
-                "away_team": _s(game.get("away_team_display")),
-                "home_team": _s(game.get("home_team_display")),
-                "away_team_id": _s(game.get("away_team_id")),
-                "home_team_id": _s(game.get("home_team_id")),
-                "away_score": _s(game.get("away_score")),
-                "home_score": _s(game.get("home_score")),
-                "away_points": _s(raw_away_points),
-                "home_points": _s(raw_home_points),
-                "spread_home": _s(game.get("market_spread_home")),
-                "spread_away": _s(game.get("market_spread_away")),
-                "total": _s(game.get("market_total")),
-                "moneyline_home": _s(game.get("market_home_moneyline")),
-                "moneyline_away": _s(game.get("market_away_moneyline")),
-                "selection_authority": SELECTION_AUTHORITY,
-                "primary_model_source": SELECTION_AUTHORITY,
-                "Home Line Projection": _s(selected_model.get("home_line_proj")),
-                "Total Projection": _s(selected_model.get("total_projection")),
-                "Spread Edge": _s(selected_model.get("spread_edge")),
-                "Total Edge": _s(selected_model.get("total_edge")),
-                "Parlay Edge Score": _s(selected_model.get("parlay_edge_score")),
-                "Line Bet": _s(selected_model.get("spread_pick")),
-                "Total Bet": _s(selected_model.get("total_pick")),
-                "Decision Factors": {},
-                "Explanation": make_explanation(game, selected_model),
-                "confidence_tier": compute_confidence_tier(selected_model),
-                "confidence_reason": compute_confidence_reason(selected_model),
-                "actionability": compute_actionability(selected_model),
-                "arbitration": {"spread": None, "total": None},
-                "arbitration_cluster": "NONE",
-                "cluster_alignment": "NONE",
-                "disagreement_flag": False,
-                "models": models,
-                "status_name": _s(game.get("status_name")),
-                "status_state": _s(game.get("status_state")),
-                "completed_flag": _s(game.get("completed_flag")),
-                "venue_name": _s(game.get("venue_name")),
-                "season": _s(game.get("season")),
-                "season_type": _s(game.get("season_type")),
-                "line_join_status": _s(game.get("line_join_status")),
-                "bookmaker_key": _s(game.get("bookmaker_key")),
-                "bookmaker_title": _s(game.get("bookmaker_title")),
-                "agent_reasoning": "",
-            }
+                raw_home_points = (
+                    game.get("schedule_home_score")
+                    or game.get("home_points")
+                    or game.get("box_home_score")
+                )
+
+            # Merge-through: preserve upstream multi-model / box / market keys (NBA-style fat rows).
+            row = dict(game)
+            row["models"] = models
+
+            row["game_id"] = _s(game.get("canonical_game_id") or game.get("game_id"))
+            row["away_team"] = _s(game.get("away_team_display") or game.get("away_team"))
+            row["home_team"] = _s(game.get("home_team_display") or game.get("home_team"))
+            row["away_score"] = _s(game.get("away_score"))
+            row["home_score"] = _s(game.get("home_score"))
+            row["away_points"] = _s(raw_away_points)
+            row["home_points"] = _s(raw_home_points)
+
+            # Lines: prefer snapshot LAST fields (NBA parity), else market_*.
+            row["spread_home"] = line_from_last_or_market(game, "spread_home_last", "market_spread_home")
+            row["spread_away"] = line_from_last_or_market(game, "spread_away_last", "market_spread_away")
+            row["total"] = line_from_last_or_market(game, "total_last", "market_total")
+            row["moneyline_home"] = line_from_last_or_market(game, "moneyline_home_last", "market_home_moneyline")
+            row["moneyline_away"] = line_from_last_or_market(game, "moneyline_away_last", "market_away_moneyline")
+            row["odds_source_used"] = row.get("odds_source_used") or "LAST"
+            if not _s(row.get("odds_commence_time_cst")):
+                cst = utc_to_cst(game.get("odds_commence_time_utc"))
+                if cst:
+                    row["odds_commence_time_cst"] = cst
+
+            # NBA-shaped projection slots (NCAAM authority model may omit proj_home/proj_away).
+            row["Projected Home Score"] = _s(selected_model.get("proj_home"))
+            row["Projected Away score"] = _s(selected_model.get("proj_away"))
+            row["Line Result"] = None
+
+            row["selection_authority"] = SELECTION_AUTHORITY
+            row["primary_model_source"] = SELECTION_AUTHORITY
+            row["Home Line Projection"] = _s(selected_model.get("home_line_proj"))
+            row["Total Projection"] = _s(selected_model.get("total_projection"))
+            row["Spread Edge"] = _s(selected_model.get("spread_edge"))
+            row["Total Edge"] = _s(selected_model.get("total_edge"))
+            row["Parlay Edge Score"] = _s(selected_model.get("parlay_edge_score"))
+            row["Line Bet"] = _s(selected_model.get("spread_pick"))
+            row["Total Bet"] = _s(selected_model.get("total_pick"))
+            row["Decision Factors"] = {}
+            row["Explanation"] = make_explanation(game, selected_model)
+            row["confidence_tier"] = compute_confidence_tier(selected_model)
+            row["confidence_reason"] = compute_confidence_reason(selected_model)
+            row["actionability"] = compute_actionability(selected_model)
+            row["arbitration"] = {"spread": None, "total": None}
+            row["arbitration_cluster"] = "NONE"
+            row["cluster_alignment"] = "NONE"
+            row["disagreement_flag"] = False
+            row["agent_reasoning"] = ""
             out.append(row)
         out.sort(key=lambda r: (r.get("game_date", ""), r.get("game_id", "")))
         return out
@@ -345,30 +378,12 @@ def run_ncaam() -> None:
     def build_active_rows(rows: list[dict]) -> list[dict]:
         return [r for r in rows if _s(r.get("actionability")) != "NONE"]
 
-    def build_csv_rows(rows: list[dict]) -> list[dict]:
-        out = []
-        for r in rows:
-            out.append({
-                "game_id": r.get("game_id", ""), "game_source_id": r.get("game_source_id", ""), "espn_game_id": r.get("espn_game_id", ""), "game_date": r.get("game_date", ""),
-                "away_team": r.get("away_team", ""), "home_team": r.get("home_team", ""), "away_team_id": r.get("away_team_id", ""), "home_team_id": r.get("home_team_id", ""),
-                "spread_home": r.get("spread_home", ""), "spread_away": r.get("spread_away", ""), "total": r.get("total", ""), "moneyline_home": r.get("moneyline_home", ""), "moneyline_away": r.get("moneyline_away", ""),
-                "selection_authority": r.get("selection_authority", ""), "primary_model_source": r.get("primary_model_source", ""),
-                "Home Line Projection": r.get("Home Line Projection", ""), "Total Projection": r.get("Total Projection", ""), "Spread Edge": r.get("Spread Edge", ""), "Total Edge": r.get("Total Edge", ""), "Parlay Edge Score": r.get("Parlay Edge Score", ""),
-                "Line Bet": r.get("Line Bet", ""), "Total Bet": r.get("Total Bet", ""),
-                "confidence_tier": r.get("confidence_tier", ""), "confidence_reason": r.get("confidence_reason", ""), "actionability": r.get("actionability", ""),
-                "agent_reasoning": r.get("agent_reasoning", ""),
-                "status_name": r.get("status_name", ""), "status_state": r.get("status_state", ""), "completed_flag": r.get("completed_flag", ""),
-                "line_join_status": r.get("line_join_status", ""), "bookmaker_key": r.get("bookmaker_key", ""), "bookmaker_title": r.get("bookmaker_title", ""),
-            })
-        return out
-
     ensure_ncaam_dirs()
     payload = load_payload()
     games = payload.get("games", [])
     final_rows = build_final_rows(games)
     add_agent_reasoning_to_rows(final_rows, league="ncaam")
     active_rows = build_active_rows(final_rows)
-    csv_rows = build_csv_rows(final_rows)
 
     OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
@@ -376,11 +391,7 @@ def run_ncaam() -> None:
     if OUTPUT_JSON_ACTIVE:
         with open(OUTPUT_JSON_ACTIVE, "w", encoding="utf-8") as f:
             json.dump(active_rows, f, indent=2)
-    if csv_rows:
-        with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=csv_rows[0].keys())
-            writer.writeheader()
-            writer.writerows(csv_rows)
+    write_final_view_csv(final_rows, OUTPUT_CSV)
 
     joined = sum(1 for r in final_rows if (r.get("line_join_status") or "").strip().lower() == "matched")
     total = len(final_rows)

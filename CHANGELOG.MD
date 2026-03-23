@@ -7326,3 +7326,301 @@ Cleaned up the recommended `000_RUN_ALL_NCAAM.py` step order to reflect the repa
 - **eng/analysis/analysis_039_execution_overlay_performance.py:** When league is NCAAM, backtest games missing `execution_overlay` are now filled using NCAAM overlay logic (`get_ncaam_execution_overlay_from_edges` / `data/ncaam/reports/bias_report_ncaam.json`) instead of NBA's `compute_overlay_from_edges`. NBA path unchanged. Added float coercion for spread/total edge values from backtest rows to avoid TypeError when values are strings.
 - **eng/ui/bookiex_dashboard.py:** When league NCAAM is selected and no NCAAM `execution_overlay_performance.json` exists, a caption prompts running `backtest_gen_runner` and `analysis_039 --league ncaam` for league-specific metrics.
 - NCAAM backtest and `analysis_039 --league ncaam` were run successfully; `execution_overlay_performance.json` written to latest NCAAM backtest dir.
+
+---
+## 2026-03-15 — Execution overlay push and online dashboard fix
+
+- **Diagnosis:** Confirmed dashboard reads Execution Overlay Backtest Reference from backtest dirs via `get_backtest_output_root(league)` and latest-by-mtime dir; not from daily artifacts. Confirmed `analysis_039_execution_overlay_performance.py` writes `execution_overlay_performance.json` into latest backtest dir for both NBA and NCAAM when run. Local dashboard shows dynamic overlay for both leagues when overlay JSON exists.
+- **Root cause:** Deployed/online Streamlit dashboard was stale because `tools/push_daily.py` staged only daily JSONs and did not push overlay artifacts from backtest folders.
+- **tools/push_daily.py:** Now also stages all historical execution overlay JSONs: `data/nba/backtests/*/execution_overlay_performance.json` and `data/ncaam/backtests/*/execution_overlay_performance.json`. Commit/push verified; online dashboard now reflects current overlay data.
+
+---
+## 2026-03-15 — analysis_041 agent attribution: lookup matched vs graded reporting
+
+- **eng/analysis/analysis_041_agent_attribution.py:** Reporting semantics fixed so lookup match and graded count are reported separately. Previously "Matched to final_game_view" was `len(flat_pl)`, which required both a successful game lookup and a non-UNKNOWN grade; alerts that found a game but graded UNKNOWN (e.g. missing scores) were effectively counted as unmatched.
+- Added `lookup_matched` counter incremented when a game is found in exact or normalized index (before grading). Graded count remains `len(flat_pl)`. Summary and console now report: Total EXECUTE alerts parsed, Lookup matched (game in view), Graded (in P&L), Unmatched (no game found) with `unmatched = len(alerts) - lookup_matched`. Report JSON summary: `lookup_matched`, `graded_in_pl`, `unmatched` (replacing single `matched_to_final_view`). Matching and grading logic unchanged. Backup created via `tools/diagnostics/vvv_copy_before_change_x.py`.
+
+---
+## 2026-03-16 — Checkpoint: NCAAM tomorrow-slate investigation
+
+### 1. Objective
+
+Investigate why NCAAM tomorrow games were missing from daily/final views even though related upstream artifacts appeared to contain future data.
+
+---
+
+### 2. What was observed / broken
+
+- `daily_view_ncaam_2026-03-16_v1.json` was empty.
+- `final_game_view_ncaam.json` had no `2026-03-16` games.
+- Later, after runner date-window changes and reruns after midnight, `2026-03-17` appeared while `2026-03-16` remained empty.
+
+---
+
+### 3. What was reviewed / diagnosed
+
+- `build_daily_view_ncaam.py` was not the root cause.
+- `d_gen_021_build_canonical_games.py` was not filtering out `2026-03-16`.
+- `d_gen_022_collapse_to_game_level.py` was not the root cause.
+- `f_gen_041_add_betting_lines.py` was reviewed for odds/slate matching behavior.
+- The first confirmed missing point was upstream at `data/ncaam/interim/ncaam_schedule_mapped.json` (021 input had 0 rows for `2026-03-16`, so 021 never saw that date).
+- The investigation produced useful understanding of the schedule → canonical → final → daily path, even though the original concern turned out to be a false alarm.
+
+---
+
+### 4. Changes attempted (exploratory; see restore below)
+
+- **eng/pipelines/shared/f_gen_041_add_betting_lines.py**
+  - `_ncaam_apply_odds` was changed so `slate_date_cst` prefers canonical `game_date` over odds-derived CST date. This patch was exploratory and remains in place; it may warrant later validation on its own merits but was not validated by this incident.
+- **000_RUN_ALL_NCAAM.py**
+  - Default `--end-date` was first changed from original behavior to UTC tomorrow.
+  - Then changed from UTC tomorrow to CST tomorrow.
+  - These runner changes were based on a false premise (see final conclusion). The runner was later restored from backup.
+
+---
+
+### 5. Final conclusion (investigation closed)
+
+- The investigation chased a non-bug. There were **no NCAAM games on 2026-03-16**. March Madness starts on **2026-03-17**, which explains why `2026-03-17` populated while `2026-03-16` remained empty.
+- Therefore, `daily_view_ncaam_2026-03-16_v1.json` being empty was **expected behavior**, not a pipeline defect. Time was spent on a false lead; the checkpoint is left in place for honesty and to document what was learned and which patches were exploratory versus kept.
+
+---
+
+### 6. Restore action
+
+- **000_RUN_ALL_NCAAM.py** was restored by copying **zzz_0316-01-000_RUN_ALL_NCAAM.py** over **000_RUN_ALL_NCAAM.py**. This was the best surgical rollback point because it removed the runner date-window experiments while preserving the desired later runner structure.
+- The runner is now back to the `zzz_0316-01` state (default schedule end-date = UTC tomorrow, as in that backup). No runner date-window changes are currently in effect.
+
+---
+
+### 7. Backups created
+
+- `eng/pipelines/shared/zzz_0315-01-f_gen_041_add_betting_lines.py`
+- `zzz_0316-01-000_RUN_ALL_NCAAM.py`
+- `zzz_0316-02-000_RUN_ALL_NCAAM.py`
+
+---
+
+### 8. Known-good conclusions (from the investigation)
+
+- Daily builder is downstream only; it was not the root cause.
+- 021 is not the date-drop point for `2026-03-16`.
+- The mapped schedule input drove the visible result (no games on 2026-03-16 in the data).
+
+---
+
+### 9. Current state / open issues
+
+- The original 2026-03-16 concern is **closed as expected/no-games behavior**. No further action is required for the 2026-03-16 empty slate unless new evidence appears.
+- The **f_gen_041_add_betting_lines.py** change (slate_date_cst preferring canonical game_date) may still warrant later validation on its own merits; it is not validated by this incident and is not reverted here.
+- No live bug remains for the 2026-03-16 empty slate.
+
+---
+
+### 10. Files touched in this session
+
+- `eng/pipelines/shared/f_gen_041_add_betting_lines.py` (patch kept; exploratory).
+- `000_RUN_ALL_NCAAM.py` (patched then restored from zzz_0316-01).
+
+---
+## 2026-03-16 — NCAAM momentum5 model: merge last5 keys in 0051 runner
+
+- **Review:** Root cause of blank `ncaam_momentum5_model` output for completed games was confirmed: NCAAM path in `eng/models/shared/model_gen_0051_runner.py` loaded `data/ncaam/model/ncaam_model_input_v1.csv` but merged only AVG_KEYS and OPTIONAL_KEYS into the game payload; last5 momentum fields were never merged.
+- **Backup:** Ran `tools/diagnostics/vvv_copy_before_change_x.py` on `eng/models/shared/model_gen_0051_runner.py` (backup: `eng/models/shared/zzz_0316-01-model_gen_0051_runner.py`).
+- **Patch:** In `run_ncaam()`, added `LAST5_KEYS` tuple (home/away: `last5_points_for`, `last5_points_against`, `last5_avg_margin`, `last5_win_pct`, `last5_games_in_history`) and merged these keys from `feature_by_cid` using the same guarded pattern as AVG_KEYS/OPTIONAL_KEYS (match by `canonical_game_id`; only fill when game value is empty and feature value is non-empty; do not overwrite existing).
+- **Validation:** Completed 2026-03-15 NCAAM games now show populated `ncaam_momentum5_model` in final/daily/UI with `has_projection_inputs: true` and populated last5 context fields. Daily artifact build confirmed via `python eng/daily/build_gen_daily_view.py --league ncaam 2026-03-15`.
+- **Deferred:** Future/tomorrow-game last5 backfill in `c_ncaam_015_build_last5_momentum.py` was reviewed and design documented; implementation intentionally not done in this session.
+
+---
+## 2026-03-16 — NCAAM schedule default range and TBD exclusion
+
+- **b_gen_001_ingest_schedule.py (NCAAM default):** When `--start-date` / `--end-date` are omitted, end date is now today + 14 days (was today only). Constant `NCAAM_DEFAULT_END_LOOKAHEAD_DAYS = 14`. Ensures a default pipeline run fetches through March Madness (e.g. run on 3/16 requests through 3/30).
+- **b_gen_001_ingest_schedule.py (TBD exclusion):** After dedupe, games where either `home_team_raw` or `away_team_raw` is "TBD" are excluded from the saved schedule (`ncaam_schedule_raw.json` and legacy CSV). Only named matchups are written; log reports excluded count.
+- **tools/diagnostics/verify_ncaam_schedule_ingest.py:** New script to verify NCAAM schedule ingest: reports total rows, game date range, count of rows with TBD (expect 0), and last-run requested range from `ncaam_schedule_raw_latest.json`.
+
+---
+## 2026-03-16 — NCAAM runner use 001 default + pipeline diagnostics
+
+- **000_RUN_ALL_NCAAM.py:** When `--start-date` / `--end-date` are not provided (e.g. Run Full Pipeline from launcher), the runner no longer passes date args to `b_gen_001_ingest_schedule.py`, so 001 uses its own default (20251001 .. today+14). Previously the runner passed `--end-date today`, so schedule/canonical/final view stayed through 3/15. Backup created via `vvv_copy_before_change_x.py`: `zzz_0316-03-000_RUN_ALL_NCAAM.py`.
+- **Diagnostic logging (NCAAM only):** `f_gen_041_add_betting_lines.py` logs base_rows count and game_date range after load, and result count and game_date range after join. `model_gen_0051_runner.py` logs loaded games count and game_date range. `model_gen_0052_add_model.py` logs payload games count and game_date range, and final_rows count and game_date range. Used to confirm where games drop when schedule/odds have 3/15+ data.
+- **Validation:** Run Full Pipeline (000_RUN_ALL_NBA_NCAAM → 000_RUN_ALL_NCAAM) now produces NCAAM schedule_raw, canonical_games.csv, and final_game_view_ncaam.json with game_date through 2026-03-21.
+
+---
+## 2026-03-16 — Launcher future-day toggle, push_daily expansion, daily view multi-date build
+
+- **000_bookiex_launcher_ui.py:** Added "Include Future Day" toggle and 1–5 day dropdown. When enabled, `launch_run_all()` appends `--start-date` (today) and `--end-date` (today + N days) in YYYYMMDD to the 000_RUN_ALL_NBA_NCAAM command; NCAAM pipeline and daily view receive the same window. Backup: `zzz_0316-01-000_bookiex_launcher_ui.py`.
+- **tools/push_daily.py:** Staging expanded to include `logs/attribution_report.json` (System Health bar), `data/nba/view/nba_agent_overlay.json`, `data/ncaam/view/ncaam_agent_overlay.json` (Agent lane), and `data/nba/backtests/*/backtest_summary.json`, `data/ncaam/backtests/*/backtest_summary.json` (Execution Overlay "Last Updated"). All use `git add -f`; missing files do not fail the script. Backup: `tools/zzz_0316-01-push_daily.py`.
+- **000_RUN_ALL_NCAAM.py:** In `build_step_command`, when step is `build_gen_daily_view.py` and `args.start_date` and `args.end_date` are set, append `--start-date` and `--end-date` to the command so the daily view step builds one file per date in the window. Backup: `zzz_0316-04-000_RUN_ALL_NCAAM.py`.
+- **eng/daily/build_gen_daily_view.py:** Added optional `--start-date` and `--end-date` (YYYYMMDD). When both are valid and start ≤ end, loop over the inclusive date range, convert each date to YYYY-MM-DD, and call the league daily builder once per date (one daily view file per date); overlap rule is skipped when this window is used. When neither or invalid, existing single-run + overlap behavior unchanged. Helpers: `_parse_yyyymmdd`, `_date_range_inclusive`. Backup: `eng/daily/zzz_0316-01-build_gen_daily_view.py`.
+
+---
+## 2026-03-17 — Dynamic sweet-spot discovery, optional reporting, and NBA pipeline integration
+
+- **Refactor 039 → 039b:** analysis_039_execution_overlay_performance.py renamed to analysis_039b_execution_overlay_performance.py; backup via vvv_copy_before_change_x.py. 000_RUN_ALL_NBA.py and 000_RUN_ALL_NCAAM.py updated to call 039b; fixed runtime restored.
+- **eng/analysis/analysis_039a_dynamic_sweetspot_discovery.py:** New discovery-only script. Reads latest backtest_games.json per league; candidate grid (spread/total edge bands, spread line caps, total windows); guardrails (min sample, min ROI, min win rate, beat baseline); writes dynamic_sweetspot_thresholds.json into same backtest dir. CLI: --league nba|ncaam, optional --backtest-dir. Avoid thresholds fixed in v1.
+- **docs/REGULARIZED_META_MODEL_REGIME_DISCOVERY.md:** Architecture note: sweet-spot as meta-model (regime discovery), non-goals, core principles, V1 scope, future direction.
+- **docs/ANALYSIS_039A_ARTIFACT_DESIGN.md:** Artifact design: per-backtest immutable dynamic_sweetspot_thresholds.json, optional convenience copy, contents for historical learning.
+- **analysis_039b_execution_overlay_performance.py:** Optional --use-dynamic-sweetspots loads dynamic_sweetspot_thresholds.json; classifies from row numerics only; writes execution_overlay_performance_dynamic.json (fixed mode unchanged). Fallback when dynamic file missing/invalid; row skip when numerics missing in dynamic mode. Dual sweet spot: when chosen_thresholds.dual_sweet_spot is dict, evaluate from that dict (standalone rule) so dual appears when total_sweet_spot is null. Optional --backtest-dir. _dynamic_bucket_explanation(): in dynamic mode Explanation built from chosen_thresholds (e.g. "Spread edge 2-4 pts, spread line <10"); fixed mode uses BUCKET_EXPLANATIONS.
+- **eng/ui/bookiex_dashboard.py:** _load_execution_overlay_performance() prefers execution_overlay_performance_dynamic.json when present in latest backtest dir, else execution_overlay_performance.json.
+- **tools/run_nba_dynamic_validation.py:** New helper. Runs 039a, 039b fixed, 039b dynamic for NBA; optional --backtest-dir passed through. Validates four artifacts in target dir.
+- **000_RUN_ALL_NBA.py:** EVALUATION adds after backtest: 039a (--league nba), then 039b fixed, then 039b (--league nba --use-dynamic-sweetspots). BEST_EFFORT_EVALUATION: 039a and 039b dynamic are best-effort (on failure print warning, continue pipeline; other steps hard-fail).
+
+---
+## 2026-03-17 — Dashboard Kelly overlay alignment, NCAAM league-specific dynamic grid and pipeline
+
+- **eng/ui/bookiex_dashboard.py:** Suggested Bet Sizing / Kelly now uses the same regime Win% as the Execution Overlay Backtest Reference table. Overlay performance is loaded once after _load_execution_overlay_performance() is defined; bucket→Win% map (_overlay_win_rate_by_bucket) is built from that table and passed into get_kelly_regime(); regime assumptions text and per-game Kelly use overlay Win% when present, with hardcoded constants as fallback. NameError fix: one-time overlay load block moved to after the function definition.
+- **eng/analysis/analysis_039a_dynamic_sweetspot_discovery.py:** League-specific total grid (GRID_CONFIG). NBA keeps total_windows [(222,244),(225,242)], baseline_total_window (225,242), total_avoid_below 225. NCAAM uses total_windows [(132,158),(138,168)], baseline_total_window (135,165), total_avoid_below 120. classify_fixed, classify_candidate, and run_candidates take/use config; main() wires league config for baseline and candidate discovery. Spread/total edge bands, spread line caps, and guardrails unchanged.
+- **eng/analysis/analysis_039b_execution_overlay_performance.py:** Dynamic Avoid explanation now reflects league-specific total_avoid_below. AVOID_TOTAL_BELOW_FOR_EXPLANATION = {"nba": 225, "ncaam": 120}; _dynamic_bucket_explanation(bucket, chosen_thresholds, league=None) uses it for the Avoid bucket in dynamic mode so NCAAM shows "total <120". Fixed mode and BUCKET_EXPLANATIONS unchanged.
+- **000_RUN_ALL_NCAAM.py:** After backtest, STEPS now include analysis_039a_dynamic_sweetspot_discovery.py (--league ncaam) and analysis_039b_execution_overlay_performance.py (--league ncaam --use-dynamic-sweetspots). Both run as best-effort (_is_best_effort_step): on non-zero exit print warning and continue pipeline; all other steps remain hard-fail.
+
+---
+## 2026-03-17 — Dynamic sweet-spot always-on buckets, status, NCAAM fixes, dashboard table and Kelly gating
+
+- **d_gen_021_build_canonical_games.py:** NCAAM canonical now includes completed boxscore-only historical games whose `espn_game_id` is not in the schedule; uses `seen_espn_ids` to avoid duplicates. Diagnostic: `boxscore_only_added`. Enables 022→001 to compute prior avg for those games.
+- **analysis_039b_execution_overlay_performance.py (NCAAM fixed):** Aligned to 039a NCAAM baseline: total window 135–165, total avoid below 120; matching explanations via BUCKET_EXPLANATIONS_NCAAM. Uses _compute_overlay_fixed_ncaam() instead of get_ncaam_execution_overlay_from_edges.
+- **analysis_039b_execution_overlay_performance.py (NCAAM dynamic avoid):** In compute_overlay_from_dynamic_thresholds, league ncaam uses total_below 120 for avoid classification so dynamic no longer collapses all games into Avoid.
+- **analysis_039a_dynamic_sweetspot_discovery.py:** Spread/total/dual/avoid always published as bucket definitions with status (`active` / `near_miss` / `inactive`). When guardrails fail, baseline thresholds still written; avoid remains status `active`.
+- **analysis_039b_execution_overlay_performance.py (dynamic output):** Dynamic mode always emits five rows: Dual Sweet Spot, Spread Sweet Spot, Total Sweet Spot, Avoid, All Games. Zero-game buckets emit Games=0, Win%=null, ROI=null with Explanation from thresholds. Each bucket row carries status from 039a artifact. load_and_validate_dynamic_thresholds returns (chosen_thresholds, artifact_buckets).
+- **eng/ui/bookiex_dashboard.py:** Execution Overlay Backtest Reference loads execution_overlay_performance_dynamic.json only (no fixed fallback). Renders all bucket rows from dynamic JSON; Win%/ROI null shown as "—"; Status column shown when present (All Games blank). _overlay_table_display built from buckets with null formatting and optional Status.
+- **eng/ui/bookiex_dashboard.py:** Suggested Bet Sizing / Kelly treats only buckets with status == "active" as authoritative for sizing; games in near_miss or inactive buckets are excluded from the Kelly table. _overlay_status_by_bucket used to gate kelly_rows.
+- **Git:** Commit d32097d pushed to main — "Add dynamic sweet spot reporting and NCAAM alignment fixes".
+
+---
+## 2026-03-17 — push_daily: UI code, assets, and dynamic overlay staging
+
+- **tools/push_daily.py:** Staging added for Streamlit UI and runtime dependencies (only when present): `eng/ui/bookiex_dashboard.py`, `utils/io_helpers.py`, `assets/RS_JP_BookieX_v02.png`, `assets/RS_JP_BookieX_v04_COLLEGE.png`. Staging added for dynamic execution overlay: `data/nba/backtests/*/execution_overlay_performance_dynamic.json` and `data/ncaam/backtests/*/execution_overlay_performance_dynamic.json` (run only when at least one matching file exists so script does not fail when pipeline has not produced them). All existing artifact staging (daily JSONs, execution_overlay_performance.json, attribution, agent overlays, backtest_summary) unchanged. Backup before edit: `tools/zzz_0317-01-push_daily.py`.
+
+---
+## 2026-03-17 — NCAAM upcoming-game last5 propagation and deployment verification
+
+- **eng/pipelines/ncaam/c_ncaam_015_build_last5_momentum.py — upcoming games retained:** Upcoming NCAAM games are now included in team-game row generation even when scores are missing; prior-history last5 values are computed and written for future games. Rows still require canonical_game_id, game_date, home_team_id, and away_team_id; score-derived fields (points_for, points_against, margin, win_flag) are set to None for unplayed games.
+- **eng/pipelines/ncaam/c_ncaam_015_build_last5_momentum.py — no-leakage history guard:** Rolling last5 history is updated only for completed games with valid score data; upcoming/unplayed games do not append blank or None into history. Backup before edit: `eng/pipelines/ncaam/zzz_0317-01-c_ncaam_015_build_last5_momentum.py`.
+- **tools/push_daily.py — deployment verification:** Daily push flow validated; commit and push succeeded with the expanded staging set (existing artifacts plus dynamic overlay JSON and UI/runtime files when present).
+- **NCAAM UI outcome verified:** `ncaam_momentum5_model` context flags (e.g. home_last5_avg_margin, home_last5_win_pct, away_last5_avg_margin, away_last5_win_pct) now show populated prior-history values for upcoming games in the dashboard; `has_projection_inputs` is true for the validated upcoming-game case. NBA behavior unchanged; no NBA code modified.
+
+---
+## 2026-03-17 — Add BookieX sidebar QR code asset for Streamlit deploy
+
+- **eng/ui/bookiex_dashboard.py — sidebar QR display:** Added rendering of `assets/qr-code_bookiex_v01.png` directly below the **Current Bankroll ($)** sidebar input so the QR code appears in the deployed Streamlit UI.
+- **assets/qr-code_bookiex_v01.png — new asset added:** Added the QR image asset to the repo and pushed it to GitHub so Streamlit Cloud can load it during redeploy.
+- **Deployment note:** UI code was pushed first, then the QR asset was committed and pushed separately to complete the Streamlit-visible update.
+
+---
+## 2026-03-17 — Temporarily disable System Health bar in dashboard UI
+
+- **eng/ui/bookiex_dashboard.py — System Health bar hidden:** Commented out the dashboard render block for the System Health / Strategy B (Kelly) ROI and Total P&L banner.
+- **Reason:** The current attribution display is not reliable enough to keep exposed across leagues, and the UI section was temporarily disabled rather than patched into potentially misleading behavior.
+- **Scope:** UI-only change; no attribution-generation, execution-layer, or model pipeline logic was modified.
+
+---
+## 2026-03-19 — Backtest CSV completeness and human-safe filename
+
+- **eng/backtest/backtest_gen_runner.py — CSV completeness:** Backtest CSV export now includes all top-level scalar fields from backtest JSON rows via passthrough; previously only a fixed set of columns was exported. Nested keys (`model_results`, `models`) are excluded; all other scalar game/row keys are appended after the fixed columns in sorted order for stable headers and human review.
+- **eng/backtest/backtest_gen_runner.py — human-safe CSV filename:** Backtest CSV artifact renamed from `backtest_games.csv` to `backtest_games_<league>_<run_ts>.csv` (e.g. `backtest_games_nba_20260319_143022.csv`) for human review and sharing. No active consumers of the old filename were found; JSON artifacts and analysis scripts unchanged.
+- **Scope:** Export-only; no grading, model selection, or upstream JSON schema changes. Shared NBA/NCAAM behavior preserved.
+
+___
+
+## 2026-03-19 — NCAAM KBX bet sizing near-miss dashboard gate
+
+- **Problem symptom (NCAAM):** Dashboard KBX Bet Sizing section showed "No qualifying Sweet Spot bets to size." while NCAAM game rows could still show per-game sweet-spot badges (`SPREAD+` / `TOTAL+`). NBA Suggested Bet Sizing remained the mature reference behavior and was not targeted for change.
+- **Root cause:** In `eng/ui/bookiex_dashboard.py`, Kelly regime selection is derived per-game from `execution_overlay`, but row inclusion was then gated by `_overlay_status_by_bucket[regime_name] == "active"` for all leagues. Latest NCAAM dynamic overlay performance artifact had sweet-spot statuses marked `near_miss`, which filtered out all NCAAM Kelly rows.
+- **Targeted fix (dashboard layer only):** Updated NCAAM Kelly inclusion behavior in `eng/ui/bookiex_dashboard.py` so NBA keeps the existing strict `status == "active"` gate, while NCAAM allows sizing when `get_kelly_regime(...)` selects a per-game sweet-spot regime even if the current bucket status is `near_miss`.
+- **Scope boundaries preserved:** No changes to upstream discovery/analysis guardrail logic (`analysis_039a` / `analysis_039b`), no badge-generation logic changes, and no NBA behavior redesign.
+- **Verification evidence used for this checkpoint:** `data/ncaam/backtests/backtest_20260319_185816/execution_overlay_performance_dynamic.json` (NCAAM sweet-spot statuses `near_miss`), `data/nba/backtests/backtest_20260319_190509/execution_overlay_performance_dynamic.json` (NBA `Dual`/`Spread` active, `Total` near_miss), and daily-view artifacts including `data/ncaam/daily/daily_view_ncaam_2026-03-21_v1.json` and `data/nba/daily/daily_view_2026-03-19_v1.json`.
+
+---
+## 2026-03-20 — NCAAM daily completed-game suffix reliability and score-trace follow-up
+
+- **eng/daily/build_daily_view_ncaam.py — identity team-name backfill:** `identity.away_team` / `identity.home_team` now resolve in order `*_team_display` -> `*_team` -> readable label from `*_team_id` when both name fields are blank, preventing malformed UI matchup labels for NCAAM daily rows.
+- **eng/daily/build_daily_view_ncaam.py + eng/ui/bookiex_dashboard.py — compact result margin suffix:** Added completed-game margin fields (`selected_spread_margin_abs`, `selected_total_margin_abs`) and NCAAM suffix rendering `S = WINx<margin> / T = WINx<margin>` with safe fallback to result-only display when margin is unavailable.
+- **eng/daily/build_daily_view_ncaam.py — completed-game passthrough fields:** Daily rows now carry `status_state`, `home_points`, `away_points`, and `actual_total` (`home_points + away_points` only when both scores are present) from the NCAAM final-view payload for direct validation/debug visibility.
+- **NCAAM score-trace review (no patch in this step):** For ESPN game `401858342` (`Sam Houston @ New Mexico`), incorrect `16/7` values were confirmed upstream at `data/ncaam/interim/ncaam_boxscores_raw.*`, then propagated through multi-model (`box_home_score` / `box_away_score`), final view (`home_points` / `away_points`), and daily. The first actionable source location was identified as `eng/pipelines/shared/b_gen_004_ingest_boxscores.py` (`_ncaam_parse_boxscore`, `_ncaam_is_boxscore_final`).
+
+---
+## 2026-03-20 — NCAAM spread text display restore in dashboard title line
+
+- **eng/ui/bookiex_dashboard.py — spread-pick mapping fix:** Updated `format_spread_text(home, away, spread_line, spread_pick)` to preserve existing `HOME` / `AWAY` handling and also map team-name picks by matching `spread_pick` to `home` / `away` case-insensitively after trim.
+- **Sign/side rendering preserved:** Home-side output uses `spread_line`; away-side output uses `-spread_line`, restoring title text like `Take Howard (+30.5)` for NCAAM rows carrying team-name spread picks.
+- **Scope boundaries preserved:** No changes to total text logic, no changes to result suffix/expander logic, and no changes to daily builder or backtest code.
+
+---
+## 2026-03-20 — NCAAM expander final score line for completed games
+
+- **eng/ui/bookiex_dashboard.py — NCAAM expander display update:** Added a completed-game-only line directly below `Market:` in the game expander: `Final: Score <away_points> @ <home_points> | Total <actual_total>`.
+- **Completed check and fields:** Uses existing daily-row fields with no builder changes: `status_state == "post"` gate and `away_points`, `home_points`, `actual_total` values.
+- **Scope boundaries preserved:** NCAAM-only behavior; no title-line suffix changes; no NBA behavior changes; no backtest changes.
+
+---
+## 2026-03-20 — NCAAM tipoff: final-view commence times + daily `identity.tip_time_cst`
+
+- **eng/models/shared/model_gen_0052_add_model.py (NCAAM only):** In `run_ncaam()` → `build_final_rows()`, the final JSON `row` dict now includes `odds_commence_time_cst` and `odds_commence_time_utc` passed from each multi-model game with existing `_s(...)` string normalization (fields were present upstream but omitted from the final row object).
+- **eng/daily/build_daily_view_ncaam.py:** `identity.tip_time_cst` is set from the game row as `odds_commence_time_cst` if present, else `tip_time_cst`, else blank (`safe_text` + strip), replacing a hardcoded empty string so daily/UI can show tipoff when final carries commence times.
+
+---
+## 2026-03-20 — NCAAM expander title: result suffix icons (WIN / LOSS / PUSH)
+
+- **eng/ui/bookiex_dashboard.py — `_ncaam_result_with_margin`:** Prepends `✅ ` for WIN, `❌ ` for LOSS, and `➖ ` for PUSH (case-insensitive match on the trimmed result token). Margin formatting unchanged (`WINx2.5`, `LOSSx9.5`, `PUSHx0`, etc.). Empty result still shows `—` with no icon; unknown result strings get no prefix.
+- **Scope:** NCAAM title-line `S = … / T = …` suffix path only; no NBA UI changes; no daily or backtest changes. Pre-edit backup: `eng/ui/zzz_0320-03-bookiex_dashboard.py` via `vvv_copy_before_change_x.py`.
+
+---
+## 2026-03-21 — NCAAM CST slate alignment (Odds commence vs ESPN `game_date`)
+
+- **`eng/pipelines/shared/f_gen_041_add_betting_lines.py` — `_ncaam_apply_odds`:** On a matched odds row, `slate_date_cst` now prefers the calendar date from Odds API `commence_time` converted to `America/Chicago`, falling back to canonical `game_date` only when CST conversion is missing or invalid. Previously `game_date` won whenever present, so ESPN/tournament labeling could disagree with “tip day” in Central time (e.g. near CST midnight).
+- **`eng/daily/build_daily_view_ncaam.py`:** Default target-date selection and inclusion filter use `slate_date_for_game()` from `utils/datetime_bridge` (order: `slate_date_cst` → `odds_commence_time_cst` date → `game_date`), not `game_date` alone. Module docstring and console messages updated to describe slate-day behavior.
+- **Dashboard:** No Streamlit changes; effect is which games land in each dated `daily_view_ncaam_*_v1` artifact after rebuilding forward from updated 041 output through multi-model and daily build.
+- **Stale artifacts:** JSON written before re-running 041 may still carry old `slate_date_cst`; full forward refresh from 041 is required for consistent slate fields in downstream artifacts.
+
+---
+## 2026-03-22 — NCAAM Odds API raw accum (NBA-parity) + flatten/join alignment
+
+- **`configs/leagues/league_ncaam.py`:** Added `ODDS_RAW_ACCUM_PATH` → `data/ncaam/market/raw/ncaam_odds_api_raw.json` (JSON array of snapshot dicts, same shape as each `ncaam_odds_latest.json` object). Exposed as `odds_raw_accum_path` in `get_ncaam_config()`.
+- **`eng/pipelines/shared/e_gen_031_get_betline.py` (NCAAM):** Each successful fetch appends to the accum file; still writes `ncaam_odds_latest.json` and timestamped `ncaam_odds_raw_*.json`. If accum is empty on first run, seeds from existing `ncaam_odds_latest.json` when present. `load_existing_ncaam()` returns accum from disk for append; `past_set` for token guard still unions accum + legacy glob + latest. `run_backfill_ncaam` collects event IDs from accum + glob + latest, appends merged snapshot to accum after write.
+- **`eng/pipelines/shared/e_gen_032_get_betline_flatten.py` (NCAAM):** Prefers accum snapshot list over single latest; flattens all snapshots, dedupes flat rows by `(game_id, bookmaker_key)` to max `captured_at_utc` (same rule as 041); falls back to latest-only if accum missing/empty.
+- **`eng/pipelines/shared/f_gen_041_add_betting_lines.py` (NCAAM):** Loads and flattens every snapshot in `ncaam_odds_api_raw.json` into the combined odds pool before globbed raw files and flat CSV merge.
+- **Backups before edit:** `e_gen_031_get_betline_copy.py`, `e_gen_032_get_betline_flatten_copy.py`, `f_gen_041_add_betting_lines_copy.py`, `league_ncaam_copy.py`.
+
+---
+## 2026-03-22 — NCAAM flattened betlines under `data/ncaam/derived` (NBA layout)
+
+- **`configs/leagues/league_ncaam.py`:** Added `DERIVED_DIR`, `BETLINES_FLATTENED_CSV_PATH` → `derived/ncaam_betlines_flattened.csv`, `BETLINES_FLATTENED_JSON_PATH` → `derived/ncaam_betlines_flattened.json`; `ODDS_FLAT_LATEST_PATH` aliases the CSV path. `NCAAM_LEGACY_ODDS_FLAT_CSV_PATH` keeps `market/flat/ncaam_odds_flat_latest.csv` for migration. Timestamped flats: `derived/ncaam_betlines_flattened_<ts>.csv`.
+- **`eng/pipelines/shared/e_gen_032_get_betline_flatten.py` (NCAAM):** Writes CSV + JSON to derived paths; logs updated.
+- **`eng/pipelines/shared/f_gen_041_add_betting_lines.py` (NCAAM):** Reads flat CSV from derived first, else legacy `market/flat` file.
+- **Diagnostics / dev:** `ncaam_unmatched_odds_sample.py`, `xxx_find_similar_games.py`, `xxx_ncaam_slate_match_report.py`, `dev_20_bookie_runner_order_of_operations_input_output.py` updated for new paths / resolver.
+- **Backups (`tools/diagnostics/vvv_copy_before_change_x.py`):** `zzz_0322-01-league_ncaam.py`, `zzz_0322-01-e_gen_032_get_betline_flatten.py`, `zzz_0322-01-f_gen_041_add_betting_lines.py`, and matching zzz for tools listed above.
+
+---
+## 2026-03-22 — Full pipeline verification (launcher → `000_RUN_ALL_NBA_NCAAM.py`)
+
+- **Verified:** End-to-end run via **`000_bookiex_launcher_ui.py`** (full pipeline control) invoking **`000_RUN_ALL_NBA_NCAAM.py`** completed successfully after NCAAM derived betlines layout + accum changes; confirms NCAAM **`e_gen_031` → `e_gen_032` → `f_gen_041`** chain and **`data/ncaam/derived/ncaam_betlines_flattened.*`** + **`market/raw/ncaam_odds_api_raw.json`** integration in a real run.
+
+---
+## 2026-03-22 — NCAAM Odds API raw under `data/ncaam/raw` (NBA-style) + launcher CWD
+
+- **`configs/leagues/league_ncaam.py`:** `ODDS_SNAPSHOT_DIR` = `data/ncaam/raw` for `ncaam_odds_latest.json`, `ncaam_odds_api_raw.json`, and timestamped `ncaam_odds_raw_*.json`. `LEGACY_NCAAM_MARKET_RAW_DIR` = `data/ncaam/market/raw` is still read for older files and **`LEGACY_ODDS_RAW_ACCUM_PATH`** accum fallback when the new accum file is empty/missing. Added **`glob_ncaam_odds_raw_json_files()`** (canonical + legacy, deduped). `get_ncaam_config()` adds `odds_snapshot_dir` and `legacy_market_raw_dir`; `market_raw_dir` now points at the canonical snapshot dir.
+- **`eng/pipelines/shared/e_gen_031_get_betline.py`:** Accum load uses legacy accum path as fallback; token guard and gap-fill covered dates scan both dirs via **`glob_ncaam_odds_raw_json_files()`**.
+- **`eng/pipelines/shared/f_gen_041_add_betting_lines.py`**, **`000_RUN_ALL_NBA_NCAAM.py`**, **`tools/diagnostics/ncaam_unmatched_odds_sample.py`**, **`tools/migration/sync_historical_odds.py`**, **`tools/migration/fetch_missing_raw.py`**, **`tools/migration/merge_and_heal.py`:** use dual-dir logic or **`glob_ncaam_odds_raw_json_files()`** / **`_ncaam_odds_json_paths()`**; merge writes new NCAAM snapshots to **`data/ncaam/raw`**.
+- **`000_bookiex_launcher_ui.py`:** `subprocess.Popen(..., cwd=PROJECT_ROOT)` so pipeline runs resolve paths when the UI is not started from the repo root.
+- **`ncaam_odds_latest_read_path()`** and legacy accum in **`e_gen_032`:** If only pre-migration files exist under **`market/raw`**, latest/accum reads fall back so **`031`/`032`** still run until data is rewritten under **`data/ncaam/raw`**.
+- **`tools/dev/dev_00_bookiex_handoff_snapshot.py`**, **`tools/dev/dev_20_bookie_runner_order_of_operations_input_output.py`:** handoff paths updated for new layout.
+- **Backups before edit:** `tools/diagnostics/vvv_copy_before_change_x.py` (`zzz_0322-*` for all touched files).
+
+---
+## 2026-03-22 — NCAAM 0051: NBA-parallel game shell before multi-model
+
+- **`utils/ncaam_multimodel_nba_aliases.py`:** `apply_nba_parallel_keys_ncaam_games` adds NBA-style keys on each NCAAM game dict when missing/blank: `game_id` (from `canonical_game_id`), `home_team` / `away_team` (from `*_display`), `spread_home_last` / `spread_away_last`, `total_last`, `moneyline_home_last`, `moneyline_away_last` (from `market_*`). Original NCAAM fields are kept.
+- **`eng/models/shared/model_gen_0051_runner.py` (`run_ncaam`):** Runs the helper after feature CSV merge and before `run_models`; sort key uses `game_id` with fallback to `canonical_game_id`; multi-model CSV first column is `game_id` (aligned with NBA runner). Backup: `eng/models/shared/zzz_0322-01-model_gen_0051_runner.py`.
+
+---
+## 2026-03-22 — Downstream compatibility: multi-model CSV + id fallbacks
+
+- **`eng/models/shared/model_gen_0051_runner.py` — `write_csv`:** Optional ``extra_base_keys`` so NCAAM rows include **both** ``game_id`` and ``canonical_game_id`` (legacy spreadsheets / manual joins). Backups: `zzz_0322-02-model_gen_0051_runner.py`.
+- **`eng/models/shared/model_gen_0052_add_model.py` (NCAAM `build_final_rows`):** `game_id` field prefers `canonical_game_id` then `game_id` from multi-model games. Backup: `eng/models/shared/zzz_0322-01-model_gen_0052_add_model.py`.
+- **`utils/io_helpers.py`:** Docstring for `load_previous_game_state_by_id` notes NCAAM may use either id key.
+- **`tools/diagnostics/ncaam_unmatched_odds_sample.py`**, **`xxx_ncaam_slate_match_report.py`:** Sort and display ids use `canonical_game_id` or `game_id`.
+
+---
+## 2026-03-22 — NCAAM finals: schedule scoreboard over wrong 004 box scores
+
+- **`eng/pipelines/shared/d_gen_021_build_canonical_games.py`:** Fills `schedule_home_score` / `schedule_away_score` from schedule row fields (`home_score` / `away_score` or `home_team_score` / `away_team_score`) so ESPN scoreboard finals reach canonical even when summary box scores are wrong.
+- **`eng/models/shared/model_gen_0052_add_model.py` (NCAAM `build_final_rows`):** When `home_score` / `away_score` are empty, coalesce **`schedule_*` before `home_points` / `away_points` then `box_*`**, so stale box totals do not override correct schedule finals in `final_game_view_ncaam.json`. Re-run **`f_gen_041` → `0051` → `0052`** after refreshing canonical for downstream JSON to pick up fixed schedule fields.
