@@ -64,7 +64,8 @@ def load_previous_game_state_by_id(league: str, game_id_key: str = "game_id") ->
     """
     Load previous run's game-state JSON (if it exists) and return a dict keyed by game id.
     Used for odds drift tracking and finalized protection. Returns {} if file missing.
-    game_id_key: key to use as unique game id ('game_id' for NBA, 'canonical_game_id' for NCAAM).
+    game_id_key: key to use as unique game id ('game_id' for NBA; for NCAAM use
+    ``canonical_game_id`` unless the caller has standardized on ``game_id``).
     """
     path = get_game_state_path(league)
     if not path.exists():

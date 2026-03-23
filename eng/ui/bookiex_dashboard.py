@@ -12,7 +12,7 @@ import re
 import streamlit as st
 import json
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 
@@ -225,6 +225,61 @@ def safe_num(value, default=0.0):
         return float(value)
     except Exception:
         return default
+
+
+def _parse_iso_datetime(value) -> datetime | None:
+    if value in (None, ""):
+        return None
+    if not isinstance(value, str):
+        return None
+    s = value.strip()
+    if not s:
+        return None
+    try:
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        return datetime.fromisoformat(s)
+    except ValueError:
+        return None
+
+
+def _game_commence_sort_key(g: dict) -> tuple:
+    """UTC timestamp for chronological schedule order; missing times last; stable tie-breaker."""
+    ti = g.get("temporal_integrity") if isinstance(g.get("temporal_integrity"), dict) else {}
+    ident = g.get("identity") if isinstance(g.get("identity"), dict) else {}
+    for raw in (
+        ti.get("odds_commence_time_utc"),
+        ti.get("tipoff_time_utc"),
+        ident.get("tip_time_cst"),
+        ti.get("odds_commence_time_cst"),
+        ti.get("tipoff_time_cst"),
+        ident.get("game_date_local"),
+    ):
+        dt = _parse_iso_datetime(raw)
+        if dt is not None:
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            ts = dt.astimezone(timezone.utc).timestamp()
+            break
+    else:
+        ts = float("inf")
+    gid = str(
+        ident.get("game_id")
+        or g.get("game_id")
+        or g.get("espn_game_id")
+        or g.get("game_source_id")
+        or ""
+    )
+    return (ts, gid)
+
+
+def _arb_branch(arb_dict, key: str) -> dict:
+    """`arbitration.spread` / `arbitration.total` may be JSON null while keys exist (e.g. NCAAM)."""
+    if not isinstance(arb_dict, dict):
+        return {}
+    br = arb_dict.get(key)
+    return br if isinstance(br, dict) else {}
+
 
 def _execution_overlay_backtest_date(league_ui: str) -> str:
     """Last updated date for Execution Overlay Backtest Reference from latest backtest run; falls back to static constant."""
@@ -739,7 +794,12 @@ with st.expander("🍀 KBX Bet Sizing System 🌵", expanded=False):
             bet_amount = round(current_bankroll * full_kelly)
 
             if regime_name == "Total Sweet Spot":
-                pick_text = f"{total_pick} ({total_line})" if total_pick else "No Total Pick"
+                if total_pick and total_line is not None:
+                    pick_text = f"{total_pick} ({total_line})"
+                elif total_pick:
+                    pick_text = f"{total_pick} (—)"
+                else:
+                    pick_text = "No Total Pick"
             else:
                 pick_text = format_spread_text(home, away, spread_line, spread_pick)
 
@@ -807,7 +867,10 @@ sort_option = st.selectbox(
     ]
 )
 
-if sort_option == "Execution Quality":
+if sort_option == "Schedule Order":
+    games = sorted(games, key=_game_commence_sort_key)
+
+elif sort_option == "Execution Quality":
 
     def execution_rank(g):
         overlay = g.get("execution_overlay", {})
@@ -848,8 +911,11 @@ elif sort_option == "Total Edge":
 elif sort_option == "Calibration Win Rate":
     games = sorted(
         games,
-        key=lambda g: g["calibration_tags"]["historical_bucket_win_rate"],
-        reverse=True
+        key=lambda g: safe_num(
+            (g.get("calibration_tags") or {}).get("historical_bucket_win_rate"),
+            0.0,
+        ),
+        reverse=True,
     )
 
 
@@ -882,19 +948,20 @@ def _ncaam_result_with_margin(result_txt: str, margin_raw):
 
 
 for g in games:
-    identity = g["identity"]
-    market = g["market_state"]
-    model = g["model_output"]
-    edge = g["edge_metrics"]
-    calibration = g["calibration_tags"]
-    arb = g.get("arbitration") or {}
+    identity = g.get("identity") or {}
+    market = g.get("market_state") or {}
+    model = g.get("model_output") or {}
+    edge = g.get("edge_metrics") or {}
+    calibration = g.get("calibration_tags") or {}
+    _arb_raw = g.get("arbitration")
+    arb = _arb_raw if isinstance(_arb_raw, dict) else {}
     overlay = g.get("execution_overlay") or {}
 
-    away = identity["away_team"]
-    home = identity["home_team"]
+    away = identity.get("away_team", "Away")
+    home = identity.get("home_team", "Home")
 
-    spread_line = market["spread_home_last"]
-    total_line = market["total_last"]
+    spread_line = market.get("spread_home_last")
+    total_line = market.get("total_last")
 
     spread_pick = model.get("spread_pick")
     total_pick = model.get("total_pick")
@@ -902,7 +969,9 @@ for g in games:
     spread_text = format_spread_text(home, away, spread_line, spread_pick)
 
     if total_pick:
-        total_text = f"{total_pick} ({total_line})"
+        total_text = (
+            f"{total_pick} ({total_line})" if total_line is not None else f"{total_pick} (—)"
+        )
     else:
         total_text = "No Total Pick"
 
@@ -921,7 +990,7 @@ for g in games:
 
     if tier == "HIGH":
         main_color = "#2ecc71"
-    elif tier == "MODERATE":
+    elif tier in ("MODERATE", "MEDIUM"):
         main_color = "#f39c12"
     else:
         main_color = "#e74c3c"
@@ -942,7 +1011,12 @@ for g in games:
     # Agentic: VALUE PEAK REACHED in agent_reasoning or confidence_reason -> TOP AGENT PICK + highlight
     agent_reasoning = str(model.get("agent_reasoning") or g.get("agent_reasoning") or "")
     confidence_reason = str(model.get("confidence_reason") or "")
-    explanation = str(model.get("Explanation") or model.get("explanation") or "")
+    explanation = str(
+        model.get("Explanation")
+        or model.get("explanation")
+        or g.get("Explanation")
+        or ""
+    )
     is_value_peak = (
         "VALUE PEAK REACHED" in agent_reasoning
         or "VALUE PEAK REACHED" in confidence_reason
@@ -955,18 +1029,34 @@ for g in games:
     matchup_label = format_matchup_attribution(away, home)
 
     # Agent overlay lookup (used for compact summary at top and detail section at bottom)
-    _game_id = (identity.get("game_id") if isinstance(identity, dict) else None) or g.get("game_id")
+    # _game_id = (identity.get("game_id") if isinstance(identity, dict) else None) or g.get("game_id")
+
+    # NCAAM often leaves identity.game_id empty; row-level espn_game_id / game_source_id are populated instead.
+    _game_id = (
+            (identity.get("game_id") if isinstance(identity, dict) else None)
+            or g.get("game_id")
+            or g.get("espn_game_id")
+            or g.get("game_source_id")
+    )
     _agent_row = _overlay_by_game_id.get(str(_game_id).strip(), None) if _game_id else None
 
+    # NCAAM: spread/total grading vs line (full detail in expander).
+    sr_ncaam = str(g.get("selected_spread_result") or "").strip() if league == "NCAAM" else ""
+    tr_ncaam = str(g.get("selected_total_result") or "").strip() if league == "NCAAM" else ""
+    # NCAAM: S/T vs line on roll-up when grading exists (matches zzz_0322-01-bookiex_dashboard.py).
     result_suffix = ""
-    if league == "NCAAM":
-        sr = str(g.get("selected_spread_result") or "").strip()
-        tr = str(g.get("selected_total_result") or "").strip()
-        # Completed-game grading for title-line display (compact).
-        if sr or tr:
-            sr_disp = _ncaam_result_with_margin(sr, g.get("selected_spread_margin_abs")) if sr else "—"
-            tr_disp = _ncaam_result_with_margin(tr, g.get("selected_total_margin_abs")) if tr else "—"
-            result_suffix = f" || S = {sr_disp} / T = {tr_disp}"
+    if league == "NCAAM" and (sr_ncaam or tr_ncaam):
+        _sr_disp = (
+            _ncaam_result_with_margin(sr_ncaam, g.get("selected_spread_margin_abs"))
+            if sr_ncaam
+            else "—"
+        )
+        _tr_disp = (
+            _ncaam_result_with_margin(tr_ncaam, g.get("selected_total_margin_abs"))
+            if tr_ncaam
+            else "—"
+        )
+        result_suffix = f" || S = {_sr_disp} / T = {_tr_disp}"
 
     expander_label = (
         f"{matchup_label}: Take {spread_text} / {total_text}"
@@ -981,13 +1071,31 @@ for g in games:
         )
     with st.expander(expander_label, expanded=False):
         st.write(f"Tipoff: {identity.get('tip_time_cst', 'N/A')}")
-        st.write(f"Market: {spread_line} | Total {total_line}")
+        _sl_disp = spread_line if spread_line is not None else "—"
+        _tl_disp = total_line if total_line is not None else "—"
+        st.write(f"Market: {_sl_disp} | Total {_tl_disp}")
+        # Final box score: NCAAM post games only (same as zzz_0322-01-bookiex_dashboard.py).
         if league == "NCAAM" and str(g.get("status_state") or "").strip().lower() == "post":
             away_points = g.get("away_points")
             home_points = g.get("home_points")
             actual_total = g.get("actual_total")
             if away_points is not None and home_points is not None and actual_total is not None:
                 st.write(f"Final: Score {away_points:g} @ {home_points:g} | Total {actual_total:g}")
+        st.markdown(f"**Game ID:** `{_game_id}`")
+        if league == "NCAAM" and (sr_ncaam or tr_ncaam):
+            st.markdown("### Grading vs line (authority)")
+            _sr_d = (
+                _ncaam_result_with_margin(sr_ncaam, g.get("selected_spread_margin_abs"))
+                if sr_ncaam
+                else "—"
+            )
+            _tr_d = (
+                _ncaam_result_with_margin(tr_ncaam, g.get("selected_total_margin_abs"))
+                if tr_ncaam
+                else "—"
+            )
+            st.write(f"Spread (selected pick): {_sr_d}")
+            st.write(f"Total (selected pick): {_tr_d}")
 
         # Compact agent summary (read-only); visible at top of expander for quick scan
         if _agent_row:
@@ -1001,7 +1109,6 @@ for g in games:
             )
         else:
             st.caption("**Agent (read-only):** — (no overlay for this game)")
-        st.markdown(f'ID:{_game_id}')
         st.markdown(f"### 🔥 Signal Strength — {tier}")
 
         st.markdown(
@@ -1055,13 +1162,20 @@ for g in games:
 
         st.subheader("Model vs Market")
 
-        st.write("Spread Pick:", model["spread_pick"])
+        st.write("Spread Pick:", model.get("spread_pick"))
         st.write("Projected Margin (Home):", safe_round(model.get("projected_margin_home", 0), 2))
         st.write("Spread Edge:", safe_round(spread_edge, 2))
 
-        st.write("Total Pick:", model["total_pick"])
+        st.write("Total Pick:", model.get("total_pick"))
         st.write("Projected Total:", safe_round(model.get("projected_total", 0), 2))
         st.write("Total Edge:", safe_round(total_edge, 2))
+        _ph = model.get("projected_home_score")
+        _pa = model.get("projected_away_score")
+        if _ph is not None or _pa is not None:
+            st.write(
+                "Projected score (away @ home):",
+                f"{_pa if _pa is not None else '—'} @ {_ph if _ph is not None else '—'}",
+            )
 
         st.write("Parlay Edge Score:", safe_round(parlay_score, 2))
 
@@ -1074,19 +1188,25 @@ for g in games:
         st.write("Consensus Books:", market.get("consensus_book_count"))
         st.write("All-Time Snapshots:", market.get("all_time_snapshot_count"))
 
-        st.write("Spread Disagreement:", arb.get("spread", {}).get("disagreement_flag"))
-        st.write("Total Disagreement:", arb.get("total", {}).get("disagreement_flag"))
+        st.write(
+            "Spread Disagreement:",
+            _arb_branch(arb, "spread").get("disagreement_flag"),
+        )
+        st.write(
+            "Total Disagreement:",
+            _arb_branch(arb, "total").get("disagreement_flag"),
+        )
 
         st.subheader("History")
 
-        st.write("Edge Bucket:", calibration["edge_bucket"])
+        st.write("Edge Bucket:", calibration.get("edge_bucket"))
         st.write(
             "Historical Win Rate:",
             safe_round(calibration.get("historical_bucket_win_rate", 0), 3)
         )
 
-        st.write("Spread Percentile:", edge["spread_edge_percentile"])
-        st.write("Total Percentile:", edge["total_edge_percentile"])
+        st.write("Spread Percentile:", edge.get("spread_edge_percentile"))
+        st.write("Total Percentile:", edge.get("total_edge_percentile"))
 
         st.subheader("Decision")
         st.subheader("Execution Overlay")
@@ -1110,7 +1230,7 @@ for g in games:
                 f"${round(current_bankroll * full_kelly)}"
             )
 
-        st.write("Actionability:", model["actionability"])
+        st.write("Actionability:", model.get("actionability"))
         st.write("Reason:", model.get("confidence_reason"))
 
         st.subheader("Why")
@@ -1157,7 +1277,7 @@ for g in games:
                 else:
                     icon = "🔴"
 
-                if model_name == "MonkeyDarts_v2":
+                if model_name == "MonkeyDarts_v2" and league == "NBA":
                     expander_label = f"{icon} {model_name} 🚫 (Excluded from Arbitration)"
                 else:
                     expander_label = f"{icon} {model_name}"
