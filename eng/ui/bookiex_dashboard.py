@@ -341,6 +341,275 @@ def _load_execution_overlay_performance(league_ui: str) -> tuple[list[dict] | No
         return None, None
 
 
+def _load_nba_pocket_artifacts() -> tuple[dict | None, dict | None, dict | None, dict | None, str | None]:
+    """
+    Load NBA pocket JSONs from the latest backtest directory (same mtime rule as overlay).
+    Returns (model_pockets_doc, combo_doc, current_full_doc, live_slate_doc_or_none, date_label).
+    Live slate file is optional if present alongside the three core artifacts.
+    """
+    try:
+        root = get_backtest_output_root("nba")
+        if not root.exists():
+            return None, None, None, None, None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None, None, None, None, None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        p1 = latest / "nba_model_pockets.json"
+        p2 = latest / "nba_model_combo_pockets.json"
+        p3 = latest / "nba_current_game_pocket_view.json"
+        if not p1.exists() or not p2.exists() or not p3.exists():
+            return None, None, None, None, None
+        with open(p1, "r", encoding="utf-8") as f:
+            d1 = json.load(f)
+        with open(p2, "r", encoding="utf-8") as f:
+            d2 = json.load(f)
+        with open(p3, "r", encoding="utf-8") as f:
+            d3 = json.load(f)
+        live_doc = None
+        p4 = latest / "nba_live_game_pocket_view.json"
+        if p4.exists():
+            with open(p4, "r", encoding="utf-8") as f:
+                live_doc = json.load(f)
+        ts = (d1 or {}).get("generated_at_utc") or ""
+        date_str = None
+        if ts:
+            dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            date_str = f"{dt.month}/{dt.day}/{dt.year}"
+        return d1, d2, d3, live_doc, date_str
+    except Exception:
+        return None, None, None, None, None
+
+
+_nba_pockets_doc, _nba_combo_doc, _nba_current_pockets_doc, _nba_live_pockets_doc, _nba_pockets_date = (
+    _load_nba_pocket_artifacts() if league == "NBA" else (None, None, None, None, None)
+)
+
+
+def _load_nba_live_pocket_leaderboard() -> dict | None:
+    """Optional nba_live_pocket_leaderboard.json from latest NBA backtest dir."""
+    try:
+        root = get_backtest_output_root("nba")
+        if not root.exists():
+            return None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        p = latest / "nba_live_pocket_leaderboard.json"
+        if not p.exists():
+            return None
+        with open(p, "r", encoding="utf-8") as f:
+            doc = json.load(f)
+        return doc if isinstance(doc, dict) else None
+    except Exception:
+        return None
+
+
+_nba_live_pocket_leaderboard_doc = _load_nba_live_pocket_leaderboard() if league == "NBA" else None
+
+
+def _load_nba_best_pocket_per_game() -> dict | None:
+    """Optional nba_best_pocket_per_game.json from latest NBA backtest dir."""
+    try:
+        root = get_backtest_output_root("nba")
+        if not root.exists():
+            return None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        p = latest / "nba_best_pocket_per_game.json"
+        if not p.exists():
+            return None
+        with open(p, "r", encoding="utf-8") as f:
+            doc = json.load(f)
+        return doc if isinstance(doc, dict) else None
+    except Exception:
+        return None
+
+
+_nba_best_pocket_doc = _load_nba_best_pocket_per_game() if league == "NBA" else None
+
+
+def _load_nba_ranked_pocket_opportunities() -> dict | None:
+    """Optional nba_ranked_pocket_opportunities.json from latest NBA backtest dir."""
+    try:
+        root = get_backtest_output_root("nba")
+        if not root.exists():
+            return None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        p = latest / "nba_ranked_pocket_opportunities.json"
+        if not p.exists():
+            return None
+        with open(p, "r", encoding="utf-8") as f:
+            doc = json.load(f)
+        return doc if isinstance(doc, dict) else None
+    except Exception:
+        return None
+
+
+_nba_ranked_pocket_doc = _load_nba_ranked_pocket_opportunities() if league == "NBA" else None
+
+
+def _load_nba_pocket_leaderboard_validation() -> dict | None:
+    """Optional nba_pocket_leaderboard_validation.json from latest NBA backtest dir."""
+    try:
+        root = get_backtest_output_root("nba")
+        if not root.exists():
+            return None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        p = latest / "nba_pocket_leaderboard_validation.json"
+        if not p.exists():
+            return None
+        with open(p, "r", encoding="utf-8") as f:
+            doc = json.load(f)
+        return doc if isinstance(doc, dict) else None
+    except Exception:
+        return None
+
+
+_nba_pocket_validation_doc = _load_nba_pocket_leaderboard_validation() if league == "NBA" else None
+
+
+def _load_ncaam_pocket_artifacts() -> tuple[dict | None, dict | None, dict | None, dict | None, str | None]:
+    """
+    Load NCAAM pocket JSONs from the latest backtest directory (same mtime rule as overlay).
+    Returns (model_pockets_doc, combo_doc, current_full_doc, live_slate_doc_or_none, date_label).
+    """
+    try:
+        root = get_backtest_output_root("ncaam")
+        if not root.exists():
+            return None, None, None, None, None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None, None, None, None, None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        p1 = latest / "ncaam_model_pockets.json"
+        p2 = latest / "ncaam_model_combo_pockets.json"
+        p3 = latest / "ncaam_current_game_pocket_view.json"
+        if not p1.exists() or not p2.exists() or not p3.exists():
+            return None, None, None, None, None
+        with open(p1, "r", encoding="utf-8") as f:
+            d1 = json.load(f)
+        with open(p2, "r", encoding="utf-8") as f:
+            d2 = json.load(f)
+        with open(p3, "r", encoding="utf-8") as f:
+            d3 = json.load(f)
+        live_doc = None
+        p4 = latest / "ncaam_live_game_pocket_view.json"
+        if p4.exists():
+            with open(p4, "r", encoding="utf-8") as f:
+                live_doc = json.load(f)
+        ts = (d1 or {}).get("generated_at_utc") or ""
+        date_str = None
+        if ts:
+            dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            date_str = f"{dt.month}/{dt.day}/{dt.year}"
+        return d1, d2, d3, live_doc, date_str
+    except Exception:
+        return None, None, None, None, None
+
+
+_ncaam_pockets_doc, _ncaam_combo_doc, _ncaam_current_pockets_doc, _ncaam_live_pockets_doc, _ncaam_pockets_date = (
+    _load_ncaam_pocket_artifacts() if league == "NCAAM" else (None, None, None, None, None)
+)
+
+
+def _load_ncaam_live_pocket_leaderboard() -> dict | None:
+    try:
+        root = get_backtest_output_root("ncaam")
+        if not root.exists():
+            return None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        p = latest / "ncaam_live_pocket_leaderboard.json"
+        if not p.exists():
+            return None
+        with open(p, "r", encoding="utf-8") as f:
+            doc = json.load(f)
+        return doc if isinstance(doc, dict) else None
+    except Exception:
+        return None
+
+
+_ncaam_live_pocket_leaderboard_doc = _load_ncaam_live_pocket_leaderboard() if league == "NCAAM" else None
+
+
+def _load_ncaam_best_pocket_per_game() -> dict | None:
+    try:
+        root = get_backtest_output_root("ncaam")
+        if not root.exists():
+            return None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        p = latest / "ncaam_best_pocket_per_game.json"
+        if not p.exists():
+            return None
+        with open(p, "r", encoding="utf-8") as f:
+            doc = json.load(f)
+        return doc if isinstance(doc, dict) else None
+    except Exception:
+        return None
+
+
+_ncaam_best_pocket_doc = _load_ncaam_best_pocket_per_game() if league == "NCAAM" else None
+
+
+def _load_ncaam_ranked_pocket_opportunities() -> dict | None:
+    try:
+        root = get_backtest_output_root("ncaam")
+        if not root.exists():
+            return None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        p = latest / "ncaam_ranked_pocket_opportunities.json"
+        if not p.exists():
+            return None
+        with open(p, "r", encoding="utf-8") as f:
+            doc = json.load(f)
+        return doc if isinstance(doc, dict) else None
+    except Exception:
+        return None
+
+
+_ncaam_ranked_pocket_doc = _load_ncaam_ranked_pocket_opportunities() if league == "NCAAM" else None
+
+
+def _load_ncaam_pocket_leaderboard_validation() -> dict | None:
+    try:
+        root = get_backtest_output_root("ncaam")
+        if not root.exists():
+            return None
+        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+        if not subdirs:
+            return None
+        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
+        p = latest / "ncaam_pocket_leaderboard_validation.json"
+        if not p.exists():
+            return None
+        with open(p, "r", encoding="utf-8") as f:
+            doc = json.load(f)
+        return doc if isinstance(doc, dict) else None
+    except Exception:
+        return None
+
+
+_ncaam_pocket_validation_doc = _load_ncaam_pocket_leaderboard_validation() if league == "NCAAM" else None
+
+
 # Load overlay performance once: dynamic-only (no fallback to fixed/stale). Used for Execution Overlay table and Kelly Win%.
 _overlay_buckets, _overlay_date = _load_execution_overlay_performance(league)
 _overlay_table = _overlay_buckets
@@ -675,6 +944,1377 @@ with open(file_path, "r", encoding="utf-8") as f:
 
 games = data.get("games", [])
 
+
+def _resolve_nba_pocket_slate_rows(
+    full_current_doc: dict | None,
+    live_doc: dict | None,
+    daily_games: list,
+    selected_date_str: str,
+) -> tuple[list, str]:
+    """
+    Rows for NBA pocket slate tables: prefer live artifact when its slate_date matches the
+    dashboard-selected daily date; otherwise filter full pocket view by game_id order from
+    the loaded daily JSON (same source as the main game list).
+    """
+    full_rows = list((full_current_doc or {}).get("games") or [])
+    by_id = {str(r.get("game_id", "")).strip(): r for r in full_rows if str(r.get("game_id", "")).strip()}
+    ordered_ids: list[str] = []
+    seen: set[str] = set()
+    for g in daily_games:
+        if not isinstance(g, dict):
+            continue
+        ident = g.get("identity") if isinstance(g.get("identity"), dict) else {}
+        gid = str(ident.get("game_id") or g.get("game_id") or "").strip()
+        if gid and gid not in seen:
+            seen.add(gid)
+            ordered_ids.append(gid)
+    selected_norm = str(selected_date_str).strip()
+    live_date = (live_doc or {}).get("slate_date")
+    live_date_norm = str(live_date).strip() if live_date is not None else ""
+    live_games = live_doc.get("games") if isinstance(live_doc, dict) else None
+    if (
+        isinstance(live_games, list)
+        and live_games
+        and live_date_norm == selected_norm
+    ):
+        by_live = {str(r.get("game_id", "")).strip(): r for r in live_games if str(r.get("game_id", "")).strip()}
+        rows = [by_live[gid] for gid in ordered_ids if gid in by_live]
+        cap = (
+            f"**Live slate:** `nba_live_game_pocket_view.json` — **{len(rows)}** games "
+            f"(slate **{live_date_norm}**; order follows selected daily view)."
+        )
+        return rows, cap
+    rows = [by_id[gid] for gid in ordered_ids if gid in by_id]
+    if live_doc and live_date_norm and live_date_norm != selected_norm:
+        cap = (
+            f"**Selected slate (**{selected_norm}**):** **{len(rows)}** games from "
+            f"`nba_current_game_pocket_view.json` (live artifact is for **{live_date_norm}**)."
+        )
+    elif not live_doc:
+        cap = (
+            f"**Selected slate (**{selected_norm}**):** **{len(rows)}** games filtered from "
+            f"`nba_current_game_pocket_view.json` — no `nba_live_game_pocket_view.json` in latest backtest."
+        )
+    else:
+        cap = (
+            f"**Selected slate (**{selected_norm}**):** **{len(rows)}** games filtered from "
+            f"`nba_current_game_pocket_view.json`."
+        )
+    return rows, cap
+
+
+def _resolve_ncaam_pocket_slate_rows(
+    full_current_doc: dict | None,
+    live_doc: dict | None,
+    daily_games: list,
+    selected_date_str: str,
+) -> tuple[list, str]:
+    """
+    NCAAM pocket slate rows: same resolution as NBA, but daily `game_id` may be
+    `canonical_game_id` / `espn_game_id`; artifact filenames are ncaam_*.
+    """
+    full_rows = list((full_current_doc or {}).get("games") or [])
+    by_id = {str(r.get("game_id", "")).strip(): r for r in full_rows if str(r.get("game_id", "")).strip()}
+    ordered_ids: list[str] = []
+    seen: set[str] = set()
+    for g in daily_games:
+        if not isinstance(g, dict):
+            continue
+        ident = g.get("identity") if isinstance(g.get("identity"), dict) else {}
+        gid = str(
+            ident.get("game_id")
+            or g.get("game_id")
+            or g.get("canonical_game_id")
+            or g.get("espn_game_id")
+            or ""
+        ).strip()
+        if gid and gid not in seen:
+            seen.add(gid)
+            ordered_ids.append(gid)
+    selected_norm = str(selected_date_str).strip()
+    live_date = (live_doc or {}).get("slate_date")
+    live_date_norm = str(live_date).strip() if live_date is not None else ""
+    live_games = live_doc.get("games") if isinstance(live_doc, dict) else None
+    if (
+        isinstance(live_games, list)
+        and live_games
+        and live_date_norm == selected_norm
+    ):
+        by_live = {str(r.get("game_id", "")).strip(): r for r in live_games if str(r.get("game_id", "")).strip()}
+        rows = [by_live[gid] for gid in ordered_ids if gid in by_live]
+        cap = (
+            f"**Live slate:** `ncaam_live_game_pocket_view.json` — **{len(rows)}** games "
+            f"(slate **{live_date_norm}**; order follows selected daily view)."
+        )
+        return rows, cap
+    rows = [by_id[gid] for gid in ordered_ids if gid in by_id]
+    if live_doc and live_date_norm and live_date_norm != selected_norm:
+        cap = (
+            f"**Selected slate (**{selected_norm}**):** **{len(rows)}** games from "
+            f"`ncaam_current_game_pocket_view.json` (live artifact is for **{live_date_norm}**)."
+        )
+    elif not live_doc:
+        cap = (
+            f"**Selected slate (**{selected_norm}**):** **{len(rows)}** games filtered from "
+            f"`ncaam_current_game_pocket_view.json` — no `ncaam_live_game_pocket_view.json` in latest backtest."
+        )
+    else:
+        cap = (
+            f"**Selected slate (**{selected_norm}**):** **{len(rows)}** games filtered from "
+            f"`ncaam_current_game_pocket_view.json`."
+        )
+    return rows, cap
+
+
+def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
+    """
+    Pocket ROI View only: ranked best-pocket board, parlay, admin, diagnostic (+ validation).
+    Uses module-level NBA pocket loaders; read-only; no authority changes.
+    """
+    st.markdown(
+        "Per-game pocket summary from the **latest NBA backtest** live leaderboard. "
+        "Does not change authority or sweet-spot logic. **MonkeyDarts_v2** is excluded."
+    )
+    if _nba_pockets_doc is None:
+        st.info(
+            "No pocket artifacts found. Run the NBA pipeline through backtest, then EXECUTION "
+            "(`build_nba_model_pockets.py`) to write `nba_model_pockets.json`, "
+                    "`nba_live_game_pocket_view.json`, `nba_live_pocket_leaderboard.json`, `nba_best_pocket_per_game.json`, "
+                    "`nba_ranked_pocket_opportunities.json`, and companions into the latest "
+            "`data/nba/backtests/backtest_*/` folder."
+        )
+        return
+
+    st.caption(
+        f"Backtest folder: `{(_nba_pockets_doc or {}).get('source_backtest_dir', '')}` "
+        f"— generated {_nba_pockets_date or 'n/a'}"
+    )
+    formulas = (_nba_pockets_doc or {}).get("formulas") or {}
+
+    def _lb_hci(d):
+        if not isinstance(d, dict):
+            return ""
+        return (
+            f"H{d.get('hot', 0)}/W{d.get('warm', 0)}/"
+            f"C{d.get('cold', 0)}/I{d.get('insufficient', 0)}"
+        )
+
+    def _pocket_float(v):
+        if v in (None, ""):
+            return None
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+
+    def _combo_roi_sort_key(r: dict):
+        roi = _pocket_float(r.get("roi"))
+        gr = int(r.get("graded_games") or 0)
+        sc = _pocket_float(r.get("leaderboard_score")) or 0.0
+        return (roi if roi is not None else -1e18, gr, sc)
+
+    def _pass_roi_sort_key(r: dict):
+        pr = _pocket_float(r.get("best_pair_spread_roi"))
+        csc = _pocket_float(r.get("spread_cluster_score")) or 0.0
+        lb = _pocket_float(r.get("leaderboard_score")) or 0.0
+        return (pr if pr is not None else -1e18, csc, lb)
+
+    def _cold_sort_key(r: dict):
+        w = _pocket_float(r.get("warning_score")) or 0.0
+        lb = _pocket_float(r.get("leaderboard_score")) or 0.0
+        return (w, lb)
+
+    _lb_sf = _nba_live_pocket_leaderboard_doc
+    _rpo_resolved = _nba_ranked_pocket_doc
+    _bpp_resolved = _nba_best_pocket_doc
+    if _lb_sf:
+        try:
+            from eng.execution.build_nba_model_pockets import (
+                build_nba_best_pocket_per_game_from_leaderboard,
+                build_nba_ranked_pocket_opportunities,
+            )
+
+            if _rpo_resolved is None:
+                _pockets_list = list(((_nba_pockets_doc or {}).get("pockets") or []))
+                _rpo_resolved = build_nba_ranked_pocket_opportunities(_lb_sf, _pockets_list)
+            if _bpp_resolved is None:
+                _bpp_resolved = build_nba_best_pocket_per_game_from_leaderboard(_lb_sf)
+        except Exception:
+            pass
+    _opp_rows = [r for r in ((_rpo_resolved or {}).get("opportunities") or []) if isinstance(r, dict)]
+    _games_bpp = list((_bpp_resolved or {}).get("games") or [])
+    _parlay_eligible_n = sum(1 for r in _opp_rows if r.get("eligible_for_parlay"))
+
+    def _rpo_row_is_spread(r: dict) -> bool:
+        mt = str(r.get("market_type") or "").strip().lower()
+        if mt == "spread":
+            return True
+        pt = str(r.get("pocket_type") or "").strip().lower()
+        return pt.endswith("_spread")
+
+    def _rpo_row_is_total(r: dict) -> bool:
+        mt = str(r.get("market_type") or "").strip().lower()
+        if mt == "total":
+            return True
+        pt = str(r.get("pocket_type") or "").strip().lower()
+        return pt.endswith("_total")
+
+    def _rpo_cell(val, empty="—"):
+        if val is None or val == "":
+            return empty
+        return val
+
+    def _rpo_num(val, fmt="{:.4f}", empty="—"):
+        if val is None or val == "":
+            return empty
+        try:
+            return fmt.format(float(val))
+        except (TypeError, ValueError):
+            return str(val)
+
+    def _rpo_models_col(row: dict) -> str:
+        mk = row.get("models_key")
+        if mk is not None and str(mk).strip():
+            return str(mk).strip()
+        mn = row.get("model_name")
+        if mn is not None and str(mn).strip():
+            return str(mn).strip()
+        return "—"
+
+    def _rpo_sig_cell(row: dict) -> str:
+        s = (row.get("state_signature") or "").strip()
+        if not s:
+            return "—"
+        return (s[:56] + "…") if len(s) > 56 else s
+
+    st.markdown("## Ranked Pocket Opportunities")
+    st.caption(
+        "One row per pocket candidate from **`nba_ranked_pocket_opportunities.json`** "
+        "(rebuilt in-session from the live leaderboard + **`nba_model_pockets.json`** when that file is missing). "
+        "Global sort: ROI → graded games → win rate. **Rank** is the global rank in that file. Read-only."
+    )
+    _pocket_filter_label = "All Pockets"
+    if not _opp_rows:
+        st.info(
+            "No ranked pocket opportunity rows yet. Run **`build_nba_model_pockets.py`** so the latest backtest folder "
+            "contains **`nba_ranked_pocket_opportunities.json`**, **`nba_live_pocket_leaderboard.json`**, and **`nba_model_pockets.json`**."
+        )
+    else:
+        _pocket_filter_label = st.radio(
+            "Pocket type filter",
+            ("All Pockets", "Spread Only", "Total Only"),
+            index=0,
+            horizontal=True,
+        )
+        if _pocket_filter_label == "All Pockets":
+            _opp_display = list(_opp_rows)
+        elif _pocket_filter_label == "Spread Only":
+            _opp_display = [r for r in _opp_rows if _rpo_row_is_spread(r)]
+        else:
+            _opp_display = [r for r in _opp_rows if _rpo_row_is_total(r)]
+
+        if _pocket_filter_label == "All Pockets":
+            st.caption(
+                "Table shows **all** markets. **Best 2-leg parlay (v1)** still uses **spread-only** legs chosen from the "
+                "**full** ranked list (global order); total rows here are not parlay candidates."
+            )
+        elif _pocket_filter_label == "Spread Only":
+            st.caption(
+                "Table shows **spread** rows only (`market_type` **spread**, or combo `pocket_type` ending in `_spread`). "
+                "**Parlay (v1)** uses the same spread-only rules on the **full** ranked artifact (first two distinct eligible games "
+                "in global order — not necessarily the first two rows in this filtered view)."
+            )
+        else:
+            st.caption(
+                "Table shows **total** rows only (`market_type` **total**, or combo `pocket_type` ending in `_total`). "
+                "**Parlay (v1)** is spread-only — switch to **All Pockets** or **Spread Only** for parlay candidates."
+            )
+
+        if (
+            _lb_sf
+            and str(_lb_sf.get("slate_date") or "").strip()
+            and str(_lb_sf.get("slate_date") or "").strip() != str(selected_date).strip()
+        ):
+            st.warning(
+                f"Leaderboard / pocket slate **`{_lb_sf.get('slate_date')}`** ≠ selected **`{selected_date}`**."
+            )
+        if not _opp_display:
+            st.info(f"No rows match **{_pocket_filter_label}** for this slate.")
+        else:
+            st.dataframe(
+                [
+                    {
+                        "Rank": r.get("rank"),
+                        "Game": _rpo_cell(r.get("matchup")),
+                        "Pick": _rpo_cell(r.get("pick")),
+                        "Pocket Type": _rpo_cell(r.get("pocket_type")),
+                        "Pocket Models": _rpo_models_col(r),
+                        "State Signature": _rpo_sig_cell(r),
+                        "ROI": _rpo_num(r.get("roi")),
+                        "Win Rate": _rpo_num(r.get("win_rate")),
+                        "Graded Games": r.get("graded_games") if r.get("graded_games") is not None else "—",
+                        "Why": (r.get("reason") or "")[:280],
+                        "Parlay Eligible": r.get("eligible_for_parlay"),
+                    }
+                    for r in _opp_display
+                ],
+                use_container_width=True,
+                hide_index=True,
+            )
+
+    with st.expander("Best pocket per game (secondary summary)", expanded=False):
+        st.caption(
+            "One row per live-slate game from **`nba_best_pocket_per_game.json`**. Collapsed summary; "
+            "use **Ranked Pocket Opportunities** above for the full ranked list."
+        )
+        if not _games_bpp:
+            st.caption("No rows.")
+        else:
+            def _bpp_cell(val, empty="—"):
+                if val is None or val == "":
+                    return empty
+                return val
+
+            def _bpp_num(val, fmt="{:.4f}", empty="—"):
+                if val is None or val == "":
+                    return empty
+                try:
+                    return fmt.format(float(val))
+                except (TypeError, ValueError):
+                    return str(val)
+
+            def _bpp_models_col(row: dict) -> str:
+                mk = _bpp_cell(row.get("best_reference_models_key"))
+                sig = (row.get("best_reference_state_signature") or "").strip()
+                if not sig:
+                    return mk
+                sig_trim = (sig[:32] + "…") if len(sig) > 32 else sig
+                if mk == "—":
+                    return sig_trim
+                return f"{mk} · {sig_trim}"
+
+            def _bpp_graded_cell(row: dict):
+                v = row.get("best_reference_graded_games")
+                if v is None:
+                    v = row.get("best_pocket_graded_games")
+                if v is None or v == "":
+                    return "—"
+                try:
+                    return int(v)
+                except (TypeError, ValueError):
+                    return "—"
+
+            st.dataframe(
+                [
+                    {
+                        "Rank": g.get("rank"),
+                        "Game": _bpp_cell(g.get("matchup")),
+                        "Pick": _bpp_cell(g.get("spread_pick")),
+                        "Best Pocket Type": _bpp_cell(g.get("best_pocket_type")),
+                        "Pocket Models": _bpp_models_col(g),
+                        "Pocket ROI": _bpp_num(
+                            g.get("best_reference_roi")
+                            if g.get("best_reference_roi") is not None
+                            else g.get("best_pocket_roi")
+                        ),
+                        "Pocket Win Rate": _bpp_num(
+                            g.get("best_reference_win_rate")
+                            if g.get("best_reference_win_rate") is not None
+                            else g.get("best_pocket_win_rate")
+                        ),
+                        "Pocket Games": _bpp_graded_cell(g),
+                        "Why": (g.get("reason") or "")[:280],
+                        "Parlay Eligible": g.get("eligible_for_parlay"),
+                    }
+                    for g in _games_bpp
+                ],
+                use_container_width=True,
+                hide_index=True,
+            )
+
+    st.markdown("## Best 2-leg parlay (positive ROI only)")
+    if not _opp_rows:
+        st.caption("No ranked opportunities loaded — parlay unavailable.")
+    elif _pocket_filter_label == "Total Only":
+        st.caption(
+            "**Parlay (v1) is spread-only.** The table above is total-market only; switch to **All Pockets** or **Spread Only** "
+            "to see parlay candidates."
+        )
+        st.info(
+            "Parlay builder is spread-only in v1. Switch to All Pockets or Spread Only to view parlay candidates."
+        )
+    else:
+        st.caption(
+            "Walks the **full** ranked opportunity list in global order (same as **`nba_ranked_pocket_opportunities.json`**). "
+            "First **two** distinct **`game_id`** with **`eligible_for_parlay`** — spread-only, positive historical ROI. "
+            "If **All Pockets** is selected, total rows in the table are ignored for this builder."
+        )
+        _seen_parlay_gid: set[str] = set()
+        _parlay_legs: list[dict] = []
+        for r in _opp_rows:
+            if not r.get("eligible_for_parlay"):
+                continue
+            gid = str(r.get("game_id") or "").strip()
+            if not gid or gid in _seen_parlay_gid:
+                continue
+            _seen_parlay_gid.add(gid)
+            _parlay_legs.append(r)
+            if len(_parlay_legs) >= 2:
+                break
+        if len(_parlay_legs) < 2:
+            st.info("No positive-ROI 2-leg parlay exposed on this slate.")
+        else:
+            _r1, _r2 = _parlay_legs[0], _parlay_legs[1]
+            st.markdown(
+                f"**Leg 1 —** {_r1.get('matchup')} · **{_r1.get('pick')}**  \n"
+                f"*{_r1.get('pocket_type')} · historical ROI {_r1.get('roi')}*"
+            )
+            st.markdown(
+                f"**Leg 2 —** {_r2.get('matchup')} · **{_r2.get('pick')}**  \n"
+                f"*{_r2.get('pocket_type')} · historical ROI {_r2.get('roi')}*"
+            )
+            st.caption(
+                f"**Summary:** top two distinct-game spread opportunities by **global** ranked ROI "
+                f"(ROIs {_r1.get('roi')} / {_r2.get('roi')} — not parlay EV math)."
+            )
+    st.warning(
+        "**For entertainment / small-stake use only** — not a guaranteed edge, not sizing advice, "
+        "not a substitute for authority logic. No bets placed or automated."
+    )
+
+    _adm_rows, _adm_cap = _resolve_nba_pocket_slate_rows(
+        _nba_current_pockets_doc,
+        _nba_live_pockets_doc,
+        games,
+        selected_date,
+    )
+    _adm_bt = str((_nba_pockets_doc or {}).get("source_backtest_dir") or "")
+    if _lb_sf:
+        _adm_bt = str(_lb_sf.get("source_backtest_dir") or _adm_bt)
+    _spread_h = _spread_w = _spread_c = _spread_i = 0
+    if _lb_sf:
+        for _sr in _lb_sf.get("strongest_spread_cluster") or []:
+            if not isinstance(_sr, dict):
+                continue
+            _spa = _sr.get("spread_pocket_alignment") or {}
+            if isinstance(_spa, dict):
+                _spread_h += int(_spa.get("hot") or 0)
+                _spread_w += int(_spa.get("warm") or 0)
+                _spread_c += int(_spa.get("cold") or 0)
+                _spread_i += int(_spa.get("insufficient") or 0)
+    _lb_mismatch = False
+    if _lb_sf:
+        _gct = int(_lb_sf.get("game_count") or 0)
+        _lb_mismatch = _gct > 0 and _gct != len(_adm_rows)
+    with st.expander("NBA pocket admin / debug (read-only)", expanded=False):
+        st.code(
+            "source_backtest_dir: "
+            + str(_adm_bt or "—")
+            + "\nsource_daily_view_path (leaderboard): "
+            + str(((_lb_sf or {}).get("source_daily_view_path")) or "—")
+            + "\nselected_date: "
+            + str(selected_date)
+            + "\nleaderboard slate_date: "
+            + str(((_lb_sf or {}).get("slate_date")) or "—")
+            + "\nleaderboard game_count: "
+            + str(((_lb_sf or {}).get("game_count")) if _lb_sf else "—")
+            + "\nslate_table_rows: "
+            + str(len(_adm_rows))
+            + "\nspread_align_sums_H_W_C_I: "
+            + f"{_spread_h},{_spread_w},{_spread_c},{_spread_i}"
+            + "\neligible_parlay_pool_count (positive ROI + pick, ranked opportunities): "
+            + str(_parlay_eligible_n)
+            + "\nranked_opportunity_rows: "
+            + str(len(_opp_rows))
+            + "\nnba_ranked_pocket_opportunities.json: "
+            + (
+                "loaded"
+                if _nba_ranked_pocket_doc
+                else "missing (rebuilt in-session if leaderboard + pockets present)"
+            )
+            + "\nnba_best_pocket_per_game.json: "
+            + ("loaded" if _nba_best_pocket_doc else "missing (rebuilt in-session if leaderboard present)")
+            + "\ngame_count_vs_slate_mismatch: "
+            + ("yes" if _lb_mismatch else "no"),
+            language=None,
+        )
+        st.markdown("**Slate resolution (live artifact vs fallback)**")
+        st.markdown(_adm_cap)
+        if _lb_sf and str(_lb_sf.get("slate_date") or "").strip() != str(selected_date).strip():
+            st.warning("Leaderboard `slate_date` ≠ selected date — treat live tables as cross-dated.")
+
+    with st.expander("Detailed diagnostic pocket tables (secondary)", expanded=False):
+        if formulas:
+            with st.expander("Formulas & thresholds", expanded=False):
+                st.json(formulas)
+        st.subheader("Live slate — spread-first diagnostic (secondary)")
+        st.caption(
+            "`nba_pocket_leaderboard_validation.json` motivated spread cluster / triple spread / pass / cold — "
+            "see **Historical leaderboard validation** at the bottom of this expander."
+        )
+        st.caption(
+            "Tables sort by **ROI → graded games → leaderboard score** (display only)."
+        )
+        if not _lb_sf:
+            st.caption(
+                "Load `nba_live_pocket_leaderboard.json` (run `build_nba_model_pockets.py`) to populate these tables."
+            )
+        else:
+            _sf_slate = str(_lb_sf.get("slate_date") or "").strip()
+            if _sf_slate and _sf_slate != str(selected_date).strip():
+                st.warning(
+                    f"Leaderboard slate **`{_sf_slate}`** ≠ selected **`{selected_date}`** — rows may not match today’s table."
+                )
+
+            _bts_raw = [r for r in (_lb_sf.get("best_triple_spread") or []) if isinstance(r, dict)]
+            _bps_raw = [r for r in (_lb_sf.get("best_pair_spread") or []) if isinstance(r, dict)]
+            _triple_by_gid = {
+                str(r.get("game_id") or "").strip(): r for r in _bts_raw if str(r.get("game_id") or "").strip()
+            }
+            _pair_by_gid = {
+                str(r.get("game_id") or "").strip(): r for r in _bps_raw if str(r.get("game_id") or "").strip()
+            }
+
+            st.markdown("##### 1 · Strongest spread cluster (ROI-informed sort via matched combo pockets)")
+            _ssc_sf = [r for r in (_lb_sf.get("strongest_spread_cluster") or []) if isinstance(r, dict)]
+            _ssc_rows_out = []
+            for r in _ssc_sf:
+                gid = str(r.get("game_id") or "").strip()
+                tr = _triple_by_gid.get(gid)
+                pr = _pair_by_gid.get(gid)
+                tr_roi = _pocket_float(tr.get("roi")) if tr else None
+                pr_roi = _pocket_float(pr.get("roi")) if pr else None
+                tr_g = int(tr.get("graded_games") or 0) if tr else 0
+                pr_g = int(pr.get("graded_games") or 0) if pr else 0
+                proxy_roi = tr_roi if tr_roi is not None else pr_roi
+                max_graded = max(tr_g, pr_g) if (tr or pr) else 0
+                _ssc_rows_out.append(
+                    {
+                        "_sort": (
+                            proxy_roi if proxy_roi is not None else -1e18,
+                            max_graded,
+                            _pocket_float(r.get("cluster_score")) or 0.0,
+                        ),
+                        "ui rank": 0,
+                        "game_id": r.get("game_id"),
+                        "matchup": r.get("matchup"),
+                        "spread pick": r.get("spread_pick"),
+                        "spread align H/W/C/I": _lb_hci(r.get("spread_pocket_alignment")),
+                        "cluster score": r.get("cluster_score"),
+                        "hist triple ROI": tr_roi,
+                        "hist triple graded": tr_g if tr else None,
+                        "hist pair ROI": pr_roi,
+                        "hist pair graded": pr_g if pr else None,
+                        "leaderboard score": r.get("leaderboard_score"),
+                        "summary": (r.get("reason") or "")[:100],
+                    }
+                )
+            _ssc_rows_out.sort(key=lambda x: x["_sort"], reverse=True)
+            for i, row in enumerate(_ssc_rows_out, start=1):
+                row["ui rank"] = i
+                del row["_sort"]
+            if _ssc_rows_out:
+                st.dataframe(_ssc_rows_out, use_container_width=True, hide_index=True)
+            else:
+                st.caption("No rows.")
+
+            st.markdown("##### 2 · Best triple spread combo (historical pocket stats, ROI-first)")
+            _bts_sf = sorted(_bts_raw, key=_combo_roi_sort_key, reverse=True)
+            if _bts_sf:
+                st.dataframe(
+                    [
+                        {
+                            "ui rank": i,
+                            "game_id": r.get("game_id"),
+                            "matchup": r.get("matchup"),
+                            "spread pick": r.get("spread_pick"),
+                            "triple combo (models)": r.get("models_key"),
+                            "pocket ROI": r.get("roi"),
+                            "pocket Win%": r.get("win_rate"),
+                            "pocket graded": r.get("graded_games"),
+                            "combo pocket state": r.get("combo_state"),
+                            "spread align": _lb_hci(r.get("spread_pocket_alignment")),
+                            "leaderboard score": r.get("leaderboard_score"),
+                            "summary": (r.get("reason") or "")[:100],
+                        }
+                        for i, r in enumerate(_bts_sf, start=1)
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+            else:
+                st.caption("No triple spread matches on this slate.")
+
+            st.markdown("##### 3 · Best pair spread combo (historical pocket stats, ROI-first)")
+            _bps_sf = sorted(_bps_raw, key=_combo_roi_sort_key, reverse=True)
+            if _bps_sf:
+                st.dataframe(
+                    [
+                        {
+                            "ui rank": i,
+                            "game_id": r.get("game_id"),
+                            "matchup": r.get("matchup"),
+                            "spread pick": r.get("spread_pick"),
+                            "pair combo (models)": r.get("models_key"),
+                            "pocket ROI": r.get("roi"),
+                            "pocket Win%": r.get("win_rate"),
+                            "pocket graded": r.get("graded_games"),
+                            "combo pocket state": r.get("combo_state"),
+                            "spread align": _lb_hci(r.get("spread_pocket_alignment")),
+                            "leaderboard score": r.get("leaderboard_score"),
+                            "summary": (r.get("reason") or "")[:100],
+                        }
+                        for i, r in enumerate(_bps_sf, start=1)
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+            else:
+                st.caption("No pair spread matches on this slate.")
+
+            st.markdown("##### 4 · Pass candidates (hist. pair ROI → cluster score)")
+            _pc_sf = sorted(
+                [r for r in (_lb_sf.get("pass_candidates") or []) if isinstance(r, dict)],
+                key=_pass_roi_sort_key,
+                reverse=True,
+            )
+            if _pc_sf:
+                st.dataframe(
+                    [
+                        {
+                            "ui rank": i,
+                            "game_id": r.get("game_id"),
+                            "matchup": r.get("matchup"),
+                            "spread pick": r.get("spread_pick"),
+                            "spread cluster score": r.get("spread_cluster_score"),
+                            "hist. best-pair spread ROI": r.get("best_pair_spread_roi"),
+                            "leaderboard score": r.get("leaderboard_score"),
+                            "spread align": _lb_hci(r.get("spread_pocket_alignment")),
+                            "summary": (r.get("reason") or "")[:120],
+                        }
+                        for i, r in enumerate(_pc_sf, start=1)
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+            else:
+                st.caption("No pass-flagged games on this slate.")
+
+            st.markdown("##### 5 · Cold cluster warnings (warning score; no per-game ROI)")
+            _ccw_sf = sorted(
+                [r for r in (_lb_sf.get("cold_cluster_warnings") or []) if isinstance(r, dict)],
+                key=_cold_sort_key,
+                reverse=True,
+            )
+            if _ccw_sf:
+                st.dataframe(
+                    [
+                        {
+                            "ui rank": i,
+                            "game_id": r.get("game_id"),
+                            "matchup": r.get("matchup"),
+                            "warning score": r.get("warning_score"),
+                            "spread align": _lb_hci(r.get("spread_pocket_alignment")),
+                            "leaderboard score": r.get("leaderboard_score"),
+                            "summary": (r.get("reason") or "")[:100],
+                        }
+                        for i, r in enumerate(_ccw_sf, start=1)
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+            else:
+                st.caption("No rows.")
+
+        st.markdown("---")
+        st.subheader("Historical leaderboard validation (read-only)")
+        _val = _nba_pocket_validation_doc
+        if not _val:
+            st.caption(
+                "No `nba_pocket_leaderboard_validation.json` in latest backtest — run `build_nba_model_pockets.py`."
+            )
+        else:
+            st.caption(
+                f"Backtest **`{_val.get('source_backtest_dir', '')}`** · "
+                f"{_val.get('n_games_with_models_blob', 0)} games with `models` (of {_val.get('n_backtest_rows', 0)} rows). "
+                "Tercile splits vs full sample; -110 ROI on graded legs."
+            )
+
+            def _vrow(label: str, d: dict | None) -> dict:
+                if not isinstance(d, dict):
+                    return {"metric": label, "graded": None, "Win%": None, "ROI": None, "notes": "—"}
+                return {
+                    "metric": label,
+                    "graded": d.get("graded_games"),
+                    "Win%": d.get("win_rate"),
+                    "ROI": d.get("roi"),
+                    "notes": (d.get("sample_notes") or "")[:48],
+                }
+
+            _ps = _val.get("pair_spread_top_vs_all") or {}
+            _cl = _val.get("spread_cluster_strong_vs_weak") or {}
+            _pv = _val.get("pass_vs_non_pass") or {}
+            _sum_spread = [
+                _vrow("Pair spread combo — top tercile (score)", _ps.get("top_tercile_pair_spread_combo")),
+                _vrow("Pair spread combo — all w/ pocket", _ps.get("all_with_pair_spread_combo")),
+                _vrow("Authority spread — top pair tercile games", _ps.get("authority_spread_top_pair_tercile")),
+                _vrow("Triple spread combo — top tercile", (_val.get("triple_spread_top_vs_all") or {}).get("top_tercile_triple_spread_combo")),
+                _vrow("Triple spread combo — all w/ pocket", (_val.get("triple_spread_top_vs_all") or {}).get("all_with_triple_spread_combo")),
+                _vrow("Cluster — strong (auth spread)", _cl.get("strong_spread_cluster_authority_spread")),
+                _vrow("Cluster — weak (auth spread)", _cl.get("weak_spread_cluster_authority_spread")),
+                _vrow("Pass candidates (auth spread)", _pv.get("pass_candidates_authority_spread")),
+                _vrow("Non-pass (auth spread)", _pv.get("non_pass_authority_spread")),
+            ]
+            st.markdown("##### Spread / cluster / pass (historical)")
+            st.dataframe(_sum_spread, use_container_width=True, hide_index=True)
+
+            _tot = _val.get("totals_if_sufficient") or {}
+            _trows = []
+            if isinstance(_tot.get("pair_total_top_tercile_combo"), dict):
+                _trows.append(_vrow("Pair total combo — top tercile", _tot.get("pair_total_top_tercile_combo")))
+                _trows.append(_vrow("Pair total combo — all", _tot.get("pair_total_all_with_pocket_combo")))
+            if isinstance(_tot.get("triple_total_top_tercile_combo"), dict):
+                _trows.append(_vrow("Triple total combo — top tercile", _tot.get("triple_total_top_tercile_combo")))
+                _trows.append(_vrow("Triple total combo — all", _tot.get("triple_total_all_with_pocket_combo")))
+            if _trows:
+                st.markdown("##### Totals (historical, n≥30 gate)")
+                st.dataframe(_trows, use_container_width=True, hide_index=True)
+            elif _tot.get("pair_total", {}).get("skipped") or _tot.get("triple_total", {}).get("skipped"):
+                st.caption("Totals validation skipped (insufficient sample per artifact rules).")
+
+            _cw = _val.get("cold_warning_high_vs_low") or {}
+            _wrows = [
+                _vrow("Cold warning HIGH tercile (auth spread)", _cw.get("high_warning_authority_spread")),
+                _vrow("Cold warning LOW tercile (auth spread)", _cw.get("low_warning_authority_spread")),
+            ]
+            st.markdown("##### Cold-warning terciles (historical)")
+            st.dataframe(_wrows, use_container_width=True, hide_index=True)
+
+def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
+    """
+    Pocket ROI View only: ranked best-pocket board, parlay, admin, diagnostic (+ validation).
+    Uses module-level NCAAM pocket loaders; read-only; no authority changes.
+    """
+    st.markdown(
+        "Per-game pocket summary from the **latest NCAAM backtest** live leaderboard. "
+        "Does not change authority or sweet-spot logic. All NCAAM runner models are included (avg, momentum, market pressure)."
+    )
+    if _ncaam_pockets_doc is None:
+        st.info(
+            "No pocket artifacts found. Run the NCAAM pipeline through backtest, then "
+            "**`build_ncaam_model_pockets.py`** to write `ncaam_model_pockets.json`, "
+                    "`ncaam_live_game_pocket_view.json`, `ncaam_live_pocket_leaderboard.json`, `ncaam_best_pocket_per_game.json`, "
+                    "`ncaam_ranked_pocket_opportunities.json`, and companions into the latest "
+            "`data/ncaam/backtests/backtest_*/` folder."
+        )
+        return
+
+    st.caption(
+        f"Backtest folder: `{(_ncaam_pockets_doc or {}).get('source_backtest_dir', '')}` "
+        f"— generated {_ncaam_pockets_date or 'n/a'}"
+    )
+    formulas = (_ncaam_pockets_doc or {}).get("formulas") or {}
+
+    def _lb_hci(d):
+        if not isinstance(d, dict):
+            return ""
+        return (
+            f"H{d.get('hot', 0)}/W{d.get('warm', 0)}/"
+            f"C{d.get('cold', 0)}/I{d.get('insufficient', 0)}"
+        )
+
+    def _pocket_float(v):
+        if v in (None, ""):
+            return None
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+
+    def _combo_roi_sort_key(r: dict):
+        roi = _pocket_float(r.get("roi"))
+        gr = int(r.get("graded_games") or 0)
+        sc = _pocket_float(r.get("leaderboard_score")) or 0.0
+        return (roi if roi is not None else -1e18, gr, sc)
+
+    def _pass_roi_sort_key(r: dict):
+        pr = _pocket_float(r.get("best_pair_spread_roi"))
+        csc = _pocket_float(r.get("spread_cluster_score")) or 0.0
+        lb = _pocket_float(r.get("leaderboard_score")) or 0.0
+        return (pr if pr is not None else -1e18, csc, lb)
+
+    def _cold_sort_key(r: dict):
+        w = _pocket_float(r.get("warning_score")) or 0.0
+        lb = _pocket_float(r.get("leaderboard_score")) or 0.0
+        return (w, lb)
+
+    _lb_sf = _ncaam_live_pocket_leaderboard_doc
+    _rpo_resolved = _ncaam_ranked_pocket_doc
+    _bpp_resolved = _ncaam_best_pocket_doc
+    if _lb_sf:
+        try:
+            from eng.execution.build_ncaam_model_pockets import (
+                build_ncaam_best_pocket_per_game_from_leaderboard,
+                build_ncaam_ranked_pocket_opportunities,
+            )
+
+            if _rpo_resolved is None:
+                _pockets_list = list(((_ncaam_pockets_doc or {}).get("pockets") or []))
+                _rpo_resolved = build_ncaam_ranked_pocket_opportunities(_lb_sf, _pockets_list)
+            if _bpp_resolved is None:
+                _bpp_resolved = build_ncaam_best_pocket_per_game_from_leaderboard(_lb_sf)
+        except Exception:
+            pass
+    _opp_rows = [r for r in ((_rpo_resolved or {}).get("opportunities") or []) if isinstance(r, dict)]
+    _games_bpp = list((_bpp_resolved or {}).get("games") or [])
+    _parlay_eligible_n = sum(1 for r in _opp_rows if r.get("eligible_for_parlay"))
+
+    def _rpo_row_is_spread(r: dict) -> bool:
+        mt = str(r.get("market_type") or "").strip().lower()
+        if mt == "spread":
+            return True
+        pt = str(r.get("pocket_type") or "").strip().lower()
+        return pt.endswith("_spread")
+
+    def _rpo_row_is_total(r: dict) -> bool:
+        mt = str(r.get("market_type") or "").strip().lower()
+        if mt == "total":
+            return True
+        pt = str(r.get("pocket_type") or "").strip().lower()
+        return pt.endswith("_total")
+
+    def _rpo_cell(val, empty="—"):
+        if val is None or val == "":
+            return empty
+        return val
+
+    def _rpo_num(val, fmt="{:.4f}", empty="—"):
+        if val is None or val == "":
+            return empty
+        try:
+            return fmt.format(float(val))
+        except (TypeError, ValueError):
+            return str(val)
+
+    def _rpo_models_col(row: dict) -> str:
+        mk = row.get("models_key")
+        if mk is not None and str(mk).strip():
+            return str(mk).strip()
+        mn = row.get("model_name")
+        if mn is not None and str(mn).strip():
+            return str(mn).strip()
+        return "—"
+
+    def _rpo_sig_cell(row: dict) -> str:
+        s = (row.get("state_signature") or "").strip()
+        if not s:
+            return "—"
+        return (s[:56] + "…") if len(s) > 56 else s
+
+    st.markdown("## Ranked Pocket Opportunities")
+    st.caption(
+        "One row per pocket candidate from **`ncaam_ranked_pocket_opportunities.json`** "
+        "(rebuilt in-session from the live leaderboard + **`ncaam_model_pockets.json`** when that file is missing). "
+        "Global sort: ROI → graded games → win rate. **Rank** is the global rank in that file. Read-only."
+    )
+    _pocket_filter_label = "All Pockets"
+    if not _opp_rows:
+        st.info(
+            "No ranked pocket opportunity rows yet. Run **`build_ncaam_model_pockets.py`** so the latest backtest folder "
+            "contains **`ncaam_ranked_pocket_opportunities.json`**, **`ncaam_live_pocket_leaderboard.json`**, and **`ncaam_model_pockets.json`**."
+        )
+    else:
+        _pocket_filter_label = st.radio(
+            "Pocket type filter",
+            ("All Pockets", "Spread Only", "Total Only"),
+            index=0,
+            horizontal=True,
+        )
+        if _pocket_filter_label == "All Pockets":
+            _opp_display = list(_opp_rows)
+        elif _pocket_filter_label == "Spread Only":
+            _opp_display = [r for r in _opp_rows if _rpo_row_is_spread(r)]
+        else:
+            _opp_display = [r for r in _opp_rows if _rpo_row_is_total(r)]
+
+        if _pocket_filter_label == "All Pockets":
+            st.caption(
+                "Table shows **all** markets. **Best 2-leg parlay (v1)** still uses **spread-only** legs chosen from the "
+                "**full** ranked list (global order); total rows here are not parlay candidates."
+            )
+        elif _pocket_filter_label == "Spread Only":
+            st.caption(
+                "Table shows **spread** rows only (`market_type` **spread**, or combo `pocket_type` ending in `_spread`). "
+                "**Parlay (v1)** uses the same spread-only rules on the **full** ranked artifact (first two distinct eligible games "
+                "in global order — not necessarily the first two rows in this filtered view)."
+            )
+        else:
+            st.caption(
+                "Table shows **total** rows only (`market_type` **total**, or combo `pocket_type` ending in `_total`). "
+                "**Parlay (v1)** is spread-only — switch to **All Pockets** or **Spread Only** for parlay candidates."
+            )
+
+        if (
+            _lb_sf
+            and str(_lb_sf.get("slate_date") or "").strip()
+            and str(_lb_sf.get("slate_date") or "").strip() != str(selected_date).strip()
+        ):
+            st.warning(
+                f"Leaderboard / pocket slate **`{_lb_sf.get('slate_date')}`** ≠ selected **`{selected_date}`**."
+            )
+        if not _opp_display:
+            st.info(f"No rows match **{_pocket_filter_label}** for this slate.")
+        else:
+            st.dataframe(
+                [
+                    {
+                        "Rank": r.get("rank"),
+                        "Game": _rpo_cell(r.get("matchup")),
+                        "Pick": _rpo_cell(r.get("pick")),
+                        "Pocket Type": _rpo_cell(r.get("pocket_type")),
+                        "Pocket Models": _rpo_models_col(r),
+                        "State Signature": _rpo_sig_cell(r),
+                        "ROI": _rpo_num(r.get("roi")),
+                        "Win Rate": _rpo_num(r.get("win_rate")),
+                        "Graded Games": r.get("graded_games") if r.get("graded_games") is not None else "—",
+                        "Why": (r.get("reason") or "")[:280],
+                        "Parlay Eligible": r.get("eligible_for_parlay"),
+                    }
+                    for r in _opp_display
+                ],
+                use_container_width=True,
+                hide_index=True,
+            )
+
+    with st.expander("Best pocket per game (secondary summary)", expanded=False):
+        st.caption(
+            "One row per live-slate game from **`ncaam_best_pocket_per_game.json`**. Collapsed summary; "
+            "use **Ranked Pocket Opportunities** above for the full ranked list."
+        )
+        if not _games_bpp:
+            st.caption("No rows.")
+        else:
+            def _bpp_cell(val, empty="—"):
+                if val is None or val == "":
+                    return empty
+                return val
+
+            def _bpp_num(val, fmt="{:.4f}", empty="—"):
+                if val is None or val == "":
+                    return empty
+                try:
+                    return fmt.format(float(val))
+                except (TypeError, ValueError):
+                    return str(val)
+
+            def _bpp_models_col(row: dict) -> str:
+                mk = _bpp_cell(row.get("best_reference_models_key"))
+                sig = (row.get("best_reference_state_signature") or "").strip()
+                if not sig:
+                    return mk
+                sig_trim = (sig[:32] + "…") if len(sig) > 32 else sig
+                if mk == "—":
+                    return sig_trim
+                return f"{mk} · {sig_trim}"
+
+            def _bpp_graded_cell(row: dict):
+                v = row.get("best_reference_graded_games")
+                if v is None:
+                    v = row.get("best_pocket_graded_games")
+                if v is None or v == "":
+                    return "—"
+                try:
+                    return int(v)
+                except (TypeError, ValueError):
+                    return "—"
+
+            st.dataframe(
+                [
+                    {
+                        "Rank": g.get("rank"),
+                        "Game": _bpp_cell(g.get("matchup")),
+                        "Pick": _bpp_cell(g.get("spread_pick")),
+                        "Best Pocket Type": _bpp_cell(g.get("best_pocket_type")),
+                        "Pocket Models": _bpp_models_col(g),
+                        "Pocket ROI": _bpp_num(
+                            g.get("best_reference_roi")
+                            if g.get("best_reference_roi") is not None
+                            else g.get("best_pocket_roi")
+                        ),
+                        "Pocket Win Rate": _bpp_num(
+                            g.get("best_reference_win_rate")
+                            if g.get("best_reference_win_rate") is not None
+                            else g.get("best_pocket_win_rate")
+                        ),
+                        "Pocket Games": _bpp_graded_cell(g),
+                        "Why": (g.get("reason") or "")[:280],
+                        "Parlay Eligible": g.get("eligible_for_parlay"),
+                    }
+                    for g in _games_bpp
+                ],
+                use_container_width=True,
+                hide_index=True,
+            )
+
+    st.markdown("## Best 2-leg parlay (positive ROI only)")
+    if not _opp_rows:
+        st.caption("No ranked opportunities loaded — parlay unavailable.")
+    elif _pocket_filter_label == "Total Only":
+        st.caption(
+            "**Parlay (v1) is spread-only.** The table above is total-market only; switch to **All Pockets** or **Spread Only** "
+            "to see parlay candidates."
+        )
+        st.info(
+            "Parlay builder is spread-only in v1. Switch to All Pockets or Spread Only to view parlay candidates."
+        )
+    else:
+        st.caption(
+            "Walks the **full** ranked opportunity list in global order (same as **`ncaam_ranked_pocket_opportunities.json`**). "
+            "First **two** distinct **`game_id`** with **`eligible_for_parlay`** — spread-only, positive historical ROI. "
+            "If **All Pockets** is selected, total rows in the table are ignored for this builder."
+        )
+        _seen_parlay_gid: set[str] = set()
+        _parlay_legs: list[dict] = []
+        for r in _opp_rows:
+            if not r.get("eligible_for_parlay"):
+                continue
+            gid = str(r.get("game_id") or "").strip()
+            if not gid or gid in _seen_parlay_gid:
+                continue
+            _seen_parlay_gid.add(gid)
+            _parlay_legs.append(r)
+            if len(_parlay_legs) >= 2:
+                break
+        if len(_parlay_legs) < 2:
+            st.info("No positive-ROI 2-leg parlay exposed on this slate.")
+        else:
+            _r1, _r2 = _parlay_legs[0], _parlay_legs[1]
+            st.markdown(
+                f"**Leg 1 —** {_r1.get('matchup')} · **{_r1.get('pick')}**  \n"
+                f"*{_r1.get('pocket_type')} · historical ROI {_r1.get('roi')}*"
+            )
+            st.markdown(
+                f"**Leg 2 —** {_r2.get('matchup')} · **{_r2.get('pick')}**  \n"
+                f"*{_r2.get('pocket_type')} · historical ROI {_r2.get('roi')}*"
+            )
+            st.caption(
+                f"**Summary:** top two distinct-game spread opportunities by **global** ranked ROI "
+                f"(ROIs {_r1.get('roi')} / {_r2.get('roi')} — not parlay EV math)."
+            )
+    st.warning(
+        "**For entertainment / small-stake use only** — not a guaranteed edge, not sizing advice, "
+        "not a substitute for authority logic. No bets placed or automated."
+    )
+
+    _adm_rows, _adm_cap = _resolve_ncaam_pocket_slate_rows(
+        _ncaam_current_pockets_doc,
+        _ncaam_live_pockets_doc,
+        games,
+        selected_date,
+    )
+    _adm_bt = str((_ncaam_pockets_doc or {}).get("source_backtest_dir") or "")
+    if _lb_sf:
+        _adm_bt = str(_lb_sf.get("source_backtest_dir") or _adm_bt)
+    _spread_h = _spread_w = _spread_c = _spread_i = 0
+    if _lb_sf:
+        for _sr in _lb_sf.get("strongest_spread_cluster") or []:
+            if not isinstance(_sr, dict):
+                continue
+            _spa = _sr.get("spread_pocket_alignment") or {}
+            if isinstance(_spa, dict):
+                _spread_h += int(_spa.get("hot") or 0)
+                _spread_w += int(_spa.get("warm") or 0)
+                _spread_c += int(_spa.get("cold") or 0)
+                _spread_i += int(_spa.get("insufficient") or 0)
+    _lb_mismatch = False
+    if _lb_sf:
+        _gct = int(_lb_sf.get("game_count") or 0)
+        _lb_mismatch = _gct > 0 and _gct != len(_adm_rows)
+    with st.expander("NCAAM pocket admin / debug (read-only)", expanded=False):
+        st.code(
+            "source_backtest_dir: "
+            + str(_adm_bt or "—")
+            + "\nsource_daily_view_path (leaderboard): "
+            + str(((_lb_sf or {}).get("source_daily_view_path")) or "—")
+            + "\nselected_date: "
+            + str(selected_date)
+            + "\nleaderboard slate_date: "
+            + str(((_lb_sf or {}).get("slate_date")) or "—")
+            + "\nleaderboard game_count: "
+            + str(((_lb_sf or {}).get("game_count")) if _lb_sf else "—")
+            + "\nslate_table_rows: "
+            + str(len(_adm_rows))
+            + "\nspread_align_sums_H_W_C_I: "
+            + f"{_spread_h},{_spread_w},{_spread_c},{_spread_i}"
+            + "\neligible_parlay_pool_count (positive ROI + pick, ranked opportunities): "
+            + str(_parlay_eligible_n)
+            + "\nranked_opportunity_rows: "
+            + str(len(_opp_rows))
+            + "\nncaam_ranked_pocket_opportunities.json: "
+            + (
+                "loaded"
+                if _ncaam_ranked_pocket_doc
+                else "missing (rebuilt in-session if leaderboard + pockets present)"
+            )
+            + "\nncaam_best_pocket_per_game.json: "
+            + ("loaded" if _ncaam_best_pocket_doc else "missing (rebuilt in-session if leaderboard present)")
+            + "\ngame_count_vs_slate_mismatch: "
+            + ("yes" if _lb_mismatch else "no"),
+            language=None,
+        )
+        st.markdown("**Slate resolution (live artifact vs fallback)**")
+        st.markdown(_adm_cap)
+        if _lb_sf and str(_lb_sf.get("slate_date") or "").strip() != str(selected_date).strip():
+            st.warning("Leaderboard `slate_date` ≠ selected date — treat live tables as cross-dated.")
+
+    with st.expander("Detailed diagnostic pocket tables (secondary)", expanded=False):
+        if formulas:
+            with st.expander("Formulas & thresholds", expanded=False):
+                st.json(formulas)
+        st.subheader("Live slate — spread-first diagnostic (secondary)")
+        st.caption(
+            "`ncaam_pocket_leaderboard_validation.json` motivated spread cluster / triple spread / pass / cold — "
+            "see **Historical leaderboard validation** at the bottom of this expander."
+        )
+        st.caption(
+            "Tables sort by **ROI → graded games → leaderboard score** (display only)."
+        )
+        if not _lb_sf:
+            st.caption(
+                "Load `ncaam_live_pocket_leaderboard.json` (run `build_ncaam_model_pockets.py`) to populate these tables."
+            )
+        else:
+            _sf_slate = str(_lb_sf.get("slate_date") or "").strip()
+            if _sf_slate and _sf_slate != str(selected_date).strip():
+                st.warning(
+                    f"Leaderboard slate **`{_sf_slate}`** ≠ selected **`{selected_date}`** — rows may not match today’s table."
+                )
+
+            _bts_raw = [r for r in (_lb_sf.get("best_triple_spread") or []) if isinstance(r, dict)]
+            _bps_raw = [r for r in (_lb_sf.get("best_pair_spread") or []) if isinstance(r, dict)]
+            _triple_by_gid = {
+                str(r.get("game_id") or "").strip(): r for r in _bts_raw if str(r.get("game_id") or "").strip()
+            }
+            _pair_by_gid = {
+                str(r.get("game_id") or "").strip(): r for r in _bps_raw if str(r.get("game_id") or "").strip()
+            }
+
+            st.markdown("##### 1 · Strongest spread cluster (ROI-informed sort via matched combo pockets)")
+            _ssc_sf = [r for r in (_lb_sf.get("strongest_spread_cluster") or []) if isinstance(r, dict)]
+            _ssc_rows_out = []
+            for r in _ssc_sf:
+                gid = str(r.get("game_id") or "").strip()
+                tr = _triple_by_gid.get(gid)
+                pr = _pair_by_gid.get(gid)
+                tr_roi = _pocket_float(tr.get("roi")) if tr else None
+                pr_roi = _pocket_float(pr.get("roi")) if pr else None
+                tr_g = int(tr.get("graded_games") or 0) if tr else 0
+                pr_g = int(pr.get("graded_games") or 0) if pr else 0
+                proxy_roi = tr_roi if tr_roi is not None else pr_roi
+                max_graded = max(tr_g, pr_g) if (tr or pr) else 0
+                _ssc_rows_out.append(
+                    {
+                        "_sort": (
+                            proxy_roi if proxy_roi is not None else -1e18,
+                            max_graded,
+                            _pocket_float(r.get("cluster_score")) or 0.0,
+                        ),
+                        "ui rank": 0,
+                        "game_id": r.get("game_id"),
+                        "matchup": r.get("matchup"),
+                        "spread pick": r.get("spread_pick"),
+                        "spread align H/W/C/I": _lb_hci(r.get("spread_pocket_alignment")),
+                        "cluster score": r.get("cluster_score"),
+                        "hist triple ROI": tr_roi,
+                        "hist triple graded": tr_g if tr else None,
+                        "hist pair ROI": pr_roi,
+                        "hist pair graded": pr_g if pr else None,
+                        "leaderboard score": r.get("leaderboard_score"),
+                        "summary": (r.get("reason") or "")[:100],
+                    }
+                )
+            _ssc_rows_out.sort(key=lambda x: x["_sort"], reverse=True)
+            for i, row in enumerate(_ssc_rows_out, start=1):
+                row["ui rank"] = i
+                del row["_sort"]
+            if _ssc_rows_out:
+                st.dataframe(_ssc_rows_out, use_container_width=True, hide_index=True)
+            else:
+                st.caption("No rows.")
+
+            st.markdown("##### 2 · Best triple spread combo (historical pocket stats, ROI-first)")
+            _bts_sf = sorted(_bts_raw, key=_combo_roi_sort_key, reverse=True)
+            if _bts_sf:
+                st.dataframe(
+                    [
+                        {
+                            "ui rank": i,
+                            "game_id": r.get("game_id"),
+                            "matchup": r.get("matchup"),
+                            "spread pick": r.get("spread_pick"),
+                            "triple combo (models)": r.get("models_key"),
+                            "pocket ROI": r.get("roi"),
+                            "pocket Win%": r.get("win_rate"),
+                            "pocket graded": r.get("graded_games"),
+                            "combo pocket state": r.get("combo_state"),
+                            "spread align": _lb_hci(r.get("spread_pocket_alignment")),
+                            "leaderboard score": r.get("leaderboard_score"),
+                            "summary": (r.get("reason") or "")[:100],
+                        }
+                        for i, r in enumerate(_bts_sf, start=1)
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+            else:
+                st.caption("No triple spread matches on this slate.")
+
+            st.markdown("##### 3 · Best pair spread combo (historical pocket stats, ROI-first)")
+            _bps_sf = sorted(_bps_raw, key=_combo_roi_sort_key, reverse=True)
+            if _bps_sf:
+                st.dataframe(
+                    [
+                        {
+                            "ui rank": i,
+                            "game_id": r.get("game_id"),
+                            "matchup": r.get("matchup"),
+                            "spread pick": r.get("spread_pick"),
+                            "pair combo (models)": r.get("models_key"),
+                            "pocket ROI": r.get("roi"),
+                            "pocket Win%": r.get("win_rate"),
+                            "pocket graded": r.get("graded_games"),
+                            "combo pocket state": r.get("combo_state"),
+                            "spread align": _lb_hci(r.get("spread_pocket_alignment")),
+                            "leaderboard score": r.get("leaderboard_score"),
+                            "summary": (r.get("reason") or "")[:100],
+                        }
+                        for i, r in enumerate(_bps_sf, start=1)
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+            else:
+                st.caption("No pair spread matches on this slate.")
+
+            st.markdown("##### 4 · Pass candidates (hist. pair ROI → cluster score)")
+            _pc_sf = sorted(
+                [r for r in (_lb_sf.get("pass_candidates") or []) if isinstance(r, dict)],
+                key=_pass_roi_sort_key,
+                reverse=True,
+            )
+            if _pc_sf:
+                st.dataframe(
+                    [
+                        {
+                            "ui rank": i,
+                            "game_id": r.get("game_id"),
+                            "matchup": r.get("matchup"),
+                            "spread pick": r.get("spread_pick"),
+                            "spread cluster score": r.get("spread_cluster_score"),
+                            "hist. best-pair spread ROI": r.get("best_pair_spread_roi"),
+                            "leaderboard score": r.get("leaderboard_score"),
+                            "spread align": _lb_hci(r.get("spread_pocket_alignment")),
+                            "summary": (r.get("reason") or "")[:120],
+                        }
+                        for i, r in enumerate(_pc_sf, start=1)
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+            else:
+                st.caption("No pass-flagged games on this slate.")
+
+            st.markdown("##### 5 · Cold cluster warnings (warning score; no per-game ROI)")
+            _ccw_sf = sorted(
+                [r for r in (_lb_sf.get("cold_cluster_warnings") or []) if isinstance(r, dict)],
+                key=_cold_sort_key,
+                reverse=True,
+            )
+            if _ccw_sf:
+                st.dataframe(
+                    [
+                        {
+                            "ui rank": i,
+                            "game_id": r.get("game_id"),
+                            "matchup": r.get("matchup"),
+                            "warning score": r.get("warning_score"),
+                            "spread align": _lb_hci(r.get("spread_pocket_alignment")),
+                            "leaderboard score": r.get("leaderboard_score"),
+                            "summary": (r.get("reason") or "")[:100],
+                        }
+                        for i, r in enumerate(_ccw_sf, start=1)
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+            else:
+                st.caption("No rows.")
+
+        st.markdown("---")
+        st.subheader("Historical leaderboard validation (read-only)")
+        _val = _ncaam_pocket_validation_doc
+        if not _val:
+            st.caption(
+                "No `ncaam_pocket_leaderboard_validation.json` in latest backtest — run `build_ncaam_model_pockets.py`."
+            )
+        else:
+            st.caption(
+                f"Backtest **`{_val.get('source_backtest_dir', '')}`** · "
+                f"{_val.get('n_games_with_models_blob', 0)} games with `models` (of {_val.get('n_backtest_rows', 0)} rows). "
+                "Tercile splits vs full sample; -110 ROI on graded legs."
+            )
+
+            def _vrow(label: str, d: dict | None) -> dict:
+                if not isinstance(d, dict):
+                    return {"metric": label, "graded": None, "Win%": None, "ROI": None, "notes": "—"}
+                return {
+                    "metric": label,
+                    "graded": d.get("graded_games"),
+                    "Win%": d.get("win_rate"),
+                    "ROI": d.get("roi"),
+                    "notes": (d.get("sample_notes") or "")[:48],
+                }
+
+            _ps = _val.get("pair_spread_top_vs_all") or {}
+            _cl = _val.get("spread_cluster_strong_vs_weak") or {}
+            _pv = _val.get("pass_vs_non_pass") or {}
+            _sum_spread = [
+                _vrow("Pair spread combo — top tercile (score)", _ps.get("top_tercile_pair_spread_combo")),
+                _vrow("Pair spread combo — all w/ pocket", _ps.get("all_with_pair_spread_combo")),
+                _vrow("Authority spread — top pair tercile games", _ps.get("authority_spread_top_pair_tercile")),
+                _vrow("Triple spread combo — top tercile", (_val.get("triple_spread_top_vs_all") or {}).get("top_tercile_triple_spread_combo")),
+                _vrow("Triple spread combo — all w/ pocket", (_val.get("triple_spread_top_vs_all") or {}).get("all_with_triple_spread_combo")),
+                _vrow("Cluster — strong (auth spread)", _cl.get("strong_spread_cluster_authority_spread")),
+                _vrow("Cluster — weak (auth spread)", _cl.get("weak_spread_cluster_authority_spread")),
+                _vrow("Pass candidates (auth spread)", _pv.get("pass_candidates_authority_spread")),
+                _vrow("Non-pass (auth spread)", _pv.get("non_pass_authority_spread")),
+            ]
+            st.markdown("##### Spread / cluster / pass (historical)")
+            st.dataframe(_sum_spread, use_container_width=True, hide_index=True)
+
+            _tot = _val.get("totals_if_sufficient") or {}
+            _trows = []
+            if isinstance(_tot.get("pair_total_top_tercile_combo"), dict):
+                _trows.append(_vrow("Pair total combo — top tercile", _tot.get("pair_total_top_tercile_combo")))
+                _trows.append(_vrow("Pair total combo — all", _tot.get("pair_total_all_with_pocket_combo")))
+            if isinstance(_tot.get("triple_total_top_tercile_combo"), dict):
+                _trows.append(_vrow("Triple total combo — top tercile", _tot.get("triple_total_top_tercile_combo")))
+                _trows.append(_vrow("Triple total combo — all", _tot.get("triple_total_all_with_pocket_combo")))
+            if _trows:
+                st.markdown("##### Totals (historical, n≥30 gate)")
+                st.dataframe(_trows, use_container_width=True, hide_index=True)
+            elif _tot.get("pair_total", {}).get("skipped") or _tot.get("triple_total", {}).get("skipped"):
+                st.caption("Totals validation skipped (insufficient sample per artifact rules).")
+
+            _cw = _val.get("cold_warning_high_vs_low") or {}
+            _wrows = [
+                _vrow("Cold warning HIGH tercile (auth spread)", _cw.get("high_warning_authority_spread")),
+                _vrow("Cold warning LOW tercile (auth spread)", _cw.get("low_warning_authority_spread")),
+            ]
+            st.markdown("##### Cold-warning terciles (historical)")
+            st.dataframe(_wrows, use_container_width=True, hide_index=True)
+
+
 # --------------------------------------------------
 # AGENT OVERLAY (read-only): load by league, join by game_id
 # --------------------------------------------------
@@ -748,6 +2388,43 @@ elif _overlay_status == "mismatch":
     st.caption(f"Agent overlay: built for **{_overlay_slate_date}**; selected slate is **{selected_date}** — may be stale")
 else:
     st.caption("Agent overlay: loaded; slate date unknown — may not match selected slate")
+
+if league in ("NBA", "NCAAM"):
+    slate_dashboard_view = st.radio(
+        "Dashboard view",
+        ("Standard Slate View", "Pocket ROI View"),
+        index=0,
+        horizontal=True,
+        help="Pocket ROI View shows the pocket leaderboard lens only (read-only).",
+    )
+else:
+    slate_dashboard_view = "Standard Slate View"
+
+if league == "NBA" and slate_dashboard_view == "Pocket ROI View":
+    st.caption(
+        "**Pocket ROI lens** — backtest-derived pocket board for the selected slate; read-only; does not change authority. "
+        "**MonkeyDarts_v2** excluded upstream."
+    )
+    _render_nba_pocket_roi_view(games, selected_date)
+    st.stop()
+
+if league == "NCAAM" and slate_dashboard_view == "Pocket ROI View":
+    st.caption(
+        "**Pocket ROI lens** — NCAAM backtest-derived pocket board for the selected slate; read-only; does not change authority. "
+        "Models: avg score, momentum, market pressure (no injury layer)."
+    )
+    _render_ncaam_pocket_roi_view(games, selected_date)
+    st.stop()
+
+if league == "NBA" and slate_dashboard_view == "Standard Slate View":
+    st.caption(
+        "**NBA pockets:** use **Pocket ROI View** for ranked best-pocket per game and positive-ROI parlay diagnostics."
+    )
+
+if league == "NCAAM" and slate_dashboard_view == "Standard Slate View":
+    st.caption(
+        "**NCAAM pockets:** use **Pocket ROI View** for ranked best-pocket per game and positive-ROI parlay diagnostics."
+    )
 
 # --------------------------------------------------
 # KELLY BET SIZING MODEL

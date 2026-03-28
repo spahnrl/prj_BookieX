@@ -64,6 +64,7 @@ STEPS = [
     ("eng/analysis/analysis_039a_dynamic_sweetspot_discovery.py", ["--league", "ncaam"]),
     ("eng/analysis/analysis_039b_execution_overlay_performance.py", ["--league", "ncaam"]),
     ("eng/analysis/analysis_039b_execution_overlay_performance.py", ["--league", "ncaam", "--use-dynamic-sweetspots"]),
+    "eng/execution/build_ncaam_model_pockets.py",
 ]
 
 ANALYSIS = [
@@ -92,11 +93,11 @@ def build_step_command(step_spec, args) -> list[str]:
 
     cmd = [sys.executable, str(script_path)]
 
-    # Schedule step: date-window overrides (unified 001). When not set, do NOT pass dates so 001 uses its default (today+14 for March Madness).
+    # Schedule step: date-window overrides (unified 001). When not set, 001 uses CST today + 14 for NCAAM end bound.
     if "b_gen_001_ingest_schedule.py" in step_path:
         if args.start_date and args.end_date:
             cmd.extend(["--start-date", args.start_date, "--end-date", args.end_date])
-        # else: no date args → b_gen_001 defaults to 20251001 .. today+14
+        # else: b_gen_001 NCAAM default → 20251001 .. America/Chicago today + 14
     # Daily view: pass same date window so one file per date is built (launcher "Include Future Day").
     if "build_gen_daily_view.py" in step_path and args.start_date and args.end_date:
         cmd.extend(["--start-date", args.start_date, "--end-date", args.end_date])

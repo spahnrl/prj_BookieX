@@ -7624,3 +7624,53 @@ ___
 
 - **`eng/pipelines/shared/d_gen_021_build_canonical_games.py`:** Fills `schedule_home_score` / `schedule_away_score` from schedule row fields (`home_score` / `away_score` or `home_team_score` / `away_team_score`) so ESPN scoreboard finals reach canonical even when summary box scores are wrong.
 - **`eng/models/shared/model_gen_0052_add_model.py` (NCAAM `build_final_rows`):** When `home_score` / `away_score` are empty, coalesce **`schedule_*` before `home_points` / `away_points` then `box_*`**, so stale box totals do not override correct schedule finals in `final_game_view_ncaam.json`. Re-run **`f_gen_041` → `0051` → `0052`** after refreshing canonical for downstream JSON to pick up fixed schedule fields.
+
+---
+## 2026-03-22 — Session close: NCAAM schedule-score verification + GitHub push
+
+- **Verified (post `f_gen_041` → `0051` → `0052`, NCAAM):** `data/ncaam/view/final_game_view_ncaam.json` for **`ncaam_401856533`** (ESPN **`401856533`**) shows **`home_points` / `away_points`** = **76 / 55** and matching **`schedule_*`**; **`box_*`** remains **20 / 13** on the same row (wrong 004 box preserved, not used for coalesced finals).
+- **Shipped:** **`origin/main`** commit **`a2f40f6`** — *NCAAM: schedule scoreboard wins over wrong box scores (021 + 0052)*. Local `zzz_*` backups from `vvv_copy_before_change_x.py` stay gitignored.
+
+---
+## 2026-03-27 — NBA Pocket ROI: ranked opportunities, dashboard lens, parlay v1 (checkpoint)
+
+**Summary:** NBA-only **Pocket ROI** layer is documented and stable as a **read-only** dashboard lens over backtest-derived pocket artifacts. **Authority logic, pocket math, and leaderboard/validation formulas were not changed.** **MonkeyDarts_v2** remains excluded from all pocket generation in `build_nba_model_pockets.py`.
+
+**Added / consolidated:**
+
+- **Execution artifacts (written under latest `data/nba/backtests/backtest_*/` after `build_nba_model_pockets.py`):** `nba_model_pockets.json`, `nba_model_combo_pockets.json`, `nba_current_game_pocket_view.json`, `nba_live_game_pocket_view.json`, `nba_live_pocket_leaderboard.json`, `nba_pocket_leaderboard_validation.json`, `nba_best_pocket_per_game.json`, `nba_ranked_pocket_opportunities.json`.
+- **`nba_ranked_pocket_opportunities.json`:** One row per ROI-backed opportunity on the live slate (pair/triple spread & total combos from the leaderboard; single-model spread/total rows joined from `nba_model_pockets.json` by model + market + edge bucket). Sorted ROI → graded games → win rate. Cluster-style leaderboard slices without per-row historical ROI stay out of this file.
+- **Dashboard (`eng/ui/bookiex_dashboard.py`):** NBA **Standard Slate View** vs **Pocket ROI View** toggle. Pocket ROI View: **Ranked Pocket Opportunities** (global ranks; optional **Pocket type filter**: All / Spread Only / Total Only — presentation only), **Best 2-leg parlay (v1)** (spread-only, positive ROI, distinct `game_id`, walks **full** ranked list; **Total Only** filter shows an info message instead of a parlay), **Best pocket per game** (secondary expander), admin/debug block, spread-first diagnostic tables + historical validation expander.
+- **Staging:** `tools/push_daily.py` includes `nba_ranked_pocket_opportunities.json` in the NBA backtest glob set.
+
+**Validation conclusions:** Builder and dashboard modules compile; Pocket ROI path is read-only and rebuilds missing ranked/best-pocket JSON in-session from leaderboard + pockets when files are absent. Full Streamlit regression is manual.
+
+**Next (out of scope for this entry):** NCAAM port of the Pocket ROI concept — see `bookiex_nba_pocket_roi_handoff.md`.
+
+---
+## 2026-03-28 — NCAAM Pocket ROI port (mirrors NBA lens)
+
+**Summary:** NCAAM **Pocket ROI** artifacts and dashboard lens mirror the NBA pattern (read-only; no authority changes). **No NBA code paths were altered** beyond shared UI wiring (`slate_dashboard_view` for both leagues). NCAAM uses **all runner models** from backtest rows (avg score, momentum5, market pressure); **no MonkeyDarts-style exclusion** because those models are not in the NCAAM registry.
+
+**Added:**
+
+- **`eng/execution/build_ncaam_model_pockets.py`:** Writes under latest `data/ncaam/backtests/backtest_*/`: `ncaam_model_pockets.json`, `ncaam_model_combo_pockets.json`, `ncaam_current_game_pocket_view.json`, `ncaam_live_game_pocket_view.json` (slice from latest `daily_view_ncaam_*_v1.json`), `ncaam_live_pocket_leaderboard.json`, `ncaam_best_pocket_per_game.json`, `ncaam_ranked_pocket_opportunities.json`; invokes **`build_ncaam_pocket_leaderboard_validation.py`** for `ncaam_pocket_leaderboard_validation.json`.
+- **`eng/execution/build_ncaam_pocket_leaderboard_validation.py`:** NCAAM validation companion (same methodology as NBA).
+- **`000_RUN_ALL_NCAAM.py`:** Appends **`build_ncaam_model_pockets.py`** after dynamic 039b.
+- **`eng/ui/bookiex_dashboard.py`:** NCAAM loaders, **`_resolve_ncaam_pocket_slate_rows`** (joins daily rows by `canonical_game_id` / `espn_game_id` when needed), **`_render_ncaam_pocket_roi_view`** (parity with NBA Pocket ROI sections).
+- **`tools/push_daily.py`:** Staging globs + script paths for NCAAM pocket JSONs.
+
+**Exact NCAAM artifact family** (under latest `data/ncaam/backtests/backtest_*/`): `ncaam_model_pockets.json`, `ncaam_model_combo_pockets.json`, `ncaam_current_game_pocket_view.json`, `ncaam_live_game_pocket_view.json`, `ncaam_live_pocket_leaderboard.json`, `ncaam_pocket_leaderboard_validation.json`, `ncaam_best_pocket_per_game.json`, `ncaam_ranked_pocket_opportunities.json`.
+
+**Dashboard changes:** League **NCAAM** gets the same **Standard Slate View** / **Pocket ROI View** radio as NBA; NCAAM loaders, `_resolve_ncaam_pocket_slate_rows`, and `_render_ncaam_pocket_roi_view` (ranked table, filters, parlay v1, best pocket per game, admin, diagnostics, validation).
+
+**Validation result:** `python -m py_compile` on touched modules; `build_ncaam_model_pockets.py` run succeeds when a NCAAM backtest exists; full Streamlit regression remains **manual**.
+
+**NBA behavior preserved:** NBA pocket builders, exclusions (`MonkeyDarts_v2`), and `_render_nba_pocket_roi_view` unchanged in substance; shared view toggle uses `slate_dashboard_view` for both leagues without altering NBA Pocket ROI rules.
+
+**Handoff:** `bookiex_ncaam_pocket_roi_handoff.md`.
+
+---
+## 2026-03-28 — NCAAM Pocket ROI: documentation checkpoint (pre-push)
+
+**Documentation only:** Added **`bookiex_ncaam_pocket_roi_handoff.md`** and expanded the NCAAM changelog entry above with artifact list, dashboard bullets, validation, NBA parity note, and handoff pointer. **No feature or logic changes** in this checkpoint step.
