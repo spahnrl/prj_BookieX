@@ -1013,6 +1013,112 @@ def _collect_models(games: list[dict]) -> list[str]:
     return sorted(names)
 
 
+def _ncaam_fill_ranked_bpp_from_lb(
+    lb: dict | None,
+    ranked: dict | None,
+    bpp: dict | None,
+    pockets_list: list,
+) -> tuple[dict | None, dict | None]:
+    r, b = ranked, bpp
+    if lb and r is None and pockets_list:
+        try:
+            r = build_ncaam_ranked_pocket_opportunities(lb, pockets_list)
+        except Exception:
+            r = None
+    if lb and b is None:
+        try:
+            b = build_ncaam_best_pocket_per_game_from_leaderboard(lb)
+        except Exception:
+            b = None
+    return r, b
+
+
+def _ordered_game_ids_from_ncaam_daily(daily_games: list) -> list[str]:
+    order: list[str] = []
+    seen: set[str] = set()
+    for g in daily_games or []:
+        if not isinstance(g, dict):
+            continue
+        ident = g.get("identity") if isinstance(g.get("identity"), dict) else {}
+        gid = str(
+            ident.get("game_id")
+            or g.get("game_id")
+            or g.get("canonical_game_id")
+            or g.get("espn_game_id")
+            or ""
+        ).strip()
+        if gid and gid not in seen:
+            seen.add(gid)
+            order.append(gid)
+    return order
+
+
+def resolve_ncaam_pocket_board_for_selected_slate(
+    *,
+    selected_date: str,
+    daily_games: list[dict],
+    model_pockets_doc: dict | None,
+    current_game_pocket_doc: dict | None,
+    leaderboard_disk: dict | None,
+    ranked_disk: dict | None,
+    bpp_disk: dict | None,
+) -> tuple[dict | None, dict | None, dict | None, str]:
+    """
+    Align Pocket ROI to the dashboard **Select Date** when possible (read-only UI helper).
+
+    Returns ``(leaderboard_doc, ranked_doc, bpp_doc, source_mode)`` — see
+    ``resolve_nba_pocket_board_for_selected_slate`` for mode meanings.
+    """
+    sel = str(selected_date).strip()
+    pockets_list = list((model_pockets_doc or {}).get("pockets") or [])
+    lb_d = leaderboard_disk if isinstance(leaderboard_disk, dict) else None
+
+    if lb_d and str(lb_d.get("slate_date") or "").strip() == sel:
+        rpo = ranked_disk if isinstance(ranked_disk, dict) else None
+        bpp = bpp_disk if isinstance(bpp_disk, dict) else None
+        rpo, bpp = _ncaam_fill_ranked_bpp_from_lb(lb_d, rpo, bpp, pockets_list)
+        return lb_d, rpo, bpp, "disk_match"
+
+    current_games = list((current_game_pocket_doc or {}).get("games") or [])
+    live_id_order = _ordered_game_ids_from_ncaam_daily(daily_games)
+    by_gid = {
+        str(r.get("game_id", "")).strip(): r
+        for r in current_games
+        if isinstance(r, dict) and str(r.get("game_id", "")).strip()
+    }
+    live_rows = [by_gid[gid] for gid in live_id_order if gid in by_gid]
+
+    if not live_rows or not pockets_list or not daily_games:
+        rpo = ranked_disk if isinstance(ranked_disk, dict) else None
+        bpp = bpp_disk if isinstance(bpp_disk, dict) else None
+        rpo, bpp = _ncaam_fill_ranked_bpp_from_lb(lb_d, rpo, bpp, pockets_list)
+        return lb_d, rpo, bpp, "fallback_disk"
+
+    daily_doc: dict = {"games": list(daily_games)}
+    if sel:
+        daily_doc["date"] = sel
+    src_bt = str(
+        (model_pockets_doc or current_game_pocket_doc or {}).get("source_backtest_dir") or ""
+    ).strip() or "unknown_backtest"
+
+    try:
+        lb_doc = _build_ncaam_live_pocket_leaderboard(
+            live_rows,
+            daily_doc,
+            source_backtest_dir=src_bt,
+            slate_date=sel,
+            source_live_slate_path=None,
+        )
+        rpo = build_ncaam_ranked_pocket_opportunities(lb_doc, pockets_list)
+        bpp = build_ncaam_best_pocket_per_game_from_leaderboard(lb_doc)
+        return lb_doc, rpo, bpp, "session_rebuild"
+    except Exception:
+        rpo = ranked_disk if isinstance(ranked_disk, dict) else None
+        bpp = bpp_disk if isinstance(bpp_disk, dict) else None
+        rpo, bpp = _ncaam_fill_ranked_bpp_from_lb(lb_d, rpo, bpp, pockets_list)
+        return lb_d, rpo, bpp, "fallback_disk"
+
+
 def build_ncaam_model_pocket_artifacts() -> dict[str, Path]:
     """
     Build NCAAM pocket JSON artifacts in the latest backtest directory.
