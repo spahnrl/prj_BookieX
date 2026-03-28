@@ -91,6 +91,43 @@ for f in files:
     by_date[_date_from_name(f, league == "NCAAM")].append(f)
 date_map = {d: max(flist, key=lambda p: p.stat().st_mtime) for d, flist in by_date.items()}
 
+
+def _resolve_pocket_recommended_bet_daily_games(
+    games_selected: list,
+    selected_date: str,
+    leaderboard_doc: dict | None,
+) -> tuple[list, str]:
+    """
+    Daily rows used to join pocket opportunities → lines/teams for **Recommended Bet**.
+
+    Ranked/BPP rows come from artifacts keyed to the leaderboard's ``slate_date``. The dashboard
+    ``games`` list is for **Select Date**. When those differ, load that slate's daily JSON from
+    ``date_map`` so ``game_id`` joins resolve (UI-only).
+
+    Returns:
+        (games_for_index, join_mode) where join_mode is:
+        - ``aligned`` — use ``games_selected`` (leaderboard date missing or matches selected).
+        - ``leaderboard_slate`` — loaded games for leaderboard ``slate_date``.
+        - ``mismatch_no_file`` — dates differ but no daily file for leaderboard date in ``date_map``.
+    """
+    lb = leaderboard_doc if isinstance(leaderboard_doc, dict) else {}
+    lb_date = str(lb.get("slate_date") or "").strip()
+    sel = str(selected_date).strip()
+    if not lb_date or lb_date == sel:
+        return games_selected, "aligned"
+    if lb_date in date_map:
+        path = date_map[lb_date]
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                doc = json.load(f)
+            gl = doc.get("games")
+            if isinstance(gl, list) and gl:
+                return gl, "leaderboard_slate"
+        except Exception:
+            pass
+    return games_selected, "mismatch_no_file"
+
+
 if not date_map:
     st.error(
         f"No daily view data for **{league}**. "
@@ -718,11 +755,16 @@ def _pocket_matchup_from_daily_game(g: dict) -> str:
 def format_pocket_recommended_bet(
     row: dict,
     daily_by_id: dict[str, dict],
+    *,
+    join_mode: str = "aligned",
 ) -> str:
     """
     Plain-English wager for Pocket ROI tables (UI-only; no authority change).
     Spread: '{matchup}: Take {team} ({line})' via format_spread_text.
     Total: '{matchup}: OVER|UNDER ({total})' from market_state.total_last.
+
+    ``join_mode`` — when ``mismatch_no_file``, missing daily join omits the repetitive
+    "(no matching slate row)" suffix; a table-level warning explains the fix.
     """
     gid = str(row.get("game_id") or "").strip()
     g = daily_by_id.get(gid) if gid else None
@@ -752,6 +794,8 @@ def format_pocket_recommended_bet(
     pick_s = str(pick_raw).strip() if pick_raw not in (None, "") else ""
 
     if g is None:
+        if join_mode == "mismatch_no_file":
+            return f"{matchup}: {pick_s or '—'}"
         suffix = " (no matching slate row)" if gid else ""
         return f"{matchup}: {pick_s or '—'}{suffix}"
 
@@ -1365,7 +1409,25 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
     _opp_rows = [r for r in ((_rpo_resolved or {}).get("opportunities") or []) if isinstance(r, dict)]
     _games_bpp = list((_bpp_resolved or {}).get("games") or [])
     _parlay_eligible_n = sum(1 for r in _opp_rows if r.get("eligible_for_parlay"))
-    _pocket_daily_by_id = _pocket_index_daily_games(games)
+    _pocket_join_games, _pocket_join_mode = _resolve_pocket_recommended_bet_daily_games(
+        games, selected_date, _lb_sf
+    )
+    _pocket_daily_by_id = _pocket_index_daily_games(_pocket_join_games)
+    _lb_slate = str((_lb_sf or {}).get("slate_date") or "").strip()
+    _sel_date = str(selected_date).strip()
+    if _lb_sf and _lb_slate and _lb_slate != _sel_date:
+        if _pocket_join_mode == "leaderboard_slate":
+            st.warning(
+                f"**Pocket board slate** `{_lb_slate}` ≠ **Select Date** `{_sel_date}`. "
+                f"Ranked opportunities and ROI rows are for **`{_lb_slate}`** (live pocket leaderboard). "
+                f"**Recommended Bet** joins to the **daily view for `{_lb_slate}`** so spreads/totals match those games."
+            )
+        else:
+            st.warning(
+                f"**Pocket board slate** `{_lb_slate}` ≠ **Select Date** `{_sel_date}`. "
+                f"No daily view file for **`{_lb_slate}`** is available in the date list above — "
+                f"**Recommended Bet** cannot resolve lines. Build/add that daily JSON or choose **`{_lb_slate}`** in **Select Date**."
+            )
 
     def _rpo_row_is_spread(r: dict) -> bool:
         mt = str(r.get("market_type") or "").strip().lower()
@@ -1413,6 +1475,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
     st.caption(
         "One row per pocket candidate from **`nba_ranked_pocket_opportunities.json`** "
         "(rebuilt in-session from the live leaderboard + **`nba_model_pockets.json`** when that file is missing). "
+        "Rows follow the leaderboard **slate date** (see warning if it differs from **Select Date**). "
         "Global sort: ROI → graded games → win rate. **Rank** is the global rank in that file. Read-only."
     )
     _pocket_filter_label = "All Pockets"
@@ -1452,14 +1515,6 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                 "**Parlay (v1)** is spread-only — switch to **All Pockets** or **Spread Only** for parlay candidates."
             )
 
-        if (
-            _lb_sf
-            and str(_lb_sf.get("slate_date") or "").strip()
-            and str(_lb_sf.get("slate_date") or "").strip() != str(selected_date).strip()
-        ):
-            st.warning(
-                f"Leaderboard / pocket slate **`{_lb_sf.get('slate_date')}`** ≠ selected **`{selected_date}`**."
-            )
         if not _opp_display:
             st.info(f"No rows match **{_pocket_filter_label}** for this slate.")
         else:
@@ -1467,9 +1522,9 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                 [
                     {
                         "Rank": r.get("rank"),
-                        "Recommended Bet": format_pocket_recommended_bet(r, _pocket_daily_by_id),
-                        "Game": _rpo_cell(r.get("matchup")),
-                        "Pick": _rpo_cell(r.get("pick")),
+                        "Recommended Bet": format_pocket_recommended_bet(
+                            r, _pocket_daily_by_id, join_mode=_pocket_join_mode
+                        ),
                         "Pocket Type": _rpo_cell(r.get("pocket_type")),
                         "Pocket Models": _rpo_models_col(r),
                         "State Signature": _rpo_sig_cell(r),
@@ -1530,9 +1585,9 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                 [
                     {
                         "Rank": g.get("rank"),
-                        "Recommended Bet": format_pocket_recommended_bet(g, _pocket_daily_by_id),
-                        "Game": _bpp_cell(g.get("matchup")),
-                        "Pick": _bpp_cell(g.get("spread_pick")),
+                        "Recommended Bet": format_pocket_recommended_bet(
+                            g, _pocket_daily_by_id, join_mode=_pocket_join_mode
+                        ),
                         "Best Pocket Type": _bpp_cell(g.get("best_pocket_type")),
                         "Pocket Models": _bpp_models_col(g),
                         "Pocket ROI": _bpp_num(
@@ -1587,8 +1642,8 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
             st.info("No positive-ROI 2-leg parlay exposed on this slate.")
         else:
             _r1, _r2 = _parlay_legs[0], _parlay_legs[1]
-            _bet1 = format_pocket_recommended_bet(_r1, _pocket_daily_by_id)
-            _bet2 = format_pocket_recommended_bet(_r2, _pocket_daily_by_id)
+            _bet1 = format_pocket_recommended_bet(_r1, _pocket_daily_by_id, join_mode=_pocket_join_mode)
+            _bet2 = format_pocket_recommended_bet(_r2, _pocket_daily_by_id, join_mode=_pocket_join_mode)
             st.markdown(
                 f"**Leg 1 —** {_bet1}  \n"
                 f"*{_r1.get('pocket_type')} · historical ROI {_r1.get('roi')}*"
@@ -1989,7 +2044,25 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
     _opp_rows = [r for r in ((_rpo_resolved or {}).get("opportunities") or []) if isinstance(r, dict)]
     _games_bpp = list((_bpp_resolved or {}).get("games") or [])
     _parlay_eligible_n = sum(1 for r in _opp_rows if r.get("eligible_for_parlay"))
-    _pocket_daily_by_id = _pocket_index_daily_games(games)
+    _pocket_join_games, _pocket_join_mode = _resolve_pocket_recommended_bet_daily_games(
+        games, selected_date, _lb_sf
+    )
+    _pocket_daily_by_id = _pocket_index_daily_games(_pocket_join_games)
+    _lb_slate = str((_lb_sf or {}).get("slate_date") or "").strip()
+    _sel_date = str(selected_date).strip()
+    if _lb_sf and _lb_slate and _lb_slate != _sel_date:
+        if _pocket_join_mode == "leaderboard_slate":
+            st.warning(
+                f"**Pocket board slate** `{_lb_slate}` ≠ **Select Date** `{_sel_date}`. "
+                f"Ranked opportunities and ROI rows are for **`{_lb_slate}`** (live pocket leaderboard). "
+                f"**Recommended Bet** joins to the **daily view for `{_lb_slate}`** so spreads/totals match those games."
+            )
+        else:
+            st.warning(
+                f"**Pocket board slate** `{_lb_slate}` ≠ **Select Date** `{_sel_date}`. "
+                f"No daily view file for **`{_lb_slate}`** is available in the date list above — "
+                f"**Recommended Bet** cannot resolve lines. Build/add that daily JSON or choose **`{_lb_slate}`** in **Select Date**."
+            )
 
     def _rpo_row_is_spread(r: dict) -> bool:
         mt = str(r.get("market_type") or "").strip().lower()
@@ -2037,6 +2110,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
     st.caption(
         "One row per pocket candidate from **`ncaam_ranked_pocket_opportunities.json`** "
         "(rebuilt in-session from the live leaderboard + **`ncaam_model_pockets.json`** when that file is missing). "
+        "Rows follow the leaderboard **slate date** (see warning if it differs from **Select Date**). "
         "Global sort: ROI → graded games → win rate. **Rank** is the global rank in that file. Read-only."
     )
     _pocket_filter_label = "All Pockets"
@@ -2076,14 +2150,6 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                 "**Parlay (v1)** is spread-only — switch to **All Pockets** or **Spread Only** for parlay candidates."
             )
 
-        if (
-            _lb_sf
-            and str(_lb_sf.get("slate_date") or "").strip()
-            and str(_lb_sf.get("slate_date") or "").strip() != str(selected_date).strip()
-        ):
-            st.warning(
-                f"Leaderboard / pocket slate **`{_lb_sf.get('slate_date')}`** ≠ selected **`{selected_date}`**."
-            )
         if not _opp_display:
             st.info(f"No rows match **{_pocket_filter_label}** for this slate.")
         else:
@@ -2091,9 +2157,9 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                 [
                     {
                         "Rank": r.get("rank"),
-                        "Recommended Bet": format_pocket_recommended_bet(r, _pocket_daily_by_id),
-                        "Game": _rpo_cell(r.get("matchup")),
-                        "Pick": _rpo_cell(r.get("pick")),
+                        "Recommended Bet": format_pocket_recommended_bet(
+                            r, _pocket_daily_by_id, join_mode=_pocket_join_mode
+                        ),
                         "Pocket Type": _rpo_cell(r.get("pocket_type")),
                         "Pocket Models": _rpo_models_col(r),
                         "State Signature": _rpo_sig_cell(r),
@@ -2154,9 +2220,9 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                 [
                     {
                         "Rank": g.get("rank"),
-                        "Recommended Bet": format_pocket_recommended_bet(g, _pocket_daily_by_id),
-                        "Game": _bpp_cell(g.get("matchup")),
-                        "Pick": _bpp_cell(g.get("spread_pick")),
+                        "Recommended Bet": format_pocket_recommended_bet(
+                            g, _pocket_daily_by_id, join_mode=_pocket_join_mode
+                        ),
                         "Best Pocket Type": _bpp_cell(g.get("best_pocket_type")),
                         "Pocket Models": _bpp_models_col(g),
                         "Pocket ROI": _bpp_num(
@@ -2211,8 +2277,8 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
             st.info("No positive-ROI 2-leg parlay exposed on this slate.")
         else:
             _r1, _r2 = _parlay_legs[0], _parlay_legs[1]
-            _bet1 = format_pocket_recommended_bet(_r1, _pocket_daily_by_id)
-            _bet2 = format_pocket_recommended_bet(_r2, _pocket_daily_by_id)
+            _bet1 = format_pocket_recommended_bet(_r1, _pocket_daily_by_id, join_mode=_pocket_join_mode)
+            _bet2 = format_pocket_recommended_bet(_r2, _pocket_daily_by_id, join_mode=_pocket_join_mode)
             st.markdown(
                 f"**Leg 1 —** {_bet1}  \n"
                 f"*{_r1.get('pocket_type')} · historical ROI {_r1.get('roi')}*"
@@ -2623,16 +2689,18 @@ else:
 
 if league == "NBA" and slate_dashboard_view == "Pocket ROI View":
     st.caption(
-        "**Pocket ROI lens** — backtest-derived pocket board for the selected slate; read-only; does not change authority. "
-        "**MonkeyDarts_v2** excluded upstream."
+        "**Pocket ROI lens** — backtest-derived pocket board; **ranked rows follow the live leaderboard slate date** "
+        "(may differ from **Select Date**). **Recommended Bet** joins daily lines to that slate when a matching daily file exists. "
+        "Read-only; does not change authority. **MonkeyDarts_v2** excluded upstream."
     )
     _render_nba_pocket_roi_view(games, selected_date)
     st.stop()
 
 if league == "NCAAM" and slate_dashboard_view == "Pocket ROI View":
     st.caption(
-        "**Pocket ROI lens** — NCAAM backtest-derived pocket board for the selected slate; read-only; does not change authority. "
-        "Models: avg score, momentum, market pressure (no injury layer)."
+        "**Pocket ROI lens** — NCAAM backtest-derived board; **ranked rows follow the live leaderboard slate date** "
+        "(may differ from **Select Date**). **Recommended Bet** joins daily lines to that slate when a matching daily file exists. "
+        "Read-only; does not change authority. Models: avg score, momentum, market pressure (no injury layer)."
     )
     _render_ncaam_pocket_roi_view(games, selected_date)
     st.stop()
