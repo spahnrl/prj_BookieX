@@ -1,0 +1,795 @@
+{
+  "generated_at_utc": "2026-03-28T06:16:18.232783+00:00",
+  "league": "ncaam",
+  "source_backtest_dir": "backtest_20260328_000949",
+  "source_live_pocket_artifact": "ncaam_live_game_pocket_view.json",
+  "source_daily_view_path": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\ncaam\\daily\\daily_view_ncaam_2026-03-28_v1.json",
+  "slate_date": "2026-03-28",
+  "game_count": 3,
+  "scoring": {
+    "single_model": "leaderboard_score = 1000 * state_rank + 10*spread_hot + 4*spread_warm - 2*spread_cold + min(abs_edge, 20); state_rank hot=3 warm=2 cold=1 insufficient=0. Uses per_model pocket state and game-level spread_pocket_alignment only (no per-game ROI).",
+    "combo": "leaderboard_score = 10000 * roi + 3 * graded_games + combo_state_weight; combo_state_weight hot=400 warm=150 cold=0 insufficient=0; roi from historical combo pocket.",
+    "cluster": "cluster_score = 3*hot + 1*warm - 0.5*cold - 0.25*insufficient on spread or total alignment counts.",
+    "cold_warnings": "warning_score = 5*cold + 2*insufficient - 3*hot - 1*warm on spread alignment (higher = more caution).",
+    "pass_candidates": "Games with spread cluster_score <= 0 and (no best_pair_spread or best_pair_spread.roi < 0)."
+  },
+  "best_single_model_spread": [
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "market": "spread",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "4-6",
+      "abs_edge": 4.8,
+      "pocket_state": "warm",
+      "spread_pick": "Purdue",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2016.8,
+      "reason": "ncaam_momentum5_model spread pocket state=warm (bucket 4-6); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "market": "spread",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "8+",
+      "abs_edge": 10.0739,
+      "pocket_state": "warm",
+      "spread_pick": "Iowa",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2016.0739,
+      "reason": "ncaam_avg_score_model spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/2/1/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "market": "spread",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "8+",
+      "abs_edge": 10.0739,
+      "pocket_state": "warm",
+      "spread_pick": "Iowa",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2016.0739,
+      "reason": "ncaam_market_pressure_model spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/2/1/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "market": "spread",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.4887,
+      "pocket_state": "warm",
+      "spread_pick": "Purdue",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2015.4887,
+      "reason": "ncaam_avg_score_model spread pocket state=warm (bucket 2-4); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "market": "spread",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.4887,
+      "pocket_state": "warm",
+      "spread_pick": "Purdue",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2015.4887,
+      "reason": "ncaam_market_pressure_model spread pocket state=warm (bucket 2-4); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "market": "spread",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.4,
+      "pocket_state": "cold",
+      "spread_pick": "Iowa",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1006.4,
+      "reason": "ncaam_momentum5_model spread pocket state=cold (bucket 0-1); slate spread alignment H/W/C/I=0/2/1/0.",
+      "rank": 6
+    }
+  ],
+  "best_single_model_total": [
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "market": "total",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "8+",
+      "abs_edge": 74.0,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2026.0,
+      "reason": "ncaam_momentum5_model total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=0/2/1/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "market": "total",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "8+",
+      "abs_edge": 49.4,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2020.0,
+      "reason": "ncaam_momentum5_model total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "market": "total",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "8+",
+      "abs_edge": 9.8734,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2015.8734,
+      "reason": "ncaam_avg_score_model total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=0/2/1/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "market": "total",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "6-8",
+      "abs_edge": 7.4051,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1013.4051,
+      "reason": "ncaam_market_pressure_model total pocket state=cold (bucket 6-8); slate total alignment H/W/C/I=0/2/1/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "market": "total",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.3665,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1000.3665,
+      "reason": "ncaam_avg_score_model total pocket state=cold (bucket 0-1); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "market": "total",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.2749,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1000.2749,
+      "reason": "ncaam_market_pressure_model total pocket state=cold (bucket 0-1); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 6
+    }
+  ],
+  "best_pair_spread": [
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+      "spread_pick": "Iowa",
+      "total_pick": null,
+      "roi": -0.0022,
+      "win_rate": 0.521,
+      "graded_games": 2171,
+      "combo_state": "warm",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 6641.0,
+      "reason": "Historical pair spread ROI=-0.0022 over 2171 graded combo legs; pocket state=warm for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+      "spread_pick": "Purdue",
+      "total_pick": null,
+      "roi": -0.0022,
+      "win_rate": 0.521,
+      "graded_games": 2171,
+      "combo_state": "warm",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 6641.0,
+      "reason": "Historical pair spread ROI=-0.0022 over 2171 graded combo legs; pocket state=warm for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_pair_total": [
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.0585,
+      "win_rate": 0.492,
+      "graded_games": 3187,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 8976.0,
+      "reason": "Historical pair total ROI=-0.0585 over 3187 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.2801,
+      "win_rate": 0.3767,
+      "graded_games": 2668,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 5203.0,
+      "reason": "Historical pair total ROI=-0.2801 over 2668 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_triple_spread": [
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:warm",
+      "spread_pick": "Purdue",
+      "total_pick": null,
+      "roi": -0.0535,
+      "win_rate": 0.4939,
+      "graded_games": 1403,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3674.0,
+      "reason": "Historical triple spread ROI=-0.0535 over 1403 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:cold",
+      "spread_pick": "Iowa",
+      "total_pick": null,
+      "roi": -0.176,
+      "win_rate": 0.4303,
+      "graded_games": 760,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 520.0,
+      "reason": "Historical triple spread ROI=-0.176 over 760 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_triple_total": [
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.3076,
+      "win_rate": 0.3625,
+      "graded_games": 2356,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3992.0,
+      "reason": "Historical triple total ROI=-0.3076 over 2356 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.076,
+      "win_rate": 0.484,
+      "graded_games": 312,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 176.0,
+      "reason": "Historical triple total ROI=-0.076 over 312 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "strongest_spread_cluster": [
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "spread_pick": "Purdue",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 3.0,
+      "leaderboard_score": 3.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "spread_pick": "Iowa",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "cluster_score": 1.5,
+      "leaderboard_score": 1.5,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401856571",
+      "matchup": "Michigan St. @ UConn",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 3
+    }
+  ],
+  "strongest_total_cluster": [
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "total_pick": "UNDER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "cluster_score": 1.5,
+      "leaderboard_score": 1.5,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "total_pick": "OVER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401856571",
+      "matchup": "Michigan St. @ UConn",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 3
+    }
+  ],
+  "cold_cluster_warnings": [
+    {
+      "game_id": "ncaam_401856574",
+      "matchup": "Iowa @ Illinois",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "warning_score": 3.0,
+      "leaderboard_score": 3.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401856571",
+      "matchup": "Michigan St. @ UConn",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401856575",
+      "matchup": "Purdue @ Arizona",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "warning_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 3
+    }
+  ],
+  "pass_candidates": [
+    {
+      "game_id": "ncaam_401856571",
+      "matchup": "Michigan St. @ UConn",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 1
+    }
+  ]
+}
