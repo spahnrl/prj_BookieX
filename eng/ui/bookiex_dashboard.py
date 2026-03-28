@@ -11,6 +11,7 @@ if str(_REPO_ROOT) not in sys.path:
 import re
 import streamlit as st
 import json
+import pandas as pd
 from collections import defaultdict
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
@@ -676,6 +677,226 @@ def format_spread_text(home: str, away: str, spread_line, spread_pick: str) -> s
     return "No Spread Pick"
 
 
+def _pocket_index_daily_games(daily_games: list) -> dict[str, dict]:
+    """Key daily JSON games by id for Pocket ROI join (NBA + NCAAM id shapes)."""
+    by_id: dict[str, dict] = {}
+    for g in daily_games or []:
+        if not isinstance(g, dict):
+            continue
+        ident = g.get("identity") if isinstance(g.get("identity"), dict) else {}
+        gid = str(
+            ident.get("game_id")
+            or g.get("game_id")
+            or g.get("canonical_game_id")
+            or g.get("espn_game_id")
+            or ""
+        ).strip()
+        if gid:
+            by_id[gid] = g
+    return by_id
+
+
+def _pocket_matchup_from_daily_game(g: dict) -> str:
+    ident = g.get("identity") if isinstance(g.get("identity"), dict) else {}
+    away = (
+        ident.get("away_team")
+        or g.get("away_team_display")
+        or g.get("away_team")
+        or ""
+    ).strip()
+    home = (
+        ident.get("home_team")
+        or g.get("home_team_display")
+        or g.get("home_team")
+        or ""
+    ).strip()
+    if away or home:
+        return format_matchup_attribution(away, home)
+    return ""
+
+
+def format_pocket_recommended_bet(
+    row: dict,
+    daily_by_id: dict[str, dict],
+) -> str:
+    """
+    Plain-English wager for Pocket ROI tables (UI-only; no authority change).
+    Spread: '{matchup}: Take {team} ({line})' via format_spread_text.
+    Total: '{matchup}: OVER|UNDER ({total})' from market_state.total_last.
+    """
+    gid = str(row.get("game_id") or "").strip()
+    g = daily_by_id.get(gid) if gid else None
+
+    matchup = (row.get("matchup") or "").strip()
+    if g is not None:
+        mm = _pocket_matchup_from_daily_game(g)
+        if mm:
+            matchup = mm
+    if not matchup:
+        matchup = "Unknown matchup"
+
+    mt = str(row.get("market_type") or "").strip().lower()
+    pt = str(row.get("pocket_type") or "").strip().lower()
+    if mt != "spread" and pt.endswith("_spread"):
+        mt = "spread"
+    if mt != "total" and pt.endswith("_total"):
+        mt = "total"
+    if mt not in ("spread", "total") and row.get("spread_pick") not in (None, ""):
+        mt = "spread"
+
+    pick_raw = row.get("pick")
+    if pick_raw in (None, "") and row.get("spread_pick") not in (None, ""):
+        pick_raw = row.get("spread_pick")
+    if pick_raw in (None, "") and row.get("total_pick") not in (None, ""):
+        pick_raw = row.get("total_pick")
+    pick_s = str(pick_raw).strip() if pick_raw not in (None, "") else ""
+
+    if g is None:
+        suffix = " (no matching slate row)" if gid else ""
+        return f"{matchup}: {pick_s or '—'}{suffix}"
+
+    ident = g.get("identity") if isinstance(g.get("identity"), dict) else {}
+    home = (
+        ident.get("home_team")
+        or g.get("home_team_display")
+        or g.get("home_team")
+        or ""
+    ).strip()
+    away = (
+        ident.get("away_team")
+        or g.get("away_team_display")
+        or g.get("away_team")
+        or ""
+    ).strip()
+    market = g.get("market_state") if isinstance(g.get("market_state"), dict) else {}
+
+    if mt == "spread":
+        sl = market.get("spread_home_last")
+        inner = format_spread_text(home, away, sl, pick_s)
+        if inner == "No Spread Pick":
+            extra = " (line unavailable)" if sl in (None, "") else ""
+            return f"{matchup}: Take {pick_s or '—'}{extra}"
+        return f"{matchup}: Take {inner}"
+
+    if mt == "total":
+        tl = market.get("total_last")
+        try:
+            tl_f = float(tl)
+            tl_disp = f"{tl_f:.1f}"
+        except (TypeError, ValueError):
+            tl_disp = "—"
+        pu = pick_s.upper()
+        if "OVER" in pu:
+            side = "OVER"
+        elif "UNDER" in pu:
+            side = "UNDER"
+        else:
+            side = pick_s or "—"
+        if tl_disp == "—":
+            return f"{matchup}: {side} (total line unavailable)"
+        return f"{matchup}: {side} ({tl_disp})"
+
+    return f"{matchup}: {pick_s or '—'}"
+
+
+def _pocket_roi_scalar_or_none(v):
+    """
+    Parse a cell value as numeric ROI; None if missing or non-numeric.
+    Zero is returned as 0.0 (neutral styling: no tint / no emphasis color).
+    """
+    if v is None or v == "":
+        return None
+    try:
+        if pd.isna(v):
+            return None
+    except (TypeError, ValueError):
+        pass
+    if isinstance(v, str):
+        t = v.strip()
+        if t in ("—", "", "nan", "NaN"):
+            return None
+    try:
+        x = float(v)
+    except (TypeError, ValueError):
+        return None
+    if x != x:  # NaN
+        return None
+    return x
+
+
+def _pocket_roi_css_for_display_value(v) -> str:
+    """
+    Subtle ROI text color for diagnostic pocket tables (UI only).
+    Positive → green, negative → red, zero / missing / non-numeric → neutral.
+    """
+    x = _pocket_roi_scalar_or_none(v)
+    if x is None:
+        return ""
+    if x > 0:
+        return "color: #15803d;"
+    if x < 0:
+        return "color: #b91c1c;"
+    return ""
+
+
+def _pocket_roi_row_background_css(v) -> str:
+    """Subtle full-row background for main Pocket ROI boards (UI only)."""
+    x = _pocket_roi_scalar_or_none(v)
+    if x is None:
+        return ""
+    if x > 0:
+        return "background-color: #ecfdf5;"
+    if x < 0:
+        return "background-color: #fef2f2;"
+    return ""
+
+
+def _st_pocket_main_roi_table(
+    rows: list[dict],
+    roi_column: str,
+    *,
+    use_container_width: bool = True,
+) -> None:
+    """Ranked / BPP boards: tint entire row by single ROI column (pandas Styler, axis=1)."""
+    df = pd.DataFrame(rows)
+    if df.empty:
+        st.dataframe(df, use_container_width=use_container_width, hide_index=True)
+        return
+    if roi_column not in df.columns:
+        st.dataframe(df, use_container_width=use_container_width, hide_index=True)
+        return
+
+    def _row_styles(row: pd.Series) -> pd.Series:
+        css = _pocket_roi_row_background_css(row[roi_column])
+        return pd.Series([css] * len(row), index=row.index)
+
+    styler = df.style.apply(_row_styles, axis=1).hide(axis="index")
+    st.dataframe(styler, use_container_width=use_container_width)
+
+
+def _st_pocket_roi_table(
+    rows: list[dict],
+    roi_columns: list[str],
+    *,
+    use_container_width: bool = True,
+) -> None:
+    """Diagnostic / validation tables: ROI text color on selected columns only (pandas Styler)."""
+    df = pd.DataFrame(rows)
+    if df.empty:
+        st.dataframe(df, use_container_width=use_container_width, hide_index=True)
+        return
+    subset = [c for c in roi_columns if c in df.columns]
+    if not subset:
+        st.dataframe(df, use_container_width=use_container_width, hide_index=True)
+        return
+
+    def _style_roi_series(s: pd.Series) -> pd.Series:
+        return s.map(_pocket_roi_css_for_display_value)
+
+    styler = df.style.apply(_style_roi_series, axis=0, subset=subset).hide(axis="index")
+    st.dataframe(styler, use_container_width=use_container_width)
+
+
 def calculate_full_kelly(win_pct: float, b: float) -> float:
     q = 1 - win_pct
     kelly = ((b * win_pct) - q) / b
@@ -1144,6 +1365,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
     _opp_rows = [r for r in ((_rpo_resolved or {}).get("opportunities") or []) if isinstance(r, dict)]
     _games_bpp = list((_bpp_resolved or {}).get("games") or [])
     _parlay_eligible_n = sum(1 for r in _opp_rows if r.get("eligible_for_parlay"))
+    _pocket_daily_by_id = _pocket_index_daily_games(games)
 
     def _rpo_row_is_spread(r: dict) -> bool:
         mt = str(r.get("market_type") or "").strip().lower()
@@ -1241,10 +1463,11 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
         if not _opp_display:
             st.info(f"No rows match **{_pocket_filter_label}** for this slate.")
         else:
-            st.dataframe(
+            _st_pocket_main_roi_table(
                 [
                     {
                         "Rank": r.get("rank"),
+                        "Recommended Bet": format_pocket_recommended_bet(r, _pocket_daily_by_id),
                         "Game": _rpo_cell(r.get("matchup")),
                         "Pick": _rpo_cell(r.get("pick")),
                         "Pocket Type": _rpo_cell(r.get("pocket_type")),
@@ -1258,8 +1481,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                     }
                     for r in _opp_display
                 ],
-                use_container_width=True,
-                hide_index=True,
+                "ROI",
             )
 
     with st.expander("Best pocket per game (secondary summary)", expanded=False):
@@ -1304,10 +1526,11 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                 except (TypeError, ValueError):
                     return "—"
 
-            st.dataframe(
+            _st_pocket_main_roi_table(
                 [
                     {
                         "Rank": g.get("rank"),
+                        "Recommended Bet": format_pocket_recommended_bet(g, _pocket_daily_by_id),
                         "Game": _bpp_cell(g.get("matchup")),
                         "Pick": _bpp_cell(g.get("spread_pick")),
                         "Best Pocket Type": _bpp_cell(g.get("best_pocket_type")),
@@ -1328,8 +1551,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                     }
                     for g in _games_bpp
                 ],
-                use_container_width=True,
-                hide_index=True,
+                "Pocket ROI",
             )
 
     st.markdown("## Best 2-leg parlay (positive ROI only)")
@@ -1365,12 +1587,14 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
             st.info("No positive-ROI 2-leg parlay exposed on this slate.")
         else:
             _r1, _r2 = _parlay_legs[0], _parlay_legs[1]
+            _bet1 = format_pocket_recommended_bet(_r1, _pocket_daily_by_id)
+            _bet2 = format_pocket_recommended_bet(_r2, _pocket_daily_by_id)
             st.markdown(
-                f"**Leg 1 —** {_r1.get('matchup')} · **{_r1.get('pick')}**  \n"
+                f"**Leg 1 —** {_bet1}  \n"
                 f"*{_r1.get('pocket_type')} · historical ROI {_r1.get('roi')}*"
             )
             st.markdown(
-                f"**Leg 2 —** {_r2.get('matchup')} · **{_r2.get('pick')}**  \n"
+                f"**Leg 2 —** {_bet2}  \n"
                 f"*{_r2.get('pocket_type')} · historical ROI {_r2.get('roi')}*"
             )
             st.caption(
@@ -1514,14 +1738,14 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                 row["ui rank"] = i
                 del row["_sort"]
             if _ssc_rows_out:
-                st.dataframe(_ssc_rows_out, use_container_width=True, hide_index=True)
+                _st_pocket_roi_table(_ssc_rows_out, ["hist triple ROI", "hist pair ROI"])
             else:
                 st.caption("No rows.")
 
             st.markdown("##### 2 · Best triple spread combo (historical pocket stats, ROI-first)")
             _bts_sf = sorted(_bts_raw, key=_combo_roi_sort_key, reverse=True)
             if _bts_sf:
-                st.dataframe(
+                _st_pocket_roi_table(
                     [
                         {
                             "ui rank": i,
@@ -1539,8 +1763,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                         }
                         for i, r in enumerate(_bts_sf, start=1)
                     ],
-                    use_container_width=True,
-                    hide_index=True,
+                    ["pocket ROI"],
                 )
             else:
                 st.caption("No triple spread matches on this slate.")
@@ -1548,7 +1771,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
             st.markdown("##### 3 · Best pair spread combo (historical pocket stats, ROI-first)")
             _bps_sf = sorted(_bps_raw, key=_combo_roi_sort_key, reverse=True)
             if _bps_sf:
-                st.dataframe(
+                _st_pocket_roi_table(
                     [
                         {
                             "ui rank": i,
@@ -1566,8 +1789,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                         }
                         for i, r in enumerate(_bps_sf, start=1)
                     ],
-                    use_container_width=True,
-                    hide_index=True,
+                    ["pocket ROI"],
                 )
             else:
                 st.caption("No pair spread matches on this slate.")
@@ -1579,7 +1801,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                 reverse=True,
             )
             if _pc_sf:
-                st.dataframe(
+                _st_pocket_roi_table(
                     [
                         {
                             "ui rank": i,
@@ -1594,8 +1816,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                         }
                         for i, r in enumerate(_pc_sf, start=1)
                     ],
-                    use_container_width=True,
-                    hide_index=True,
+                    ["hist. best-pair spread ROI"],
                 )
             else:
                 st.caption("No pass-flagged games on this slate.")
@@ -1666,7 +1887,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                 _vrow("Non-pass (auth spread)", _pv.get("non_pass_authority_spread")),
             ]
             st.markdown("##### Spread / cluster / pass (historical)")
-            st.dataframe(_sum_spread, use_container_width=True, hide_index=True)
+            _st_pocket_roi_table(_sum_spread, ["ROI"])
 
             _tot = _val.get("totals_if_sufficient") or {}
             _trows = []
@@ -1678,7 +1899,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                 _trows.append(_vrow("Triple total combo — all", _tot.get("triple_total_all_with_pocket_combo")))
             if _trows:
                 st.markdown("##### Totals (historical, n≥30 gate)")
-                st.dataframe(_trows, use_container_width=True, hide_index=True)
+                _st_pocket_roi_table(_trows, ["ROI"])
             elif _tot.get("pair_total", {}).get("skipped") or _tot.get("triple_total", {}).get("skipped"):
                 st.caption("Totals validation skipped (insufficient sample per artifact rules).")
 
@@ -1688,7 +1909,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                 _vrow("Cold warning LOW tercile (auth spread)", _cw.get("low_warning_authority_spread")),
             ]
             st.markdown("##### Cold-warning terciles (historical)")
-            st.dataframe(_wrows, use_container_width=True, hide_index=True)
+            _st_pocket_roi_table(_wrows, ["ROI"])
 
 def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
     """
@@ -1768,6 +1989,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
     _opp_rows = [r for r in ((_rpo_resolved or {}).get("opportunities") or []) if isinstance(r, dict)]
     _games_bpp = list((_bpp_resolved or {}).get("games") or [])
     _parlay_eligible_n = sum(1 for r in _opp_rows if r.get("eligible_for_parlay"))
+    _pocket_daily_by_id = _pocket_index_daily_games(games)
 
     def _rpo_row_is_spread(r: dict) -> bool:
         mt = str(r.get("market_type") or "").strip().lower()
@@ -1865,10 +2087,11 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
         if not _opp_display:
             st.info(f"No rows match **{_pocket_filter_label}** for this slate.")
         else:
-            st.dataframe(
+            _st_pocket_main_roi_table(
                 [
                     {
                         "Rank": r.get("rank"),
+                        "Recommended Bet": format_pocket_recommended_bet(r, _pocket_daily_by_id),
                         "Game": _rpo_cell(r.get("matchup")),
                         "Pick": _rpo_cell(r.get("pick")),
                         "Pocket Type": _rpo_cell(r.get("pocket_type")),
@@ -1882,8 +2105,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                     }
                     for r in _opp_display
                 ],
-                use_container_width=True,
-                hide_index=True,
+                "ROI",
             )
 
     with st.expander("Best pocket per game (secondary summary)", expanded=False):
@@ -1928,10 +2150,11 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                 except (TypeError, ValueError):
                     return "—"
 
-            st.dataframe(
+            _st_pocket_main_roi_table(
                 [
                     {
                         "Rank": g.get("rank"),
+                        "Recommended Bet": format_pocket_recommended_bet(g, _pocket_daily_by_id),
                         "Game": _bpp_cell(g.get("matchup")),
                         "Pick": _bpp_cell(g.get("spread_pick")),
                         "Best Pocket Type": _bpp_cell(g.get("best_pocket_type")),
@@ -1952,8 +2175,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                     }
                     for g in _games_bpp
                 ],
-                use_container_width=True,
-                hide_index=True,
+                "Pocket ROI",
             )
 
     st.markdown("## Best 2-leg parlay (positive ROI only)")
@@ -1989,12 +2211,14 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
             st.info("No positive-ROI 2-leg parlay exposed on this slate.")
         else:
             _r1, _r2 = _parlay_legs[0], _parlay_legs[1]
+            _bet1 = format_pocket_recommended_bet(_r1, _pocket_daily_by_id)
+            _bet2 = format_pocket_recommended_bet(_r2, _pocket_daily_by_id)
             st.markdown(
-                f"**Leg 1 —** {_r1.get('matchup')} · **{_r1.get('pick')}**  \n"
+                f"**Leg 1 —** {_bet1}  \n"
                 f"*{_r1.get('pocket_type')} · historical ROI {_r1.get('roi')}*"
             )
             st.markdown(
-                f"**Leg 2 —** {_r2.get('matchup')} · **{_r2.get('pick')}**  \n"
+                f"**Leg 2 —** {_bet2}  \n"
                 f"*{_r2.get('pocket_type')} · historical ROI {_r2.get('roi')}*"
             )
             st.caption(
@@ -2138,14 +2362,14 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                 row["ui rank"] = i
                 del row["_sort"]
             if _ssc_rows_out:
-                st.dataframe(_ssc_rows_out, use_container_width=True, hide_index=True)
+                _st_pocket_roi_table(_ssc_rows_out, ["hist triple ROI", "hist pair ROI"])
             else:
                 st.caption("No rows.")
 
             st.markdown("##### 2 · Best triple spread combo (historical pocket stats, ROI-first)")
             _bts_sf = sorted(_bts_raw, key=_combo_roi_sort_key, reverse=True)
             if _bts_sf:
-                st.dataframe(
+                _st_pocket_roi_table(
                     [
                         {
                             "ui rank": i,
@@ -2163,8 +2387,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                         }
                         for i, r in enumerate(_bts_sf, start=1)
                     ],
-                    use_container_width=True,
-                    hide_index=True,
+                    ["pocket ROI"],
                 )
             else:
                 st.caption("No triple spread matches on this slate.")
@@ -2172,7 +2395,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
             st.markdown("##### 3 · Best pair spread combo (historical pocket stats, ROI-first)")
             _bps_sf = sorted(_bps_raw, key=_combo_roi_sort_key, reverse=True)
             if _bps_sf:
-                st.dataframe(
+                _st_pocket_roi_table(
                     [
                         {
                             "ui rank": i,
@@ -2190,8 +2413,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                         }
                         for i, r in enumerate(_bps_sf, start=1)
                     ],
-                    use_container_width=True,
-                    hide_index=True,
+                    ["pocket ROI"],
                 )
             else:
                 st.caption("No pair spread matches on this slate.")
@@ -2203,7 +2425,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                 reverse=True,
             )
             if _pc_sf:
-                st.dataframe(
+                _st_pocket_roi_table(
                     [
                         {
                             "ui rank": i,
@@ -2218,8 +2440,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                         }
                         for i, r in enumerate(_pc_sf, start=1)
                     ],
-                    use_container_width=True,
-                    hide_index=True,
+                    ["hist. best-pair spread ROI"],
                 )
             else:
                 st.caption("No pass-flagged games on this slate.")
@@ -2290,7 +2511,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                 _vrow("Non-pass (auth spread)", _pv.get("non_pass_authority_spread")),
             ]
             st.markdown("##### Spread / cluster / pass (historical)")
-            st.dataframe(_sum_spread, use_container_width=True, hide_index=True)
+            _st_pocket_roi_table(_sum_spread, ["ROI"])
 
             _tot = _val.get("totals_if_sufficient") or {}
             _trows = []
@@ -2302,7 +2523,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                 _trows.append(_vrow("Triple total combo — all", _tot.get("triple_total_all_with_pocket_combo")))
             if _trows:
                 st.markdown("##### Totals (historical, n≥30 gate)")
-                st.dataframe(_trows, use_container_width=True, hide_index=True)
+                _st_pocket_roi_table(_trows, ["ROI"])
             elif _tot.get("pair_total", {}).get("skipped") or _tot.get("triple_total", {}).get("skipped"):
                 st.caption("Totals validation skipped (insufficient sample per artifact rules).")
 
@@ -2312,7 +2533,7 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
                 _vrow("Cold warning LOW tercile (auth spread)", _cw.get("low_warning_authority_spread")),
             ]
             st.markdown("##### Cold-warning terciles (historical)")
-            st.dataframe(_wrows, use_container_width=True, hide_index=True)
+            _st_pocket_roi_table(_wrows, ["ROI"])
 
 
 # --------------------------------------------------

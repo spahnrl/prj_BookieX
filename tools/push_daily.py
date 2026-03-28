@@ -72,6 +72,8 @@ def main():
     # UI code and runtime dependencies (stage only if present).
     for _path in (
         "eng/ui/bookiex_dashboard.py",
+        "eng/execution/build_nba_model_pockets.py",
+        "eng/execution/build_nba_pocket_leaderboard_validation.py",
         "eng/execution/build_ncaam_model_pockets.py",
         "eng/execution/build_ncaam_pocket_leaderboard_validation.py",
         "utils/io_helpers.py",

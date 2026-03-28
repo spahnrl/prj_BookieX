@@ -34,8 +34,23 @@ def main():
     try:
         # Step 1 — Core Live Run
         run_step(
-            [sys.executable, "000_RUN_ALL_NBA.py", "--mode", "LIVE"],
+            # [sys.executable, "000_RUN_ALL_NBA.py", "--mode", "LIVE"],
+            [sys.executable, "000_RUN_ALL_NBA_NCAAM.py", "--mode", "LIVE"],
+
             "LIVE MODEL RUN"
+        )
+
+        # Pocket ROI JSON targets the *latest* backtest_* folder by mtime. NBA LIVE runs
+        # build_nba_model_pockets before backtest in 000_RUN_ALL_NBA, so a fresh backtest
+        # from this run would not have pockets until we run the builders again here.
+        # Scripts exit 0 on FileNotFoundError when a league has no backtest yet.
+        run_step(
+            [sys.executable, "eng/execution/build_nba_model_pockets.py"],
+            "POCKET ROI ARTIFACTS (NBA)",
+        )
+        run_step(
+            [sys.executable, "eng/execution/build_ncaam_model_pockets.py"],
+            "POCKET ROI ARTIFACTS (NCAAM)",
         )
 
         # Step 2 — Push Daily Updates
