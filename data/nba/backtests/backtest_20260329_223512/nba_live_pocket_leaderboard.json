@@ -1,0 +1,1087 @@
+{
+  "generated_at_utc": "2026-03-29T22:39:19.607041+00:00",
+  "league": "nba",
+  "source_backtest_dir": "backtest_20260329_223512",
+  "source_live_pocket_artifact": "nba_live_game_pocket_view.json",
+  "source_daily_view_path": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\nba\\daily\\daily_view_2026-03-30_v1.json",
+  "slate_date": "2026-03-30",
+  "game_count": 2,
+  "scoring": {
+    "single_model": "leaderboard_score = 1000 * state_rank + 10*spread_hot + 4*spread_warm - 2*spread_cold + min(abs_edge, 20); state_rank hot=3 warm=2 cold=1 insufficient=0. Uses per_model pocket state and game-level spread_pocket_alignment only (no per-game ROI).",
+    "combo": "leaderboard_score = 10000 * roi + 3 * graded_games + combo_state_weight; combo_state_weight hot=400 warm=150 cold=0 insufficient=0; roi from historical combo pocket.",
+    "cluster": "cluster_score = 3*hot + 1*warm - 0.5*cold - 0.25*insufficient on spread or total alignment counts.",
+    "cold_warnings": "warning_score = 5*cold + 2*insufficient - 3*hot - 1*warm on spread alignment (higher = more caution).",
+    "pass_candidates": "Games with spread cluster_score <= 0 and (no best_pair_spread or best_pair_spread.roi < 0)."
+  },
+  "best_single_model_spread": [
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "spread",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.6,
+      "pocket_state": "hot",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3015.6,
+      "reason": "Momentum5Game_v1 spread pocket state=hot (bucket 2-4); slate spread alignment H/W/C/I=2/0/4/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "spread",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.8178,
+      "pocket_state": "hot",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3012.8178,
+      "reason": "FatiguePlus_v3 spread pocket state=hot (bucket 0-1); slate spread alignment H/W/C/I=2/0/4/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "spread",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.4776,
+      "pocket_state": "warm",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2006.4776,
+      "reason": "InjuryModel_v2 spread pocket state=warm (bucket 0-1); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "spread",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.4776,
+      "pocket_state": "warm",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2006.4776,
+      "reason": "Joel_Baseline_v1 spread pocket state=warm (bucket 0-1); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "spread",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.4776,
+      "pocket_state": "warm",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2006.4776,
+      "reason": "MarketPressure_v2 spread pocket state=warm (bucket 0-1); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "spread",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.6539,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1014.6539,
+      "reason": "MarketBlend_v1 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=2/0/4/0.",
+      "rank": 6
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "spread",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 8.3,
+      "pocket_state": "cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1014.3,
+      "reason": "Momentum5Game_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 7
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "spread",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.2822,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1013.2822,
+      "reason": "InjuryModel_v2 spread pocket state=cold (bucket 1-2); slate spread alignment H/W/C/I=2/0/4/0.",
+      "rank": 8
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "spread",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.2822,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1013.2822,
+      "reason": "Joel_Baseline_v1 spread pocket state=cold (bucket 1-2); slate spread alignment H/W/C/I=2/0/4/0.",
+      "rank": 9
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "spread",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.2822,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1013.2822,
+      "reason": "MarketPressure_v2 spread pocket state=cold (bucket 1-2); slate spread alignment H/W/C/I=2/0/4/0.",
+      "rank": 10
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "spread",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.2436,
+      "pocket_state": "cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1008.2436,
+      "reason": "MarketBlend_v1 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 11
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "spread",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.6224,
+      "pocket_state": "cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1007.6224,
+      "reason": "FatiguePlus_v3 spread pocket state=cold (bucket 1-2); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 12
+    }
+  ],
+  "best_single_model_total": [
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "total",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "4-6",
+      "abs_edge": 4.5954,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2016.5954,
+      "reason": "InjuryModel_v2 total pocket state=warm (bucket 4-6); slate total alignment H/W/C/I=0/4/2/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "total",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "4-6",
+      "abs_edge": 4.5954,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2016.5954,
+      "reason": "Joel_Baseline_v1 total pocket state=warm (bucket 4-6); slate total alignment H/W/C/I=0/4/2/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "total",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.4465,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2015.4465,
+      "reason": "MarketPressure_v2 total pocket state=warm (bucket 2-4); slate total alignment H/W/C/I=0/4/2/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "total",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.3437,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2014.3437,
+      "reason": "MarketBlend_v1 total pocket state=warm (bucket 2-4); slate total alignment H/W/C/I=0/4/2/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "total",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.1,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1017.1,
+      "reason": "Momentum5Game_v1 total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/4/2/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "total",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.3154,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1014.3154,
+      "reason": "FatiguePlus_v3 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=0/4/2/0.",
+      "rank": 6
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "total",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "8+",
+      "abs_edge": 12.9089,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1000.9089,
+      "reason": "FatiguePlus_v3 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 7
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "total",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 10.6289,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 998.6289,
+      "reason": "InjuryModel_v2 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 8
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "total",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 10.6289,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 998.6289,
+      "reason": "Joel_Baseline_v1 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 9
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "total",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "6-8",
+      "abs_edge": 7.9717,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 995.9717,
+      "reason": "MarketPressure_v2 total pocket state=cold (bucket 6-8); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 10
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "total",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.4207,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 993.4207,
+      "reason": "MarketBlend_v1 total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 11
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "total",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "4-6",
+      "abs_edge": 4.8,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 992.8,
+      "reason": "Momentum5Game_v1 total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 12
+    }
+  ],
+  "best_pair_spread": [
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.0717,
+      "win_rate": 0.4783,
+      "graded_games": 531,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 876.0,
+      "reason": "Historical pair spread ROI=-0.0717 over 531 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "FatiguePlus_v3|MarketBlend_v1",
+      "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": -0.1899,
+      "win_rate": 0.4149,
+      "graded_games": 552,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": -243.0,
+      "reason": "Historical pair spread ROI=-0.1899 over 552 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_pair_total": [
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.0547,
+      "win_rate": 0.493,
+      "graded_games": 710,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1583.0,
+      "reason": "Historical pair total ROI=-0.0547 over 710 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "FatiguePlus_v3|Momentum5Game_v1",
+      "state_signature": "FatiguePlus_v3:cold|Momentum5Game_v1:cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.4027,
+      "win_rate": 0.3098,
+      "graded_games": 510,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": -2497.0,
+      "reason": "Historical pair total ROI=-0.4027 over 510 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_triple_spread": [
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.0728,
+      "win_rate": 0.4775,
+      "graded_games": 511,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 805.0,
+      "reason": "Historical triple spread ROI=-0.0728 over 511 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "FatiguePlus_v3|MarketBlend_v1|Momentum5Game_v1",
+      "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold|Momentum5Game_v1:cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": -0.3617,
+      "win_rate": 0.3234,
+      "graded_games": 334,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": -2615.0,
+      "reason": "Historical triple spread ROI=-0.3617 over 334 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_triple_total": [
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.1185,
+      "win_rate": 0.4592,
+      "graded_games": 625,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 690.0,
+      "reason": "Historical triple total ROI=-0.1185 over 625 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "FatiguePlus_v3|MarketPressure_v2|Momentum5Game_v1",
+      "state_signature": "FatiguePlus_v3:cold|MarketPressure_v2:warm|Momentum5Game_v1:cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.439,
+      "win_rate": 0.2879,
+      "graded_games": 264,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": -3598.0,
+      "reason": "Historical triple total ROI=-0.439 over 264 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "strongest_spread_cluster": [
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "spread_pick": "AWAY",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "cluster_score": 4.0,
+      "leaderboard_score": 4.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "spread_pick": "HOME",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "cluster_score": 1.5,
+      "leaderboard_score": 1.5,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    }
+  ],
+  "strongest_total_cluster": [
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "total_pick": "OVER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "cluster_score": 3.0,
+      "leaderboard_score": 3.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "total_pick": "UNDER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "cluster_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    }
+  ],
+  "cold_cluster_warnings": [
+    {
+      "game_id": "0022501092",
+      "matchup": "Boston Celtics @ Atlanta Hawks",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 4,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "warning_score": 14.0,
+      "leaderboard_score": 14.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501091",
+      "matchup": "Philadelphia 76ers @ Miami Heat",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "warning_score": 12.0,
+      "leaderboard_score": 12.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 2
+    }
+  ],
+  "pass_candidates": []
+}
