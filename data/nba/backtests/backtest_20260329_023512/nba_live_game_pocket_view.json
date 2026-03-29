@@ -1,0 +1,1196 @@
+{
+  "generated_at_utc": "2026-03-29T02:40:16.856537+00:00",
+  "league": "nba",
+  "source_backtest_dir": "backtest_20260329_023512",
+  "source_games_path": "C:/Users/Rick_DellXPS/OneDrive/Dev/Python/prj_BookieX/data/nba/backtests/backtest_20260329_023512/backtest_games.json",
+  "excluded_models": [
+    "MonkeyDarts_v2"
+  ],
+  "formulas": {
+    "roi_minus_110": "Per graded leg: WIN adds 100/|price| units profit, LOSS adds -1, PUSH adds 0; ROI = total_profit / graded_games (matches execution overlay 039b leg accounting).",
+    "win_rate": "wins / graded_games where graded_games = wins + losses + pushes (pushes count in denominator).",
+    "breakeven_win_rate": 0.47619,
+    "state_rules": {
+      "insufficient": "graded_games < 15",
+      "hot": "graded_games >= 25 and win_rate >= 0.545 and roi >= 0.035",
+      "cold": "graded_games >= 15 and (win_rate < 0.515 or roi <= -0.03)",
+      "warm": "else when graded_games >= MIN_GRADED_FOR_STATE"
+    },
+    "combo_outcome_pair": "LOSS if either leg LOSS; WIN if both WIN; PUSH if any PUSH without LOSS.",
+    "combo_outcome_triple": "LOSS if any leg LOSS; WIN if all WIN; PUSH if any PUSH without LOSS.",
+    "combo_min_graded": 30
+  },
+  "slate_date": "2026-03-29",
+  "source_live_slate_artifact": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\nba\\daily\\daily_view_2026-03-29_v1.json",
+  "game_count": 8,
+  "games": [
+    {
+      "game_id": "0022501083",
+      "matchup": "Miami Heat @ Indiana Pacers",
+      "per_model": {
+        "FatiguePlus_v3": {
+          "spread": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 7.0513
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 11.1082
+          }
+        },
+        "InjuryModel_v2": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 4.6356
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 11.3184
+          }
+        },
+        "Joel_Baseline_v1": {
+          "spread": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 7.0513
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 10.6282
+          }
+        },
+        "MarketBlend_v1": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 15.4038
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 5.4204
+          }
+        },
+        "MarketPressure_v2": {
+          "spread": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 7.0513
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 7.9712
+          }
+        },
+        "Momentum5Game_v1": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 10.4
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 4.9
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "FatiguePlus_v3|MarketBlend_v1",
+        "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold",
+        "games": 550,
+        "graded_games": 550,
+        "wins": 228,
+        "losses": 312,
+        "pushes": 10,
+        "win_rate": 0.4145,
+        "roi": -0.1904,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "Joel_Baseline_v1|MarketBlend_v1|MarketPressure_v2",
+        "state_signature": "Joel_Baseline_v1:cold|MarketBlend_v1:cold|MarketPressure_v2:cold",
+        "games": 440,
+        "graded_games": 440,
+        "wins": 169,
+        "losses": 264,
+        "pushes": 7,
+        "win_rate": 0.3841,
+        "roi": -0.2508,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 708,
+        "graded_games": 708,
+        "wins": 349,
+        "losses": 356,
+        "pushes": 3,
+        "win_rate": 0.4929,
+        "roi": -0.0547,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 623,
+        "graded_games": 623,
+        "wins": 286,
+        "losses": 334,
+        "pushes": 3,
+        "win_rate": 0.4591,
+        "roi": -0.1188,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "0022501084",
+      "matchup": "Sacramento Kings @ Brooklyn Nets",
+      "per_model": {
+        "FatiguePlus_v3": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 4.5647
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 5.3001
+          }
+        },
+        "InjuryModel_v2": {
+          "spread": {
+            "edge_bucket": "1-2",
+            "state": "cold",
+            "abs_edge": 1.6672
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 6.3996
+          }
+        },
+        "Joel_Baseline_v1": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 2.4647
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 7.5801
+          }
+        },
+        "MarketBlend_v1": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 3.257
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 3.8659
+          }
+        },
+        "MarketPressure_v2": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 2.4647
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 5.6851
+          }
+        },
+        "Momentum5Game_v1": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.5
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 8.4
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "Joel_Baseline_v1|MarketPressure_v2",
+        "state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+        "games": 530,
+        "graded_games": 530,
+        "wins": 253,
+        "losses": 269,
+        "pushes": 8,
+        "win_rate": 0.4774,
+        "roi": -0.0736,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+        "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+        "games": 511,
+        "graded_games": 511,
+        "wins": 244,
+        "losses": 259,
+        "pushes": 8,
+        "win_rate": 0.4775,
+        "roi": -0.0728,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 708,
+        "graded_games": 708,
+        "wins": 349,
+        "losses": 356,
+        "pushes": 3,
+        "win_rate": 0.4929,
+        "roi": -0.0547,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1|Momentum5Game_v1",
+        "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold|Momentum5Game_v1:cold",
+        "games": 428,
+        "graded_games": 428,
+        "wins": 136,
+        "losses": 291,
+        "pushes": 1,
+        "win_rate": 0.3178,
+        "roi": -0.391,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "0022501085",
+      "matchup": "Boston Celtics @ Charlotte Hornets",
+      "per_model": {
+        "FatiguePlus_v3": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 2.6935
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 6.4997
+          }
+        },
+        "InjuryModel_v2": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "warm",
+            "abs_edge": 0.5935
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 8.7797
+          }
+        },
+        "Joel_Baseline_v1": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "warm",
+            "abs_edge": 0.5935
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 8.7797
+          }
+        },
+        "MarketBlend_v1": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 2.3027
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 4.4776
+          }
+        },
+        "MarketPressure_v2": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "warm",
+            "abs_edge": 0.5935
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 6.5848
+          }
+        },
+        "Momentum5Game_v1": {
+          "spread": {
+            "edge_bucket": "6-8",
+            "state": "hot",
+            "abs_edge": 7.0
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "warm",
+            "abs_edge": 6.5
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 3,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "FatiguePlus_v3|MarketBlend_v1",
+        "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold",
+        "games": 550,
+        "graded_games": 550,
+        "wins": 228,
+        "losses": 312,
+        "pushes": 10,
+        "win_rate": 0.4145,
+        "roi": -0.1904,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+        "state_signature": "InjuryModel_v2:warm|Joel_Baseline_v1:warm|MarketPressure_v2:warm",
+        "games": 242,
+        "graded_games": 242,
+        "wins": 126,
+        "losses": 112,
+        "pushes": 4,
+        "win_rate": 0.5207,
+        "roi": 0.0105,
+        "state": "warm"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 708,
+        "graded_games": 708,
+        "wins": 349,
+        "losses": 356,
+        "pushes": 3,
+        "win_rate": 0.4929,
+        "roi": -0.0547,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 623,
+        "graded_games": 623,
+        "wins": 286,
+        "losses": 334,
+        "pushes": 3,
+        "win_rate": 0.4591,
+        "roi": -0.1188,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "0022501086",
+      "matchup": "Orlando Magic @ Toronto Raptors",
+      "per_model": {
+        "FatiguePlus_v3": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 3.1198
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 3.0105
+          }
+        },
+        "InjuryModel_v2": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 5.1797
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 2.8519
+          }
+        },
+        "Joel_Baseline_v1": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 2.6823
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 3.5655
+          }
+        },
+        "MarketBlend_v1": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "warm",
+            "abs_edge": 4.632
+          },
+          "total": {
+            "edge_bucket": "1-2",
+            "state": "cold",
+            "abs_edge": 1.8184
+          }
+        },
+        "MarketPressure_v2": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 2.6823
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 2.6741
+          }
+        },
+        "Momentum5Game_v1": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "hot",
+            "abs_edge": 3.1
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 12.6
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "Joel_Baseline_v1|MarketPressure_v2",
+        "state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+        "games": 530,
+        "graded_games": 530,
+        "wins": 253,
+        "losses": 269,
+        "pushes": 8,
+        "win_rate": 0.4774,
+        "roi": -0.0736,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "FatiguePlus_v3|Joel_Baseline_v1|MarketPressure_v2",
+        "state_signature": "FatiguePlus_v3:cold|Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+        "games": 418,
+        "graded_games": 418,
+        "wins": 195,
+        "losses": 215,
+        "pushes": 8,
+        "win_rate": 0.4665,
+        "roi": -0.0903,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 708,
+        "graded_games": 708,
+        "wins": 349,
+        "losses": 356,
+        "pushes": 3,
+        "win_rate": 0.4929,
+        "roi": -0.0547,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 623,
+        "graded_games": 623,
+        "wins": 286,
+        "losses": 334,
+        "pushes": 3,
+        "win_rate": 0.4591,
+        "roi": -0.1188,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "0022501087",
+      "matchup": "Washington Wizards @ Portland Trail Blazers",
+      "per_model": {
+        "FatiguePlus_v3": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 8.8094
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 3.6463
+          }
+        },
+        "InjuryModel_v2": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 10.5583
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 3.666
+          }
+        },
+        "Joel_Baseline_v1": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 8.8094
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 3.1663
+          }
+        },
+        "MarketBlend_v1": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 26.5072
+          },
+          "total": {
+            "edge_bucket": "1-2",
+            "state": "cold",
+            "abs_edge": 1.6148
+          }
+        },
+        "MarketPressure_v2": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 8.8094
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 2.3747
+          }
+        },
+        "Momentum5Game_v1": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 5.1
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "warm",
+            "abs_edge": 6.5
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "FatiguePlus_v3|MarketBlend_v1",
+        "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold",
+        "games": 550,
+        "graded_games": 550,
+        "wins": 228,
+        "losses": 312,
+        "pushes": 10,
+        "win_rate": 0.4145,
+        "roi": -0.1904,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "FatiguePlus_v3|MarketBlend_v1|Momentum5Game_v1",
+        "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold|Momentum5Game_v1:cold",
+        "games": 333,
+        "graded_games": 333,
+        "wins": 108,
+        "losses": 218,
+        "pushes": 7,
+        "win_rate": 0.3243,
+        "roi": -0.3598,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 708,
+        "graded_games": 708,
+        "wins": 349,
+        "losses": 356,
+        "pushes": 3,
+        "win_rate": 0.4929,
+        "roi": -0.0547,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 623,
+        "graded_games": 623,
+        "wins": 286,
+        "losses": 334,
+        "pushes": 3,
+        "win_rate": 0.4591,
+        "roi": -0.1188,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "0022501088",
+      "matchup": "Houston Rockets @ New Orleans Pelicans",
+      "per_model": {
+        "FatiguePlus_v3": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 3.7994
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 7.8988
+          }
+        },
+        "InjuryModel_v2": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 2.5121
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 8.011
+          }
+        },
+        "Joel_Baseline_v1": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 3.7994
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 8.3788
+          }
+        },
+        "MarketBlend_v1": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 9.0623
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 4.2732
+          }
+        },
+        "MarketPressure_v2": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 3.7994
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 6.2841
+          }
+        },
+        "Momentum5Game_v1": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.6
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "hot",
+            "abs_edge": 2.9
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "FatiguePlus_v3|MarketBlend_v1",
+        "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold",
+        "games": 550,
+        "graded_games": 550,
+        "wins": 228,
+        "losses": 312,
+        "pushes": 10,
+        "win_rate": 0.4145,
+        "roi": -0.1904,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+        "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+        "games": 511,
+        "graded_games": 511,
+        "wins": 244,
+        "losses": 259,
+        "pushes": 8,
+        "win_rate": 0.4775,
+        "roi": -0.0728,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 708,
+        "graded_games": 708,
+        "wins": 349,
+        "losses": 356,
+        "pushes": 3,
+        "win_rate": 0.4929,
+        "roi": -0.0547,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 623,
+        "graded_games": 623,
+        "wins": 286,
+        "losses": 334,
+        "pushes": 3,
+        "win_rate": 0.4591,
+        "roi": -0.1188,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "0022501089",
+      "matchup": "New York Knicks @ Oklahoma City Thunder",
+      "per_model": {
+        "FatiguePlus_v3": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 5.2324
+          },
+          "total": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.1117
+          }
+        },
+        "InjuryModel_v2": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 4.7949
+          },
+          "total": {
+            "edge_bucket": "0-1",
+            "state": "warm",
+            "abs_edge": 0.6667
+          }
+        },
+        "Joel_Baseline_v1": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 4.7949
+          },
+          "total": {
+            "edge_bucket": "0-1",
+            "state": "warm",
+            "abs_edge": 0.6667
+          }
+        },
+        "MarketBlend_v1": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 14.5546
+          },
+          "total": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.34
+          }
+        },
+        "MarketPressure_v2": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 4.7949
+          },
+          "total": {
+            "edge_bucket": "0-1",
+            "state": "warm",
+            "abs_edge": 0.5
+          }
+        },
+        "Momentum5Game_v1": {
+          "spread": {
+            "edge_bucket": "6-8",
+            "state": "hot",
+            "abs_edge": 6.0
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 5.2
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 5,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "MarketBlend_v1|Momentum5Game_v1",
+        "state_signature": "MarketBlend_v1:cold|Momentum5Game_v1:hot",
+        "games": 303,
+        "graded_games": 303,
+        "wins": 121,
+        "losses": 178,
+        "pushes": 4,
+        "win_rate": 0.3993,
+        "roi": -0.2244,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+        "state_signature": "InjuryModel_v2:hot|Joel_Baseline_v1:hot|MarketPressure_v2:hot",
+        "games": 213,
+        "graded_games": 213,
+        "wins": 122,
+        "losses": 87,
+        "pushes": 4,
+        "win_rate": 0.5728,
+        "roi": 0.1122,
+        "state": "hot"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "FatiguePlus_v3|MarketBlend_v1",
+        "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold",
+        "games": 625,
+        "graded_games": 625,
+        "wins": 268,
+        "losses": 352,
+        "pushes": 5,
+        "win_rate": 0.4288,
+        "roi": -0.1734,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "FatiguePlus_v3|MarketBlend_v1|Momentum5Game_v1",
+        "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold|Momentum5Game_v1:cold",
+        "games": 378,
+        "graded_games": 378,
+        "wins": 100,
+        "losses": 275,
+        "pushes": 3,
+        "win_rate": 0.2646,
+        "roi": -0.487,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "0022501090",
+      "matchup": "Golden State Warriors @ Denver Nuggets",
+      "per_model": {
+        "FatiguePlus_v3": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 8.5454
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 8.5096
+          }
+        },
+        "InjuryModel_v2": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 8.5454
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 8.0296
+          }
+        },
+        "Joel_Baseline_v1": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 8.5454
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 8.0296
+          }
+        },
+        "MarketBlend_v1": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "cold",
+            "abs_edge": 18.6418
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 4.0951
+          }
+        },
+        "MarketPressure_v2": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 8.5454
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 6.0222
+          }
+        },
+        "Momentum5Game_v1": {
+          "spread": {
+            "edge_bucket": "6-8",
+            "state": "hot",
+            "abs_edge": 6.2
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "warm",
+            "abs_edge": 6.7
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 3,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "FatiguePlus_v3|MarketBlend_v1",
+        "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold",
+        "games": 550,
+        "graded_games": 550,
+        "wins": 228,
+        "losses": 312,
+        "pushes": 10,
+        "win_rate": 0.4145,
+        "roi": -0.1904,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+        "state_signature": "InjuryModel_v2:warm|Joel_Baseline_v1:warm|MarketPressure_v2:warm",
+        "games": 242,
+        "graded_games": 242,
+        "wins": 126,
+        "losses": 112,
+        "pushes": 4,
+        "win_rate": 0.5207,
+        "roi": 0.0105,
+        "state": "warm"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 708,
+        "graded_games": 708,
+        "wins": 349,
+        "losses": 356,
+        "pushes": 3,
+        "win_rate": 0.4929,
+        "roi": -0.0547,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+        "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+        "games": 623,
+        "graded_games": 623,
+        "wins": 286,
+        "losses": 334,
+        "pushes": 3,
+        "win_rate": 0.4591,
+        "roi": -0.1188,
+        "state": "cold"
+      }
+    }
+  ]
+}
