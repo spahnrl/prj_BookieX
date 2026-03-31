@@ -1,0 +1,61 @@
+{
+  "generated_at_utc": "2026-03-31T21:11:04.876486+00:00",
+  "league": "nba",
+  "source_backtest_dir": "backtest_20260331_210515",
+  "source_leaderboard_artifact": "nba_live_pocket_leaderboard.json",
+  "source_daily_view_path": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\nba\\daily\\daily_view_2026-04-01_v1.json",
+  "slate_date": "2026-04-01",
+  "game_count": 2,
+  "selection_rules": {
+    "positive_winner": "Among best_triple_spread and best_pair_spread rows for the game, require roi > 0; pick max ROI, then max graded_games, then type order triple_spread < spread_cluster < pair_spread (cluster is not in the positive pool \u2014 only triple/pair carry ROI).",
+    "pass": "If no positive-ROI combo, best_pocket_type=PASS; reason merges pass_candidates, cold_cluster_warnings, best non-positive combo reference, and cluster alignment.",
+    "parlay_eligible": "eligible_for_parlay true only when best_pocket_roi > 0 and spread_pick is non-empty.",
+    "reference_fields": "best_reference_* always describe the historical combo row used: for winners, the selected positive triple_spread or pair_spread row; for PASS, the best-ranked triple/pair by ROI (then graded, then type); if no combo row exists, reference fields are null."
+  },
+  "games": [
+    {
+      "game_id": "0022501113",
+      "matchup": "San Antonio Spurs @ Golden State Warriors",
+      "spread_pick": "HOME",
+      "best_pocket_type": "PASS",
+      "best_pocket_roi": null,
+      "best_pocket_win_rate": 0.4858,
+      "best_pocket_graded_games": 671,
+      "pocket_state": "cold",
+      "spread_align_hci": "H1/W1/C4/I0",
+      "cluster_score": 2.0,
+      "reason": "PASS \u2014 Best reference pocket **Joel_Baseline_v1|MarketPressure_v2** (pair_spread) had ROI -0.0591 over 671 graded games; no positive pocket exposed. Cold-warning: Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate. (warning_score=16.0). Spread cluster_score=2.0; slate_spread_align=H1/W1/C4/I0.",
+      "eligible_for_parlay": false,
+      "best_reference_pocket_type": "pair_spread",
+      "best_reference_models_key": "Joel_Baseline_v1|MarketPressure_v2",
+      "best_reference_state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "best_reference_roi": -0.0591,
+      "best_reference_win_rate": 0.4858,
+      "best_reference_graded_games": 671,
+      "best_reference_reason": "Historical pair_spread pocket models=Joel_Baseline_v1|MarketPressure_v2 signature=Joel_Baseline_v1:cold|MarketPressure_v2:cold: ROI=-0.0591, Win%=0.4858, graded=671, pocket_state=cold. (Historical pair spread ROI=-0.0591 over 671 graded combo legs; pocket state=cold for signature match.)",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501106",
+      "matchup": "Boston Celtics @ Miami Heat",
+      "spread_pick": "HOME",
+      "best_pocket_type": "PASS",
+      "best_pocket_roi": null,
+      "best_pocket_win_rate": 0.4858,
+      "best_pocket_graded_games": 671,
+      "pocket_state": "cold",
+      "spread_align_hci": "H0/W0/C6/I0",
+      "cluster_score": -3.0,
+      "reason": "PASS \u2014 Best reference pocket **Joel_Baseline_v1|MarketPressure_v2** (pair_spread) had ROI -0.0591 over 671 graded games; no positive pocket exposed. Pass filter: Weak spread cluster and no positive historical best-pair spread pocket (or missing pair). Cold-warning: Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate. (warning_score=30.0). Spread cluster_score=-3.0; slate_spread_align=H0/W0/C6/I0.",
+      "eligible_for_parlay": false,
+      "best_reference_pocket_type": "pair_spread",
+      "best_reference_models_key": "Joel_Baseline_v1|MarketPressure_v2",
+      "best_reference_state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "best_reference_roi": -0.0591,
+      "best_reference_win_rate": 0.4858,
+      "best_reference_graded_games": 671,
+      "best_reference_reason": "Historical pair_spread pocket models=Joel_Baseline_v1|MarketPressure_v2 signature=Joel_Baseline_v1:cold|MarketPressure_v2:cold: ROI=-0.0591, Win%=0.4858, graded=671, pocket_state=cold. (Historical pair spread ROI=-0.0591 over 671 graded combo legs; pocket state=cold for signature match.)",
+      "rank": 2
+    }
+  ]
+}

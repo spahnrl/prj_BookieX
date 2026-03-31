@@ -1,0 +1,745 @@
+{
+  "generated_at_utc": "2026-03-31T21:11:06.668768+00:00",
+  "league": "ncaam",
+  "source_backtest_dir": "backtest_20260331_211052",
+  "source_live_pocket_artifact": "ncaam_live_game_pocket_view.json",
+  "source_daily_view_path": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\ncaam\\daily\\daily_view_ncaam_2026-04-01_v1.json",
+  "slate_date": "2026-04-01",
+  "game_count": 2,
+  "scoring": {
+    "single_model": "leaderboard_score = 1000 * state_rank + 10*spread_hot + 4*spread_warm - 2*spread_cold + min(abs_edge, 20); state_rank hot=3 warm=2 cold=1 insufficient=0. Uses per_model pocket state and game-level spread_pocket_alignment only (no per-game ROI).",
+    "combo": "leaderboard_score = 10000 * roi + 3 * graded_games + combo_state_weight; combo_state_weight hot=400 warm=150 cold=0 insufficient=0; roi from historical combo pocket.",
+    "cluster": "cluster_score = 3*hot + 1*warm - 0.5*cold - 0.25*insufficient on spread or total alignment counts.",
+    "cold_warnings": "warning_score = 5*cold + 2*insufficient - 3*hot - 1*warm on spread alignment (higher = more caution).",
+    "pass_candidates": "Games with spread cluster_score <= 0 and (no best_pair_spread or best_pair_spread.roi < 0)."
+  },
+  "best_single_model_spread": [
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "market": "spread",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.4352,
+      "pocket_state": "hot",
+      "spread_pick": "Colorado",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3023.4352,
+      "reason": "ncaam_avg_score_model spread pocket state=hot (bucket 4-6); slate spread alignment H/W/C/I=2/0/1/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "market": "spread",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.4352,
+      "pocket_state": "hot",
+      "spread_pick": "Colorado",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3023.4352,
+      "reason": "ncaam_market_pressure_model spread pocket state=hot (bucket 4-6); slate spread alignment H/W/C/I=2/0/1/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "market": "spread",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.7,
+      "pocket_state": "cold",
+      "spread_pick": "Colorado",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1020.7,
+      "reason": "ncaam_momentum5_model spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=2/0/1/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "market": "spread",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "6-8",
+      "abs_edge": 6.5,
+      "pocket_state": "cold",
+      "spread_pick": "Minnesota",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1000.5,
+      "reason": "ncaam_momentum5_model spread pocket state=cold (bucket 6-8); slate spread alignment H/W/C/I=0/0/3/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "market": "spread",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.8629,
+      "pocket_state": "cold",
+      "spread_pick": "Minnesota",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 997.8629,
+      "reason": "ncaam_avg_score_model spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/3/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "market": "spread",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.8629,
+      "pocket_state": "cold",
+      "spread_pick": "Minnesota",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 997.8629,
+      "reason": "ncaam_market_pressure_model spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/3/0.",
+      "rank": 6
+    }
+  ],
+  "best_single_model_total": [
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "market": "total",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "8+",
+      "abs_edge": 33.2,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2020.0,
+      "reason": "ncaam_momentum5_model total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "market": "total",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "8+",
+      "abs_edge": 13.9,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2013.9,
+      "reason": "ncaam_momentum5_model total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "market": "total",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "6-8",
+      "abs_edge": 6.9694,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1006.9694,
+      "reason": "ncaam_avg_score_model total pocket state=cold (bucket 6-8); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "market": "total",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.2271,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1005.2271,
+      "reason": "ncaam_market_pressure_model total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "market": "total",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.5657,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1001.5657,
+      "reason": "ncaam_avg_score_model total pocket state=cold (bucket 1-2); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "market": "total",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.1743,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1001.1743,
+      "reason": "ncaam_market_pressure_model total pocket state=cold (bucket 1-2); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 6
+    }
+  ],
+  "best_pair_spread": [
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+      "spread_pick": "Minnesota",
+      "total_pick": null,
+      "roi": -0.0302,
+      "win_rate": 0.5057,
+      "graded_games": 1586,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 4456.0,
+      "reason": "Historical pair spread ROI=-0.0302 over 1586 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:hot|ncaam_market_pressure_model:hot",
+      "spread_pick": "Colorado",
+      "total_pick": null,
+      "roi": 0.0472,
+      "win_rate": 0.5469,
+      "graded_games": 640,
+      "combo_state": "hot",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2792.0,
+      "reason": "Historical pair spread ROI=0.0472 over 640 graded combo legs; pocket state=hot for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_pair_total": [
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.0579,
+      "win_rate": 0.4923,
+      "graded_games": 3191,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 8994.0,
+      "reason": "Historical pair total ROI=-0.0579 over 3191 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.0579,
+      "win_rate": 0.4923,
+      "graded_games": 3191,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 8994.0,
+      "reason": "Historical pair total ROI=-0.0579 over 3191 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_triple_spread": [
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:cold",
+      "spread_pick": "Minnesota",
+      "total_pick": null,
+      "roi": -0.3278,
+      "win_rate": 0.3498,
+      "graded_games": 892,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": -602.0,
+      "reason": "Historical triple spread ROI=-0.3278 over 892 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:hot|ncaam_market_pressure_model:hot|ncaam_momentum5_model:cold",
+      "spread_pick": "Colorado",
+      "total_pick": null,
+      "roi": -0.1515,
+      "win_rate": 0.4444,
+      "graded_games": 297,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": -624.0,
+      "reason": "Historical triple spread ROI=-0.1515 over 297 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_triple_total": [
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.3071,
+      "win_rate": 0.3627,
+      "graded_games": 2360,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 4009.0,
+      "reason": "Historical triple total ROI=-0.3071 over 2360 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.3071,
+      "win_rate": 0.3627,
+      "graded_games": 2360,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 4009.0,
+      "reason": "Historical triple total ROI=-0.3071 over 2360 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "strongest_spread_cluster": [
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "spread_pick": "Colorado",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "cluster_score": 5.5,
+      "leaderboard_score": 5.5,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "spread_pick": "Minnesota",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "cluster_score": -1.5,
+      "leaderboard_score": -1.5,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    }
+  ],
+  "strongest_total_cluster": [
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "total_pick": "UNDER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "total_pick": "OVER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    }
+  ],
+  "cold_cluster_warnings": [
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "warning_score": 15.0,
+      "leaderboard_score": 15.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401858379",
+      "matchup": "Oklahoma @ Colorado",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 0,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "warning_score": -1.0,
+      "leaderboard_score": -1.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 2
+    }
+  ],
+  "pass_candidates": [
+    {
+      "game_id": "ncaam_401858380",
+      "matchup": "Baylor @ Minnesota",
+      "spread_pick": "Minnesota",
+      "total_pick": "OVER",
+      "spread_cluster_score": -1.5,
+      "best_pair_spread_roi": -0.0302,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1.4698,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 1
+    }
+  ]
+}
