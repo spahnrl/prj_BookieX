@@ -1,0 +1,579 @@
+{
+  "generated_at_utc": "2026-04-01T23:10:18.071343+00:00",
+  "league": "nba",
+  "source_backtest_dir": "backtest_20260401_230514",
+  "source_live_pocket_artifact": "nba_live_game_pocket_view.json",
+  "source_daily_view_path": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\nba\\daily\\daily_view_2026-04-02_v1.json",
+  "slate_date": "2026-04-02",
+  "game_count": 1,
+  "scoring": {
+    "single_model": "leaderboard_score = 1000 * state_rank + 10*spread_hot + 4*spread_warm - 2*spread_cold + min(abs_edge, 20); state_rank hot=3 warm=2 cold=1 insufficient=0. Uses per_model pocket state and game-level spread_pocket_alignment only (no per-game ROI).",
+    "combo": "leaderboard_score = 10000 * roi + 3 * graded_games + combo_state_weight; combo_state_weight hot=400 warm=150 cold=0 insufficient=0; roi from historical combo pocket.",
+    "cluster": "cluster_score = 3*hot + 1*warm - 0.5*cold - 0.25*insufficient on spread or total alignment counts.",
+    "cold_warnings": "warning_score = 5*cold + 2*insufficient - 3*hot - 1*warm on spread alignment (higher = more caution).",
+    "pass_candidates": "Games with spread cluster_score <= 0 and (no best_pair_spread or best_pair_spread.roi < 0)."
+  },
+  "best_single_model_spread": [
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "spread",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 15.4646,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1003.4646,
+      "reason": "MarketBlend_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "spread",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 9.6,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 997.6,
+      "reason": "Momentum5Game_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "spread",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.0107,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 991.0107,
+      "reason": "InjuryModel_v2 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "spread",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.0107,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 991.0107,
+      "reason": "Joel_Baseline_v1 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "spread",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.0107,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 991.0107,
+      "reason": "MarketPressure_v2 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "spread",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.5732,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 990.5732,
+      "reason": "FatiguePlus_v3 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 6
+    }
+  ],
+  "best_single_model_total": [
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "total",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.6346,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 990.6346,
+      "reason": "FatiguePlus_v3 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "total",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.0796,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 990.0796,
+      "reason": "InjuryModel_v2 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "total",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.0796,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 990.0796,
+      "reason": "Joel_Baseline_v1 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "total",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.5597,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 989.5597,
+      "reason": "MarketPressure_v2 total pocket state=cold (bucket 1-2); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "total",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.4,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 989.4,
+      "reason": "Momentum5Game_v1 total pocket state=cold (bucket 1-2); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "total",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.0606,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 989.0606,
+      "reason": "MarketBlend_v1 total pocket state=cold (bucket 1-2); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 6
+    }
+  ],
+  "best_pair_spread": [
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.0589,
+      "win_rate": 0.486,
+      "graded_games": 677,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1442.0,
+      "reason": "Historical pair spread ROI=-0.0589 over 677 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    }
+  ],
+  "best_pair_total": [
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "FatiguePlus_v3|Joel_Baseline_v1",
+      "state_signature": "FatiguePlus_v3:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.1152,
+      "win_rate": 0.4602,
+      "graded_games": 654,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 810.0,
+      "reason": "Historical pair total ROI=-0.1152 over 654 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    }
+  ],
+  "best_triple_spread": [
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "Joel_Baseline_v1|MarketBlend_v1|MarketPressure_v2",
+      "state_signature": "Joel_Baseline_v1:cold|MarketBlend_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.2105,
+      "win_rate": 0.4062,
+      "graded_games": 576,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": -377.0,
+      "reason": "Historical triple spread ROI=-0.2105 over 576 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    }
+  ],
+  "best_triple_total": [
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.0979,
+      "win_rate": 0.4725,
+      "graded_games": 491,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 494.0,
+      "reason": "Historical triple total ROI=-0.0979 over 491 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    }
+  ],
+  "strongest_spread_cluster": [
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "spread_pick": "AWAY",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "cluster_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    }
+  ],
+  "strongest_total_cluster": [
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "total_pick": "UNDER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "cluster_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    }
+  ],
+  "cold_cluster_warnings": [
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "warning_score": 30.0,
+      "leaderboard_score": 30.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 1
+    }
+  ],
+  "pass_candidates": [
+    {
+      "game_id": "0022501116",
+      "matchup": "Los Angeles Lakers @ Oklahoma City Thunder",
+      "spread_pick": "AWAY",
+      "total_pick": "UNDER",
+      "spread_cluster_score": -3.0,
+      "best_pair_spread_roi": -0.0589,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2.9411,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 1
+    }
+  ]
+}
