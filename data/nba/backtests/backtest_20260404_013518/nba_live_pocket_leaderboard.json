@@ -1,0 +1,1631 @@
+{
+  "generated_at_utc": "2026-04-04T01:41:00.989530+00:00",
+  "league": "nba",
+  "source_backtest_dir": "backtest_20260404_013518",
+  "source_live_pocket_artifact": "nba_live_game_pocket_view.json",
+  "source_daily_view_path": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\nba\\daily\\daily_view_2026-04-04_v1.json",
+  "slate_date": "2026-04-04",
+  "game_count": 3,
+  "scoring": {
+    "single_model": "leaderboard_score = 1000 * state_rank + 10*spread_hot + 4*spread_warm - 2*spread_cold + min(abs_edge, 20); state_rank hot=3 warm=2 cold=1 insufficient=0. Uses per_model pocket state and game-level spread_pocket_alignment only (no per-game ROI).",
+    "combo": "leaderboard_score = 10000 * roi + 3 * graded_games + combo_state_weight; combo_state_weight hot=400 warm=150 cold=0 insufficient=0; roi from historical combo pocket.",
+    "cluster": "cluster_score = 3*hot + 1*warm - 0.5*cold - 0.25*insufficient on spread or total alignment counts.",
+    "cold_warnings": "warning_score = 5*cold + 2*insufficient - 3*hot - 1*warm on spread alignment (higher = more caution).",
+    "pass_candidates": "Games with spread cluster_score <= 0 and (no best_pair_spread or best_pair_spread.roi < 0)."
+  },
+  "best_single_model_spread": [
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "spread",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.9,
+      "pocket_state": "hot",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3027.9,
+      "reason": "Momentum5Game_v1 spread pocket state=hot (bucket 2-4); slate spread alignment H/W/C/I=2/2/2/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "spread",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.3163,
+      "pocket_state": "hot",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3024.3163,
+      "reason": "FatiguePlus_v3 spread pocket state=hot (bucket 0-1); slate spread alignment H/W/C/I=2/2/2/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "spread",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.1212,
+      "pocket_state": "warm",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2024.1212,
+      "reason": "Joel_Baseline_v1 spread pocket state=warm (bucket 0-1); slate spread alignment H/W/C/I=2/2/2/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "spread",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.1212,
+      "pocket_state": "warm",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2024.1212,
+      "reason": "MarketPressure_v2 spread pocket state=warm (bucket 0-1); slate spread alignment H/W/C/I=2/2/2/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "spread",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 10.6375,
+      "pocket_state": "warm",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2016.6375,
+      "reason": "InjuryModel_v2 spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "spread",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 8.6526,
+      "pocket_state": "warm",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2014.6526,
+      "reason": "Joel_Baseline_v1 spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 6
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "spread",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 8.6526,
+      "pocket_state": "warm",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2014.6526,
+      "reason": "MarketPressure_v2 spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 7
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "spread",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "4-6",
+      "abs_edge": 4.3107,
+      "pocket_state": "warm",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1998.3107,
+      "reason": "FatiguePlus_v3 spread pocket state=warm (bucket 4-6); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 8
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "spread",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.0618,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1027.0618,
+      "reason": "MarketBlend_v1 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=2/2/2/0.",
+      "rank": 9
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "spread",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.718,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1026.718,
+      "reason": "InjuryModel_v2 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=2/2/2/0.",
+      "rank": 10
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "spread",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 28.5872,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1026.0,
+      "reason": "MarketBlend_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 11
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "spread",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 13.6,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1019.6,
+      "reason": "Momentum5Game_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 12
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "spread",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "8+",
+      "abs_edge": 8.6526,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1014.6526,
+      "reason": "FatiguePlus_v3 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/3/3/0.",
+      "rank": 13
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "spread",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.1275,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 997.1275,
+      "reason": "MarketBlend_v1 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 14
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "spread",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.2107,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 996.2107,
+      "reason": "InjuryModel_v2 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 15
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "spread",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.2107,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 996.2107,
+      "reason": "Joel_Baseline_v1 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 16
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "spread",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.2107,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 996.2107,
+      "reason": "MarketPressure_v2 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 17
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "spread",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.3,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 994.3,
+      "reason": "Momentum5Game_v1 spread pocket state=cold (bucket 0-1); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 18
+    }
+  ],
+  "best_single_model_total": [
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "total",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.7,
+      "pocket_state": "hot",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3009.7,
+      "reason": "Momentum5Game_v1 total pocket state=hot (bucket 2-4); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "total",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 8.0559,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2014.0559,
+      "reason": "MarketPressure_v2 total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "total",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 11.4832,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1017.4832,
+      "reason": "InjuryModel_v2 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "total",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "8+",
+      "abs_edge": 11.2963,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1017.2963,
+      "reason": "FatiguePlus_v3 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "total",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 10.7413,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1016.7413,
+      "reason": "Joel_Baseline_v1 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "total",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.478,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1011.478,
+      "reason": "MarketBlend_v1 total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 6
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "total",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 11.2,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 999.2,
+      "reason": "Momentum5Game_v1 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 7
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "total",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 9.9267,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 997.9267,
+      "reason": "InjuryModel_v2 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 8
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "total",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "8+",
+      "abs_edge": 9.5396,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 997.5396,
+      "reason": "FatiguePlus_v3 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 9
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "total",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 9.3596,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 997.3596,
+      "reason": "Joel_Baseline_v1 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 10
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "total",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "6-8",
+      "abs_edge": 7.0197,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 995.0197,
+      "reason": "MarketPressure_v2 total pocket state=cold (bucket 6-8); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 11
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "total",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "4-6",
+      "abs_edge": 4.7734,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 992.7734,
+      "reason": "MarketBlend_v1 total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 12
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "total",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.4738,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 991.4738,
+      "reason": "InjuryModel_v2 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 13
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "total",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.4738,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 991.4738,
+      "reason": "Joel_Baseline_v1 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 14
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "total",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.6054,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 990.6054,
+      "reason": "MarketPressure_v2 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 15
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "total",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.7716,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 989.7716,
+      "reason": "MarketBlend_v1 total pocket state=cold (bucket 1-2); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 16
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "total",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.1938,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 989.1938,
+      "reason": "FatiguePlus_v3 total pocket state=cold (bucket 1-2); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 17
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "total",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.8,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 988.8,
+      "reason": "Momentum5Game_v1 total pocket state=cold (bucket 0-1); slate total alignment H/W/C/I=0/0/6/0.",
+      "rank": 18
+    }
+  ],
+  "best_pair_spread": [
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "FatiguePlus_v3|MarketBlend_v1",
+      "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.1868,
+      "win_rate": 0.4161,
+      "graded_games": 584,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": -116.0,
+      "reason": "Historical pair spread ROI=-0.1868 over 584 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "InjuryModel_v2|MarketBlend_v1",
+      "state_signature": "InjuryModel_v2:cold|MarketBlend_v1:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.2545,
+      "win_rate": 0.38,
+      "graded_games": 550,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": -895.0,
+      "reason": "Historical pair spread ROI=-0.2545 over 550 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "InjuryModel_v2|MarketBlend_v1",
+      "state_signature": "InjuryModel_v2:cold|MarketBlend_v1:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.2545,
+      "win_rate": 0.38,
+      "graded_games": 550,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": -895.0,
+      "reason": "Historical pair spread ROI=-0.2545 over 550 graded combo legs; pocket state=cold for signature match.",
+      "rank": 3
+    }
+  ],
+  "best_pair_total": [
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.0478,
+      "win_rate": 0.4959,
+      "graded_games": 734,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1724.0,
+      "reason": "Historical pair total ROI=-0.0478 over 734 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.0478,
+      "win_rate": 0.4959,
+      "graded_games": 734,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1724.0,
+      "reason": "Historical pair total ROI=-0.0478 over 734 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.0478,
+      "win_rate": 0.4959,
+      "graded_games": 734,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1724.0,
+      "reason": "Historical pair total ROI=-0.0478 over 734 graded combo legs; pocket state=cold for signature match.",
+      "rank": 3
+    }
+  ],
+  "best_triple_spread": [
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.0864,
+      "win_rate": 0.4706,
+      "graded_games": 527,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 717.0,
+      "reason": "Historical triple spread ROI=-0.0864 over 527 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "Joel_Baseline_v1|MarketBlend_v1|MarketPressure_v2",
+      "state_signature": "Joel_Baseline_v1:warm|MarketBlend_v1:cold|MarketPressure_v2:warm",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.1684,
+      "win_rate": 0.4242,
+      "graded_games": 231,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": -991.0,
+      "reason": "Historical triple spread ROI=-0.1684 over 231 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "FatiguePlus_v3|MarketBlend_v1|Momentum5Game_v1",
+      "state_signature": "FatiguePlus_v3:cold|MarketBlend_v1:cold|Momentum5Game_v1:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.3481,
+      "win_rate": 0.3295,
+      "graded_games": 352,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": -2425.0,
+      "reason": "Historical triple spread ROI=-0.3481 over 352 graded combo legs; pocket state=cold for signature match.",
+      "rank": 3
+    }
+  ],
+  "best_triple_total": [
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.1088,
+      "win_rate": 0.4636,
+      "graded_games": 645,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 847.0,
+      "reason": "Historical triple total ROI=-0.1088 over 645 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.1088,
+      "win_rate": 0.4636,
+      "graded_games": 645,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 847.0,
+      "reason": "Historical triple total ROI=-0.1088 over 645 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.1088,
+      "win_rate": 0.4636,
+      "graded_games": 645,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 847.0,
+      "reason": "Historical triple total ROI=-0.1088 over 645 graded combo legs; pocket state=cold for signature match.",
+      "rank": 3
+    }
+  ],
+  "strongest_spread_cluster": [
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "spread_pick": "AWAY",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "cluster_score": 7.0,
+      "leaderboard_score": 7.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "spread_pick": "AWAY",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "cluster_score": 1.5,
+      "leaderboard_score": 1.5,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "spread_pick": "AWAY",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "cluster_score": -1.5,
+      "leaderboard_score": -1.5,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 3
+    }
+  ],
+  "strongest_total_cluster": [
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "total_pick": "UNDER",
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "cluster_score": 2.0,
+      "leaderboard_score": 2.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "total_pick": "UNDER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "cluster_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "total_pick": "OVER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "cluster_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 3
+    }
+  ],
+  "cold_cluster_warnings": [
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "warning_score": 24.0,
+      "leaderboard_score": 24.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 1
+    },
+    {
+      "game_id": "0022501129",
+      "matchup": "Washington Wizards @ Miami Heat",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "warning_score": 12.0,
+      "leaderboard_score": 12.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 2
+    },
+    {
+      "game_id": "0022501130",
+      "matchup": "San Antonio Spurs @ Denver Nuggets",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 2,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "warning_score": 2.0,
+      "leaderboard_score": 2.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 3
+    }
+  ],
+  "pass_candidates": [
+    {
+      "game_id": "0022501131",
+      "matchup": "Detroit Pistons @ Philadelphia 76ers",
+      "spread_pick": "AWAY",
+      "total_pick": "OVER",
+      "spread_cluster_score": -1.5,
+      "best_pair_spread_roi": -0.2545,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1.2455,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 1
+    }
+  ]
+}
