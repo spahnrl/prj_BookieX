@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-04-10T02:35:18.245674+00:00",
+  "generated_at_utc": "2026-04-10T02:41:00.451036+00:00",
   "league": "nba",
-  "source_backtest_dir": "backtest_20260410_020520",
+  "source_backtest_dir": "backtest_20260410_023519",
   "source_live_pocket_artifact": "nba_live_game_pocket_view.json",
   "source_daily_view_path": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\nba\\daily\\daily_view_2026-04-10_v1.json",
   "slate_date": "2026-04-10",
-  "game_count": 3,
+  "game_count": 4,
   "scoring": {
     "single_model": "leaderboard_score = 1000 * state_rank + 10*spread_hot + 4*spread_warm - 2*spread_cold + min(abs_edge, 20); state_rank hot=3 warm=2 cold=1 insufficient=0. Uses per_model pocket state and game-level spread_pocket_alignment only (no per-game ROI).",
     "combo": "leaderboard_score = 10000 * roi + 3 * graded_games + combo_state_weight; combo_state_weight hot=400 warm=150 cold=0 insufficient=0; roi from historical combo pocket.",
@@ -14,6 +14,36 @@
     "pass_candidates": "Games with spread cluster_score <= 0 and (no best_pair_spread or best_pair_spread.roi < 0)."
   },
   "best_single_model_spread": [
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "spread",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.4162,
+      "pocket_state": "hot",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3005.4162,
+      "reason": "InjuryModel_v2 spread pocket state=hot (bucket 4-6); slate spread alignment H/W/C/I=1/0/5/0.",
+      "rank": 1
+    },
     {
       "game_id": "0022501180",
       "matchup": "Dallas Mavericks @ San Antonio Spurs",
@@ -42,7 +72,7 @@
       },
       "leaderboard_score": 2009.4232,
       "reason": "InjuryModel_v2 spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/2/4/0.",
-      "rank": 1
+      "rank": 2
     },
     {
       "game_id": "0022501181",
@@ -72,7 +102,7 @@
       },
       "leaderboard_score": 2008.7841,
       "reason": "InjuryModel_v2 spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/1/5/0.",
-      "rank": 2
+      "rank": 3
     },
     {
       "game_id": "0022501180",
@@ -102,7 +132,7 @@
       },
       "leaderboard_score": 2006.8,
       "reason": "Momentum5Game_v1 spread pocket state=warm (bucket 6-8); slate spread alignment H/W/C/I=0/2/4/0.",
-      "rank": 3
+      "rank": 4
     },
     {
       "game_id": "0022501180",
@@ -132,7 +162,157 @@
       },
       "leaderboard_score": 1020.0,
       "reason": "MarketBlend_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/2/4/0.",
-      "rank": 4
+      "rank": 5
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "spread",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 23.0931,
+      "pocket_state": "cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1020.0,
+      "reason": "MarketBlend_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=1/0/5/0.",
+      "rank": 6
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "spread",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 13.543,
+      "pocket_state": "cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1013.543,
+      "reason": "Joel_Baseline_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=1/0/5/0.",
+      "rank": 7
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "spread",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 13.543,
+      "pocket_state": "cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1013.543,
+      "reason": "MarketPressure_v2 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=1/0/5/0.",
+      "rank": 8
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "spread",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "8+",
+      "abs_edge": 11.443,
+      "pocket_state": "cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1011.443,
+      "reason": "FatiguePlus_v3 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=1/0/5/0.",
+      "rank": 9
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "spread",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 10.9,
+      "pocket_state": "cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1010.9,
+      "reason": "Momentum5Game_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=1/0/5/0.",
+      "rank": 10
     },
     {
       "game_id": "0022501180",
@@ -162,7 +342,7 @@
       },
       "leaderboard_score": 1009.4232,
       "reason": "FatiguePlus_v3 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/2/4/0.",
-      "rank": 5
+      "rank": 11
     },
     {
       "game_id": "0022501180",
@@ -192,7 +372,7 @@
       },
       "leaderboard_score": 1009.4232,
       "reason": "Joel_Baseline_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/2/4/0.",
-      "rank": 6
+      "rank": 12
     },
     {
       "game_id": "0022501180",
@@ -222,7 +402,7 @@
       },
       "leaderboard_score": 1009.4232,
       "reason": "MarketPressure_v2 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/2/4/0.",
-      "rank": 7
+      "rank": 13
     },
     {
       "game_id": "0022501181",
@@ -252,7 +432,7 @@
       },
       "leaderboard_score": 1000.0871,
       "reason": "MarketBlend_v1 spread pocket state=cold (bucket 6-8); slate spread alignment H/W/C/I=0/1/5/0.",
-      "rank": 8
+      "rank": 14
     },
     {
       "game_id": "0022501181",
@@ -282,7 +462,7 @@
       },
       "leaderboard_score": 999.8,
       "reason": "Momentum5Game_v1 spread pocket state=cold (bucket 4-6); slate spread alignment H/W/C/I=0/1/5/0.",
-      "rank": 9
+      "rank": 15
     },
     {
       "game_id": "0022501181",
@@ -312,7 +492,7 @@
       },
       "leaderboard_score": 997.7509,
       "reason": "Joel_Baseline_v1 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/1/5/0.",
-      "rank": 10
+      "rank": 16
     },
     {
       "game_id": "0022501181",
@@ -342,7 +522,7 @@
       },
       "leaderboard_score": 997.7509,
       "reason": "MarketPressure_v2 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/1/5/0.",
-      "rank": 11
+      "rank": 17
     },
     {
       "game_id": "0022501181",
@@ -372,7 +552,7 @@
       },
       "leaderboard_score": 997.3134,
       "reason": "FatiguePlus_v3 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/1/5/0.",
-      "rank": 12
+      "rank": 18
     },
     {
       "game_id": "0022501171",
@@ -402,7 +582,7 @@
       },
       "leaderboard_score": 992.3789,
       "reason": "MarketBlend_v1 spread pocket state=cold (bucket 4-6); slate spread alignment H/W/C/I=0/0/6/0.",
-      "rank": 13
+      "rank": 19
     },
     {
       "game_id": "0022501171",
@@ -432,7 +612,7 @@
       },
       "leaderboard_score": 991.1786,
       "reason": "InjuryModel_v2 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
-      "rank": 14
+      "rank": 20
     },
     {
       "game_id": "0022501171",
@@ -462,7 +642,7 @@
       },
       "leaderboard_score": 991.1786,
       "reason": "Joel_Baseline_v1 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
-      "rank": 15
+      "rank": 21
     },
     {
       "game_id": "0022501171",
@@ -492,7 +672,7 @@
       },
       "leaderboard_score": 991.1786,
       "reason": "MarketPressure_v2 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
-      "rank": 16
+      "rank": 22
     },
     {
       "game_id": "0022501171",
@@ -522,7 +702,7 @@
       },
       "leaderboard_score": 990.7411,
       "reason": "FatiguePlus_v3 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
-      "rank": 17
+      "rank": 23
     },
     {
       "game_id": "0022501171",
@@ -552,7 +732,7 @@
       },
       "leaderboard_score": 988.4,
       "reason": "Momentum5Game_v1 spread pocket state=cold (bucket 0-1); slate spread alignment H/W/C/I=0/0/6/0.",
-      "rank": 18
+      "rank": 24
     }
   ],
   "best_single_model_total": [
@@ -767,6 +947,36 @@
       "rank": 7
     },
     {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "total",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 8.0189,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2002.0189,
+      "reason": "MarketPressure_v2 total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 8
+    },
+    {
       "game_id": "0022501181",
       "matchup": "Memphis Grizzlies @ Utah Jazz",
       "market": "total",
@@ -794,7 +1004,7 @@
       },
       "leaderboard_score": 1999.8072,
       "reason": "Joel_Baseline_v1 total pocket state=warm (bucket 4-6); slate total alignment H/W/C/I=0/1/5/0.",
-      "rank": 8
+      "rank": 9
     },
     {
       "game_id": "0022501180",
@@ -824,7 +1034,7 @@
       },
       "leaderboard_score": 1028.0478,
       "reason": "MarketPressure_v2 total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=2/2/2/0.",
-      "rank": 9
+      "rank": 10
     },
     {
       "game_id": "0022501180",
@@ -854,7 +1064,7 @@
       },
       "leaderboard_score": 1026.7525,
       "reason": "MarketBlend_v1 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=2/2/2/0.",
-      "rank": 10
+      "rank": 11
     },
     {
       "game_id": "0022501171",
@@ -884,7 +1094,7 @@
       },
       "leaderboard_score": 1015.576,
       "reason": "FatiguePlus_v3 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=1/2/3/0.",
-      "rank": 11
+      "rank": 12
     },
     {
       "game_id": "0022501171",
@@ -914,7 +1124,7 @@
       },
       "leaderboard_score": 1015.0982,
       "reason": "MarketPressure_v2 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=1/2/3/0.",
-      "rank": 12
+      "rank": 13
     },
     {
       "game_id": "0022501171",
@@ -944,7 +1154,97 @@
       },
       "leaderboard_score": 1014.1068,
       "reason": "MarketBlend_v1 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=1/2/3/0.",
-      "rank": 13
+      "rank": 14
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "total",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 13.0138,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1007.0138,
+      "reason": "InjuryModel_v2 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 15
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "total",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "8+",
+      "abs_edge": 12.9719,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1006.9719,
+      "reason": "FatiguePlus_v3 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 16
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "total",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 10.6919,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1004.6919,
+      "reason": "Joel_Baseline_v1 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 17
     },
     {
       "game_id": "0022501181",
@@ -974,7 +1274,7 @@
       },
       "leaderboard_score": 1002.9596,
       "reason": "InjuryModel_v2 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/1/5/0.",
-      "rank": 14
+      "rank": 18
     },
     {
       "game_id": "0022501181",
@@ -1004,7 +1304,67 @@
       },
       "leaderboard_score": 1000.3622,
       "reason": "FatiguePlus_v3 total pocket state=cold (bucket 6-8); slate total alignment H/W/C/I=0/1/5/0.",
-      "rank": 15
+      "rank": 19
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "total",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.4528,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 999.4528,
+      "reason": "MarketBlend_v1 total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 20
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "total",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.0,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 999.0,
+      "reason": "Momentum5Game_v1 total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 21
     },
     {
       "game_id": "0022501181",
@@ -1034,7 +1394,7 @@
       },
       "leaderboard_score": 998.5,
       "reason": "Momentum5Game_v1 total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/1/5/0.",
-      "rank": 16
+      "rank": 22
     },
     {
       "game_id": "0022501181",
@@ -1064,7 +1424,7 @@
       },
       "leaderboard_score": 998.3554,
       "reason": "MarketPressure_v2 total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/1/5/0.",
-      "rank": 17
+      "rank": 23
     },
     {
       "game_id": "0022501181",
@@ -1094,7 +1454,7 @@
       },
       "leaderboard_score": 996.9617,
       "reason": "MarketBlend_v1 total pocket state=cold (bucket 2-4); slate total alignment H/W/C/I=0/1/5/0.",
-      "rank": 18
+      "rank": 24
     }
   ],
   "best_pair_spread": [
@@ -1107,9 +1467,9 @@
       "state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
       "spread_pick": "AWAY",
       "total_pick": null,
-      "roi": -0.0672,
-      "win_rate": 0.4806,
-      "graded_games": 722,
+      "roi": -0.0685,
+      "win_rate": 0.4799,
+      "graded_games": 723,
       "combo_state": "cold",
       "spread_pocket_alignment": {
         "hot": 0,
@@ -1123,9 +1483,38 @@
         "cold": 3,
         "insufficient": 0
       },
-      "leaderboard_score": 1494.0,
-      "reason": "Historical pair spread ROI=-0.0672 over 722 graded combo legs; pocket state=cold for signature match.",
+      "leaderboard_score": 1484.0,
+      "reason": "Historical pair spread ROI=-0.0685 over 723 graded combo legs; pocket state=cold for signature match.",
       "rank": 1
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": -0.0685,
+      "win_rate": 0.4799,
+      "graded_games": 723,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1484.0,
+      "reason": "Historical pair spread ROI=-0.0685 over 723 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
     },
     {
       "game_id": "0022501180",
@@ -1136,9 +1525,9 @@
       "state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
       "spread_pick": "AWAY",
       "total_pick": null,
-      "roi": -0.0672,
-      "win_rate": 0.4806,
-      "graded_games": 722,
+      "roi": -0.0685,
+      "win_rate": 0.4799,
+      "graded_games": 723,
       "combo_state": "cold",
       "spread_pocket_alignment": {
         "hot": 0,
@@ -1152,9 +1541,9 @@
         "cold": 2,
         "insufficient": 0
       },
-      "leaderboard_score": 1494.0,
-      "reason": "Historical pair spread ROI=-0.0672 over 722 graded combo legs; pocket state=cold for signature match.",
-      "rank": 2
+      "leaderboard_score": 1484.0,
+      "reason": "Historical pair spread ROI=-0.0685 over 723 graded combo legs; pocket state=cold for signature match.",
+      "rank": 3
     },
     {
       "game_id": "0022501181",
@@ -1165,9 +1554,9 @@
       "state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
       "spread_pick": "AWAY",
       "total_pick": null,
-      "roi": -0.0672,
-      "win_rate": 0.4806,
-      "graded_games": 722,
+      "roi": -0.0685,
+      "win_rate": 0.4799,
+      "graded_games": 723,
       "combo_state": "cold",
       "spread_pocket_alignment": {
         "hot": 0,
@@ -1181,12 +1570,41 @@
         "cold": 5,
         "insufficient": 0
       },
-      "leaderboard_score": 1494.0,
-      "reason": "Historical pair spread ROI=-0.0672 over 722 graded combo legs; pocket state=cold for signature match.",
-      "rank": 3
+      "leaderboard_score": 1484.0,
+      "reason": "Historical pair spread ROI=-0.0685 over 723 graded combo legs; pocket state=cold for signature match.",
+      "rank": 4
     }
   ],
   "best_pair_total": [
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.0527,
+      "win_rate": 0.4935,
+      "graded_games": 764,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1765.0,
+      "reason": "Historical pair total ROI=-0.0527 over 764 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
     {
       "game_id": "0022501171",
       "matchup": "Detroit Pistons @ Charlotte Hornets",
@@ -1214,7 +1632,7 @@
       },
       "leaderboard_score": 1707.0,
       "reason": "Historical pair total ROI=-0.048 over 729 graded combo legs; pocket state=cold for signature match.",
-      "rank": 1
+      "rank": 2
     },
     {
       "game_id": "0022501180",
@@ -1243,7 +1661,7 @@
       },
       "leaderboard_score": 1707.0,
       "reason": "Historical pair total ROI=-0.048 over 729 graded combo legs; pocket state=cold for signature match.",
-      "rank": 2
+      "rank": 3
     },
     {
       "game_id": "0022501181",
@@ -1272,7 +1690,7 @@
       },
       "leaderboard_score": 1707.0,
       "reason": "Historical pair total ROI=-0.048 over 729 graded combo legs; pocket state=cold for signature match.",
-      "rank": 3
+      "rank": 4
     }
   ],
   "best_triple_spread": [
@@ -1285,9 +1703,9 @@
       "state_signature": "Joel_Baseline_v1:cold|MarketBlend_v1:cold|MarketPressure_v2:cold",
       "spread_pick": "AWAY",
       "total_pick": null,
-      "roi": -0.204,
-      "win_rate": 0.4085,
-      "graded_games": 683,
+      "roi": -0.2052,
+      "win_rate": 0.4079,
+      "graded_games": 684,
       "combo_state": "cold",
       "spread_pocket_alignment": {
         "hot": 0,
@@ -1301,9 +1719,38 @@
         "cold": 3,
         "insufficient": 0
       },
-      "leaderboard_score": 9.0,
-      "reason": "Historical triple spread ROI=-0.204 over 683 graded combo legs; pocket state=cold for signature match.",
+      "leaderboard_score": 0.0,
+      "reason": "Historical triple spread ROI=-0.2052 over 684 graded combo legs; pocket state=cold for signature match.",
       "rank": 1
+    },
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "Joel_Baseline_v1|MarketBlend_v1|MarketPressure_v2",
+      "state_signature": "Joel_Baseline_v1:cold|MarketBlend_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "HOME",
+      "total_pick": null,
+      "roi": -0.2052,
+      "win_rate": 0.4079,
+      "graded_games": 684,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 0.0,
+      "reason": "Historical triple spread ROI=-0.2052 over 684 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
     },
     {
       "game_id": "0022501180",
@@ -1314,9 +1761,9 @@
       "state_signature": "Joel_Baseline_v1:cold|MarketBlend_v1:cold|MarketPressure_v2:cold",
       "spread_pick": "AWAY",
       "total_pick": null,
-      "roi": -0.204,
-      "win_rate": 0.4085,
-      "graded_games": 683,
+      "roi": -0.2052,
+      "win_rate": 0.4079,
+      "graded_games": 684,
       "combo_state": "cold",
       "spread_pocket_alignment": {
         "hot": 0,
@@ -1330,9 +1777,9 @@
         "cold": 2,
         "insufficient": 0
       },
-      "leaderboard_score": 9.0,
-      "reason": "Historical triple spread ROI=-0.204 over 683 graded combo legs; pocket state=cold for signature match.",
-      "rank": 2
+      "leaderboard_score": 0.0,
+      "reason": "Historical triple spread ROI=-0.2052 over 684 graded combo legs; pocket state=cold for signature match.",
+      "rank": 3
     },
     {
       "game_id": "0022501181",
@@ -1343,9 +1790,9 @@
       "state_signature": "Joel_Baseline_v1:cold|MarketBlend_v1:cold|MarketPressure_v2:cold",
       "spread_pick": "AWAY",
       "total_pick": null,
-      "roi": -0.204,
-      "win_rate": 0.4085,
-      "graded_games": 683,
+      "roi": -0.2052,
+      "win_rate": 0.4079,
+      "graded_games": 684,
       "combo_state": "cold",
       "spread_pocket_alignment": {
         "hot": 0,
@@ -1359,9 +1806,9 @@
         "cold": 5,
         "insufficient": 0
       },
-      "leaderboard_score": 9.0,
-      "reason": "Historical triple spread ROI=-0.204 over 683 graded combo legs; pocket state=cold for signature match.",
-      "rank": 3
+      "leaderboard_score": 0.0,
+      "reason": "Historical triple spread ROI=-0.2052 over 684 graded combo legs; pocket state=cold for signature match.",
+      "rank": 4
     }
   ],
   "best_triple_total": [
@@ -1424,6 +1871,35 @@
       "rank": 2
     },
     {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "FatiguePlus_v3|InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "FatiguePlus_v3:cold|InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "UNDER",
+      "roi": -0.1103,
+      "win_rate": 0.4629,
+      "graded_games": 674,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 919.0,
+      "reason": "Historical triple total ROI=-0.1103 over 674 graded combo legs; pocket state=cold for signature match.",
+      "rank": 3
+    },
+    {
       "game_id": "0022501171",
       "matchup": "Detroit Pistons @ Charlotte Hornets",
       "market": "total",
@@ -1450,10 +1926,25 @@
       },
       "leaderboard_score": 614.0,
       "reason": "Historical triple total ROI=-0.0976 over 530 graded combo legs; pocket state=cold for signature match.",
-      "rank": 3
+      "rank": 4
     }
   ],
   "strongest_spread_cluster": [
+    {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "spread_pick": "HOME",
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "cluster_score": 0.5,
+      "leaderboard_score": 0.5,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
     {
       "game_id": "0022501180",
       "matchup": "Dallas Mavericks @ San Antonio Spurs",
@@ -1467,7 +1958,7 @@
       "cluster_score": 0.0,
       "leaderboard_score": 0.0,
       "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
-      "rank": 1
+      "rank": 2
     },
     {
       "game_id": "0022501181",
@@ -1482,7 +1973,7 @@
       "cluster_score": -1.5,
       "leaderboard_score": -1.5,
       "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
-      "rank": 2
+      "rank": 3
     },
     {
       "game_id": "0022501171",
@@ -1497,7 +1988,7 @@
       "cluster_score": -3.0,
       "leaderboard_score": -3.0,
       "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
-      "rank": 3
+      "rank": 4
     }
   ],
   "strongest_total_cluster": [
@@ -1532,6 +2023,21 @@
       "rank": 2
     },
     {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "total_pick": "UNDER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "cluster_score": -1.5,
+      "leaderboard_score": -1.5,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 3
+    },
+    {
       "game_id": "0022501181",
       "matchup": "Memphis Grizzlies @ Utah Jazz",
       "total_pick": "UNDER",
@@ -1544,7 +2050,7 @@
       "cluster_score": -1.5,
       "leaderboard_score": -1.5,
       "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
-      "rank": 3
+      "rank": 4
     }
   ],
   "cold_cluster_warnings": [
@@ -1589,6 +2095,26 @@
       "rank": 2
     },
     {
+      "game_id": "0022501177",
+      "matchup": "Orlando Magic @ Chicago Bulls",
+      "spread_pocket_alignment": {
+        "hot": 1,
+        "warm": 0,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "warning_score": 22.0,
+      "leaderboard_score": 22.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 3
+    },
+    {
       "game_id": "0022501180",
       "matchup": "Dallas Mavericks @ San Antonio Spurs",
       "spread_pocket_alignment": {
@@ -1606,7 +2132,7 @@
       "warning_score": 18.0,
       "leaderboard_score": 18.0,
       "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
-      "rank": 3
+      "rank": 4
     }
   ],
   "pass_candidates": [
@@ -1616,14 +2142,14 @@
       "spread_pick": "AWAY",
       "total_pick": "OVER",
       "spread_cluster_score": -3.0,
-      "best_pair_spread_roi": -0.0672,
+      "best_pair_spread_roi": -0.0685,
       "spread_pocket_alignment": {
         "hot": 0,
         "warm": 0,
         "cold": 6,
         "insufficient": 0
       },
-      "leaderboard_score": 2.9328,
+      "leaderboard_score": 2.9315,
       "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
       "rank": 1
     },
@@ -1633,14 +2159,14 @@
       "spread_pick": "AWAY",
       "total_pick": "UNDER",
       "spread_cluster_score": -1.5,
-      "best_pair_spread_roi": -0.0672,
+      "best_pair_spread_roi": -0.0685,
       "spread_pocket_alignment": {
         "hot": 0,
         "warm": 1,
         "cold": 5,
         "insufficient": 0
       },
-      "leaderboard_score": 1.4328,
+      "leaderboard_score": 1.4315,
       "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
       "rank": 2
     },
@@ -1650,14 +2176,14 @@
       "spread_pick": "AWAY",
       "total_pick": "UNDER",
       "spread_cluster_score": 0.0,
-      "best_pair_spread_roi": -0.0672,
+      "best_pair_spread_roi": -0.0685,
       "spread_pocket_alignment": {
         "hot": 0,
         "warm": 2,
         "cold": 4,
         "insufficient": 0
       },
-      "leaderboard_score": -0.0672,
+      "leaderboard_score": -0.0685,
       "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
       "rank": 3
     }
