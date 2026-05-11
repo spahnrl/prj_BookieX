@@ -1,0 +1,1122 @@
+{
+  "generated_at_utc": "2026-05-11T02:40:59.020467+00:00",
+  "league": "nba",
+  "source_backtest_dir": "backtest_20260511_023523",
+  "source_live_pocket_artifact": "nba_live_game_pocket_view.json",
+  "source_daily_view_path": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\nba\\daily\\daily_view_2026-05-11_v1.json",
+  "slate_date": "2026-05-11",
+  "game_count": 2,
+  "scoring": {
+    "single_model": "leaderboard_score = 1000 * state_rank + 10*spread_hot + 4*spread_warm - 2*spread_cold + min(abs_edge, 20); state_rank hot=3 warm=2 cold=1 insufficient=0. Uses per_model pocket state and game-level spread_pocket_alignment only (no per-game ROI).",
+    "combo": "leaderboard_score = 10000 * roi + 3 * graded_games + combo_state_weight; combo_state_weight hot=400 warm=150 cold=0 insufficient=0; roi from historical combo pocket.",
+    "cluster": "cluster_score = 3*hot + 1*warm - 0.5*cold - 0.25*insufficient on spread or total alignment counts.",
+    "cold_warnings": "warning_score = 5*cold + 2*insufficient - 3*hot - 1*warm on spread alignment (higher = more caution).",
+    "pass_candidates": "Games with spread cluster_score <= 0 and (no best_pair_spread or best_pair_spread.roi < 0)."
+  },
+  "best_single_model_spread": [
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "spread",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.2,
+      "pocket_state": "warm",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1996.2,
+      "reason": "Momentum5Game_v1 spread pocket state=warm (bucket 2-4); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "spread",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 17.7782,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1011.7782,
+      "reason": "MarketBlend_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "spread",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "6-8",
+      "abs_edge": 6.3172,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1000.3172,
+      "reason": "FatiguePlus_v3 spread pocket state=cold (bucket 6-8); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "spread",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "6-8",
+      "abs_edge": 6.3172,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1000.3172,
+      "reason": "InjuryModel_v2 spread pocket state=cold (bucket 6-8); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "spread",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "6-8",
+      "abs_edge": 6.3172,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1000.3172,
+      "reason": "Joel_Baseline_v1 spread pocket state=cold (bucket 6-8); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "spread",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "6-8",
+      "abs_edge": 6.3172,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1000.3172,
+      "reason": "MarketPressure_v2 spread pocket state=cold (bucket 6-8); slate spread alignment H/W/C/I=0/1/5/0.",
+      "rank": 6
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "spread",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 8.7,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 996.7,
+      "reason": "Momentum5Game_v1 spread pocket state=cold (bucket 8+); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 7
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "spread",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.3531,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 993.3531,
+      "reason": "MarketBlend_v1 spread pocket state=cold (bucket 4-6); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 8
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "spread",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.2292,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 991.2292,
+      "reason": "FatiguePlus_v3 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 9
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "spread",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.2292,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 991.2292,
+      "reason": "InjuryModel_v2 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 10
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "spread",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.2292,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 991.2292,
+      "reason": "Joel_Baseline_v1 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 11
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "spread",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.2292,
+      "pocket_state": "cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 991.2292,
+      "reason": "MarketPressure_v2 spread pocket state=cold (bucket 2-4); slate spread alignment H/W/C/I=0/0/6/0.",
+      "rank": 12
+    }
+  ],
+  "best_single_model_total": [
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "total",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.8,
+      "pocket_state": "hot",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3008.8,
+      "reason": "Momentum5Game_v1 total pocket state=hot (bucket 2-4); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "total",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 8.2875,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2014.2875,
+      "reason": "MarketBlend_v1 total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "total",
+      "model": "MarketBlend_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 8.992,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2002.992,
+      "reason": "MarketBlend_v1 total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "total",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 16.25,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1022.25,
+      "reason": "InjuryModel_v2 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "total",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 16.25,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1022.25,
+      "reason": "Joel_Baseline_v1 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "total",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "8+",
+      "abs_edge": 15.77,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1021.77,
+      "reason": "FatiguePlus_v3 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 6
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "total",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 12.1875,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1018.1875,
+      "reason": "MarketPressure_v2 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=1/1/4/0.",
+      "rank": 7
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "total",
+      "model": "InjuryModel_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 17.6313,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1011.6313,
+      "reason": "InjuryModel_v2 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 8
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "total",
+      "model": "Joel_Baseline_v1",
+      "edge_bucket": "8+",
+      "abs_edge": 17.6313,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1011.6313,
+      "reason": "Joel_Baseline_v1 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 9
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "total",
+      "model": "FatiguePlus_v3",
+      "edge_bucket": "8+",
+      "abs_edge": 17.1513,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1011.1513,
+      "reason": "FatiguePlus_v3 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 10
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "total",
+      "model": "MarketPressure_v2",
+      "edge_bucket": "8+",
+      "abs_edge": 13.2235,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1007.2235,
+      "reason": "MarketPressure_v2 total pocket state=cold (bucket 8+); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 11
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "total",
+      "model": "Momentum5Game_v1",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.2,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 995.2,
+      "reason": "Momentum5Game_v1 total pocket state=cold (bucket 1-2); slate total alignment H/W/C/I=0/1/5/0.",
+      "rank": 12
+    }
+  ],
+  "best_pair_spread": [
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.0846,
+      "win_rate": 0.4722,
+      "graded_games": 792,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1530.0,
+      "reason": "Historical pair spread ROI=-0.0846 over 792 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.0846,
+      "win_rate": 0.4722,
+      "graded_games": 792,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1530.0,
+      "reason": "Historical pair spread ROI=-0.0846 over 792 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_pair_total": [
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.0665,
+      "win_rate": 0.4853,
+      "graded_games": 849,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1882.0,
+      "reason": "Historical pair total ROI=-0.0665 over 849 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.0665,
+      "win_rate": 0.4853,
+      "graded_games": 849,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1882.0,
+      "reason": "Historical pair total ROI=-0.0665 over 849 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_triple_spread": [
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.0994,
+      "win_rate": 0.4649,
+      "graded_games": 770,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1316.0,
+      "reason": "Historical triple spread ROI=-0.0994 over 770 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": "AWAY",
+      "total_pick": null,
+      "roi": -0.0994,
+      "win_rate": 0.4649,
+      "graded_games": 770,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1316.0,
+      "reason": "Historical triple spread ROI=-0.0994 over 770 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "best_triple_total": [
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.0669,
+      "win_rate": 0.4855,
+      "graded_games": 791,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1704.0,
+      "reason": "Historical triple total ROI=-0.0669 over 791 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "InjuryModel_v2|Joel_Baseline_v1|MarketPressure_v2",
+      "state_signature": "InjuryModel_v2:cold|Joel_Baseline_v1:cold|MarketPressure_v2:cold",
+      "spread_pick": null,
+      "total_pick": "OVER",
+      "roi": -0.0669,
+      "win_rate": 0.4855,
+      "graded_games": 791,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1704.0,
+      "reason": "Historical triple total ROI=-0.0669 over 791 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    }
+  ],
+  "strongest_spread_cluster": [
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "spread_pick": "AWAY",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "cluster_score": -1.5,
+      "leaderboard_score": -1.5,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "spread_pick": "AWAY",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "cluster_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    }
+  ],
+  "strongest_total_cluster": [
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "total_pick": "OVER",
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "cluster_score": 2.0,
+      "leaderboard_score": 2.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "total_pick": "OVER",
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "cluster_score": -1.5,
+      "leaderboard_score": -1.5,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    }
+  ],
+  "cold_cluster_warnings": [
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 1,
+        "cold": 4,
+        "insufficient": 0
+      },
+      "warning_score": 30.0,
+      "leaderboard_score": 30.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 1
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "warning_score": 24.0,
+      "leaderboard_score": 24.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 2
+    }
+  ],
+  "pass_candidates": [
+    {
+      "game_id": "0042500204",
+      "matchup": "Detroit Pistons @ Cleveland Cavaliers",
+      "spread_pick": "AWAY",
+      "total_pick": "OVER",
+      "spread_cluster_score": -3.0,
+      "best_pair_spread_roi": -0.0846,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 6,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2.9154,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 1
+    },
+    {
+      "game_id": "0042500235",
+      "matchup": "Minnesota Timberwolves @ San Antonio Spurs",
+      "spread_pick": "AWAY",
+      "total_pick": "OVER",
+      "spread_cluster_score": -1.5,
+      "best_pair_spread_roi": -0.0846,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 5,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1.4154,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 2
+    }
+  ]
+}
