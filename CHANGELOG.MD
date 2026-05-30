@@ -3,6 +3,91 @@
 
 ---
 
+## 2026-05-30 — BookieX Repair, NBA Daily Backfill, Season Recap, and Pocket Robustness Trust Layer
+
+**Session Date:** 2026-05-30
+**Status:** ✅ Repaired + Enhanced (NBA trust layer live; NCAAM dashboard pending)
+**Focus:** Production repair after 2026-05-17 outage, NBA daily backfill, season recap + pocket robustness analysis, and a dashboard robustness trust layer.
+
+### A. Production repair
+
+- BookieX stopped updating after 2026-05-17.
+- Root cause was a corrupted JSON file: `data/nba/backtests/backtest_20260517_100524/backtest_games.json`.
+- The file failed JSON validation with: `Expecting property name enclosed in double quotes: line 280298 column 9`.
+- The corrupted file was quarantined/renamed.
+- Running `000_AUTO_BOOKIEX.py` afterward succeeded.
+- New successful backtests were generated.
+- Streamlit dashboard began working again.
+
+### B. NBA daily-view backfill
+
+- Dashboard had a date gap from 2026-05-18 through 2026-05-28.
+- Created: `tools/backfill_nba_daily_views.py`.
+- Backfilled: `data/nba/daily/daily_view_2026-05-18_v1.json` through `data/nba/daily/daily_view_2026-05-28_v1.json`.
+- 2026-05-27 had 0 games.
+- The May 2026 NBA daily dropdown became continuous.
+- Backfill was committed in: `b73617c0 Backfill NBA daily views for May 2026 gap`.
+
+### C. NBA season recap analysis
+
+- Created: `tools/analysis/__init__.py`, `tools/analysis/analyze_nba_season_recap.py`.
+- Purpose: analyze full NBA season model performance — regular vs play-in vs playoffs, pocket performance, execution overlay, model comparison, edge buckets, confidence calibration, and daily timeline.
+- Key finding: overall models were negative ROI; "best" model meant least negative.
+- Important interpretation: `Joel_Baseline_v1` did not improve in playoffs; `Momentum5Game_v1` totals looked more promising.
+- Committed in: `b94f2be5 Add NBA season recap analysis tool`.
+
+### D. Pocket robustness analysis
+
+- Created: `tools/analysis/analyze_nba_pocket_robustness.py`.
+- Purpose: test whether positive-ROI pockets were stable or just season-long/backtest artifacts.
+- Added `--emit-latest` to write: `data/nba/view/nba_pocket_robustness_latest.json`.
+- Key finding: many season-positive pockets failed second-half/out-of-sample checks. A trust layer was needed because hot/warm/cold was not sufficient.
+- Trust labels:
+  - **KEEP** = serious candidate
+  - **WATCH** = monitor / mixed evidence
+  - **FADE** = looked good historically but weakened recently or failed holdout/postseason
+  - **KILL** = ignore/remove from decision-making
+- Robustness layer should override historical pocket state when they conflict.
+- Committed in: `68247a2d Add NBA pocket robustness trust layer`.
+
+### E. Ranked pocket opportunity key fix
+
+- Added `edge_bucket` to single-model ranked opportunity rows.
+- Files: `eng/execution/build_nba_model_pockets.py`, `eng/execution/build_ncaam_model_pockets.py`.
+- Reason: robustness join needs the exact key `model + market_type + edge_bucket`.
+- Combo rows received `edge_bucket = None` for schema consistency.
+- No scoring/ranking/model logic changed.
+
+### F. NBA dashboard trust display
+
+- Updated: `eng/ui/bookiex_dashboard.py`.
+- Added NBA-only robustness loader: `_load_nba_pocket_robustness()`.
+- Dashboard now reads: `data/nba/view/nba_pocket_robustness_latest.json`.
+- Added columns: Trust Rating, Trust Score, 2nd-Half ROI, Recent ROI, Postseason ROI, Robustness Warning, Recommendation.
+- Added default hide for FADE/KILL with checkbox: **Show FADE / KILL pockets**.
+- Added field guide expander: **How to read Pocket ROI View**.
+- Field guide explains historical state vs trust layer.
+- NCAAM dashboard was not updated yet.
+
+### G. Automation/push integration
+
+- Updated: `000_AUTO_BOOKIEX.py`, `tools/push_daily.py`.
+- `000_AUTO_BOOKIEX.py` now runs NBA pocket robustness as a soft/non-blocking step after NBA pocket artifacts.
+- `tools/push_daily.py` now stages: `data/nba/view/nba_pocket_robustness_latest.json`.
+- Failure behavior: warn-and-continue, because the dashboard degrades gracefully if the robustness artifact is missing.
+
+### H. Current repo caution
+
+- The repo still has many unrelated modified/deleted/untracked files.
+- Do **not** use `git add .`.
+- Use targeted `git add` only.
+- Important pushed commits:
+  - `b73617c0 Backfill NBA daily views for May 2026 gap`
+  - `68247a2d Add NBA pocket robustness trust layer`
+  - `b94f2be5 Add NBA season recap analysis tool`
+
+---
+
 **Session Date:** 2026-01-16
 **Status:** ✅ Stable Stop Point
 **Focus:** NBA data ingestion pipeline (schedule → rest → OT → fatigue)
@@ -7674,3 +7759,20 @@ ___
 ## 2026-03-28 — NCAAM Pocket ROI: documentation checkpoint (pre-push)
 
 **Documentation only:** Added **`bookiex_ncaam_pocket_roi_handoff.md`** and expanded the NCAAM changelog entry above with artifact list, dashboard bullets, validation, NBA parity note, and handoff pointer. **No feature or logic changes** in this checkpoint step.
+
+---
+## 2026-03-28 — Pocket ROI post-push: NBA + NCAAM on `main`, UI polish, automation before push
+
+**Title:** Pocket ROI shipped on **`main`** (GitHub); Streamlit online is expected to match the pushed app once deploy completes.
+
+**NBA Pocket ROI:** Complete on `main` — builders, artifacts under latest `data/nba/backtests/backtest_*/`, dashboard **Pocket ROI View** (`_render_nba_pocket_roi_view`), staging via `tools/push_daily.py`. **MonkeyDarts_v2** remains excluded in `build_nba_model_pockets.py`.
+
+**NCAAM Pocket ROI:** Complete on `main` — parity lens with NBA (`_render_ncaam_pocket_roi_view`), artifacts under latest `data/ncaam/backtests/backtest_*/`, NCAAM runners include `build_ncaam_model_pockets.py`, same push staging family as NBA.
+
+**Dashboard:** **Standard Slate View** and **Pocket ROI View** radio for **both** leagues. Pocket boards include **Recommended Bet** (plain-English wager from pocket row + daily join), **full-row ROI background tint** on ranked + best-pocket-per-game tables (green / red / neutral), diagnostic / validation tables keep **ROI column text color** only. **Best 2-leg parlay (v1)** shows the same bet strings; spread-only parlay rules unchanged.
+
+**Automation:** **`000_AUTO_BOOKIEX.py`** — after **`000_RUN_ALL_NBA_NCAAM.py --mode LIVE`**, runs **`eng/execution/build_nba_model_pockets.py`** and **`eng/execution/build_ncaam_model_pockets.py`** before **`tools/push_daily.py`** so pocket JSON is refreshed for the newest `backtest_*` folder before staging and push.
+
+**Validation / online:** Push succeeded per operator; confirm hosted Streamlit shows Pocket ROI View for both leagues after deploy. **`python -m py_compile`** used during development on touched modules; no change to authority or pocket ranking formulas in this phase.
+
+**Documentation:** Aggregated post-push state in **`CHECKPOINT_20260328_pocket_roi_postpush.md`**. Layer-specific detail remains in **`bookiex_nba_pocket_roi_handoff.md`** and **`bookiex_ncaam_pocket_roi_handoff.md`**.
