@@ -1659,6 +1659,43 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
             return "—"
         return (s[:56] + "…") if len(s) > 56 else s
 
+    with st.expander("How to read Pocket ROI View", expanded=False):
+        st.markdown(
+            "**Two layers, one decision.** The historical layer (**Pocket State / State Signature**) is the "
+            "season-long hot / warm / cold context for a pocket. The decision layer (**Trust Rating**) comes from "
+            "the robustness analysis, which stress-tests each pocket against a recent window, an out-of-sample "
+            "second-half hold-out, and the postseason.\n\n"
+            "**When they disagree, trust the Trust Rating, not the season-long state** — a pocket can look hot "
+            "all season yet still be a backtest artifact that fails out-of-sample.\n\n"
+            "- **KEEP** — serious candidate; held up out-of-sample and in the postseason.\n"
+            "- **WATCH** — monitor; mixed evidence, not confirmed out-of-sample.\n"
+            "- **FADE** — looked good historically but weakened recently or failed the hold-out / postseason checks.\n"
+            "- **KILL** — ignore / remove from decision-making (negative full-season or failed the hold-out).\n\n"
+            "FADE and KILL rows are hidden by default — use **Show FADE / KILL pockets** to reveal them. "
+            "Single-model rows join the robustness table exactly on (model, market, edge bucket); a rating tagged "
+            "**(approx)** fell back to a conservative (model, market) match."
+        )
+        st.markdown(
+            "| Column | Meaning |\n"
+            "|---|---|\n"
+            "| Recommended Bet | The actual side/line to consider for this game (joined to the daily slate). |\n"
+            "| Pocket Type | Pocket shape: `single_model`, or a combo (`pair_spread`, `triple_total`, …). |\n"
+            "| Pocket Models | Model (single) or the models in the combo (`models_key`). |\n"
+            "| State Signature | Historical per-model hot/warm/cold context for the combo (season-long). |\n"
+            "| ROI | Historical season-long return per 1u at -110 (WIN +0.909u, LOSS -1u, PUSH 0u). |\n"
+            "| Win Rate | Historical wins ÷ graded (pushes in the denominator). |\n"
+            "| Graded Games | Historical sample size behind ROI / Win Rate. |\n"
+            "| Trust Rating | **Decision layer**: KEEP / WATCH / FADE / KILL from robustness analysis. |\n"
+            "| Trust Score | 0–100 composite of out-of-sample, postseason, recent, and sample strength. |\n"
+            "| 2nd-Half ROI | ROI on the out-of-sample second half of the season (hold-out test). |\n"
+            "| Recent ROI | ROI over the most recent window of graded legs (decay check; singles only). |\n"
+            "| Postseason ROI | ROI in play-in + playoffs games. |\n"
+            "| Robustness Warning | Decay / instability flags (e.g. first-half-hot then second-half-negative). |\n"
+            "| Recommendation | Plain-language action implied by the Trust Rating. |\n"
+            "| Parlay Eligible | Whether the row qualifies for the spread-only 2-leg parlay builder. |\n"
+        )
+        st.caption("Explanatory only — does not change ROI, ranking, filters, or any artifact.")
+
     st.markdown("## Ranked Pocket Opportunities")
     st.caption(
         "One row per pocket candidate; table is aligned to **Select Date** when pocket data allows "
