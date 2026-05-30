@@ -516,6 +516,162 @@ def _load_nba_pocket_leaderboard_validation() -> dict | None:
 _nba_pocket_validation_doc = _load_nba_pocket_leaderboard_validation() if league == "NBA" else None
 
 
+_ROBUSTNESS_RECOMMENDATION = {
+    "KEEP": "Trust — held up out-of-sample and in the postseason.",
+    "WATCH": "Monitor — mixed signal; not confirmed out-of-sample.",
+    "FADE": "Fade — decayed recently or failed the postseason.",
+    "KILL": "Remove — negative full-season or failed the hold-out.",
+}
+
+
+def _normalize_robustness_ctx(ctx: dict, analysis_dir_name: str) -> dict | None:
+    """Flatten the timestamped tables.json (full ctx schema) into the stable join shape."""
+    if not isinstance(ctx, dict):
+        return None
+
+    def _roi(row: dict, scope: str):
+        sc = (row.get("scopes") or {}).get(scope)
+        return sc.get("roi") if isinstance(sc, dict) else None
+
+    def _project(row: dict, keys: list[str]) -> dict:
+        out = {k: row.get(k) for k in keys}
+        out.update({
+            "rating": row.get("rating"),
+            "trust_score": row.get("trust_score"),
+            "full_roi": _roi(row, "full"),
+            "second_half_roi": _roi(row, "second_half"),
+            "recent_roi": _roi(row, "recent"),
+            "postseason_roi": _roi(row, "postseason"),
+            "flags": row.get("flags") or [],
+            "recommendation": _ROBUSTNESS_RECOMMENDATION.get(row.get("rating"), ""),
+        })
+        return out
+
+    singles = [_project(r, ["model", "market_type", "edge_bucket"]) for r in (ctx.get("single_rows") or [])]
+    combos = [_project(r, ["market_type", "combo_kind", "models_key", "state_signature"])
+              for r in (ctx.get("combo_rows") or [])]
+    if not singles and not combos:
+        return None
+    return {
+        "source": "analysis_fallback",
+        "source_backtest_dir": ctx.get("backtest_dir"),
+        "generated_at_utc": ctx.get("generated_at_utc"),
+        "analysis_dir_name": analysis_dir_name,
+        "singles": singles,
+        "combos": combos,
+    }
+
+
+def _load_nba_pocket_robustness() -> dict | None:
+    """Read-only NBA pocket robustness trust artifact.
+
+    Prefers the stable file data/nba/view/nba_pocket_robustness_latest.json (emitted by
+    tools/analysis/analyze_nba_pocket_robustness.py --emit-latest); falls back to the newest
+    data/nba/analysis/pocket_robustness_*/pocket_robustness_tables.json. Returns a normalized
+    dict {source, source_backtest_dir, generated_at_utc, singles, combos} or None if unavailable.
+    """
+    try:
+        stable = PROJECT_ROOT / "data" / "nba" / "view" / "nba_pocket_robustness_latest.json"
+        if stable.exists():
+            with open(stable, "r", encoding="utf-8") as f:
+                doc = json.load(f)
+            if isinstance(doc, dict) and (doc.get("singles") or doc.get("combos")):
+                return {
+                    "source": "stable",
+                    "source_backtest_dir": doc.get("source_backtest_dir"),
+                    "generated_at_utc": doc.get("generated_at_utc"),
+                    "singles": doc.get("singles") or [],
+                    "combos": doc.get("combos") or [],
+                }
+        analysis_root = PROJECT_ROOT / "data" / "nba" / "analysis"
+        if analysis_root.exists():
+            cands = [
+                d for d in analysis_root.iterdir()
+                if d.is_dir() and d.name.startswith("pocket_robustness_")
+                and (d / "pocket_robustness_tables.json").exists()
+            ]
+            if cands:
+                latest = max(cands, key=lambda d: d.stat().st_mtime)
+                with open(latest / "pocket_robustness_tables.json", "r", encoding="utf-8") as f:
+                    ctx = json.load(f)
+                return _normalize_robustness_ctx(ctx, latest.name)
+        return None
+    except Exception:
+        return None
+
+
+def _robustness_lookups(doc: dict | None) -> dict:
+    """Build join dicts: exact singles (model, market, bucket), combos (market, kind, models_key, sig),
+    plus a conservative (model, market) fallback that keeps the lowest-trust row for that pair."""
+    out: dict[str, dict] = {"singles": {}, "combos": {}, "singles_by_model_market": {}}
+    if not isinstance(doc, dict):
+        return out
+    for r in doc.get("singles") or []:
+        m = str(r.get("model") or "").strip()
+        mt = str(r.get("market_type") or "").strip().lower()
+        b = str(r.get("edge_bucket") or "").strip()
+        if not (m and mt and b):
+            continue
+        out["singles"][(m, mt, b)] = r
+        mm = (m, mt)
+        prev = out["singles_by_model_market"].get(mm)
+        if prev is None or (r.get("trust_score") or 0) < (prev.get("trust_score") or 0):
+            out["singles_by_model_market"][mm] = r
+    for r in doc.get("combos") or []:
+        mt = str(r.get("market_type") or "").strip().lower()
+        ck = str(r.get("combo_kind") or "").strip().lower()
+        mk = str(r.get("models_key") or "").strip()
+        sig = str(r.get("state_signature") or "").strip()
+        if mt and ck and mk:
+            out["combos"][(mt, ck, mk, sig)] = r
+    return out
+
+
+_nba_robustness_doc = _load_nba_pocket_robustness() if league == "NBA" else None
+_nba_robustness_lk = _robustness_lookups(_nba_robustness_doc)
+
+
+def _rpo_combo_kind(pocket_type) -> str | None:
+    pt = str(pocket_type or "").strip().lower()
+    if pt.startswith("pair_"):
+        return "pair"
+    if pt.startswith("triple_"):
+        return "triple"
+    return None
+
+
+def _robustness_for_row(r: dict, lk: dict) -> tuple[dict | None, bool]:
+    """Match a ranked-opportunity row to a robustness row.
+
+    Returns (robustness_row_or_None, is_approx). Single-model rows join exactly on
+    (model, market_type, edge_bucket); if edge_bucket is absent (older artifacts) they fall
+    back to the conservative (model, market_type) row (is_approx=True). Combos join on
+    (market_type, combo_kind, models_key, state_signature).
+    """
+    pt = str(r.get("pocket_type") or "").strip().lower()
+    mt = str(r.get("market_type") or "").strip().lower()
+    if pt == "single_model":
+        m = str(r.get("model_name") or r.get("model") or "").strip()
+        b = str(r.get("edge_bucket") or "").strip()
+        if m and mt and b:
+            hit = lk["singles"].get((m, mt, b))
+            if hit is not None:
+                return hit, False
+        if m and mt:
+            hit = lk["singles_by_model_market"].get((m, mt))
+            if hit is not None:
+                return hit, True
+        return None, False
+    ck = _rpo_combo_kind(pt)
+    if ck:
+        mk = str(r.get("models_key") or "").strip()
+        sig = str(r.get("state_signature") or "").strip()
+        hit = lk["combos"].get((mt, ck, mk, sig))
+        if hit is not None:
+            return hit, False
+    return None, False
+
+
 def _load_ncaam_pocket_artifacts() -> tuple[dict | None, dict | None, dict | None, dict | None, str | None]:
     """
     Load NCAAM pocket JSONs from the latest backtest directory (same mtime rule as overlay).
@@ -1510,6 +1666,35 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
         "else **fallback** to the latest leaderboard (see warning). "
         "Global sort: ROI → graded games → win rate. **Rank** is the global rank in the resolved board. Read-only."
     )
+
+    _has_robustness = bool(_nba_robustness_lk["singles"] or _nba_robustness_lk["combos"])
+    if _nba_robustness_doc is not None and _has_robustness:
+        _rb_bt = str((_nba_robustness_doc or {}).get("source_backtest_dir") or "").strip()
+        _cur_bt = str(
+            (_rpo_resolved or {}).get("source_backtest_dir")
+            or (_nba_pockets_doc or {}).get("source_backtest_dir")
+            or ""
+        ).strip()
+        _rb_src = (_nba_robustness_doc or {}).get("source")
+        if _rb_bt and _cur_bt and _rb_bt != _cur_bt:
+            st.warning(
+                f"**Pocket trust ratings may be stale:** robustness was computed on backtest "
+                f"`{_rb_bt}`, but the displayed pockets are from `{_cur_bt}`. "
+                f"Re-run `python tools/analysis/analyze_nba_pocket_robustness.py --emit-latest` to refresh."
+            )
+        else:
+            st.caption(
+                f"Trust layer joined from robustness artifact "
+                f"({'stable latest' if _rb_src == 'stable' else 'analysis fallback'}; backtest `{_rb_bt or '?'}`). "
+                f"**Trust Rating** is the decision layer; season-long state remains as historical context."
+            )
+    else:
+        st.caption(
+            "Robustness trust layer not loaded — run "
+            "`python tools/analysis/analyze_nba_pocket_robustness.py --emit-latest` to add "
+            "KEEP/WATCH/FADE/KILL trust columns. Showing season-long pocket view only."
+        )
+
     _pocket_filter_label = "All Pockets"
     if not _opp_rows:
         st.info(
@@ -1547,6 +1732,66 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                 "**Parlay (v1)** is spread-only — switch to **All Pockets** or **Spread Only** for parlay candidates."
             )
 
+        _RATING_ORDER = {"KEEP": 0, "WATCH": 1, "FADE": 2, "KILL": 3, None: 4}
+        _trust_by_rowid: dict[int, dict] = {}
+        if _has_robustness:
+            for _r in _opp_display:
+                _hit, _approx = _robustness_for_row(_r, _nba_robustness_lk)
+                _trust_by_rowid[id(_r)] = {"hit": _hit, "approx": _approx}
+
+            def _rating_of(row: dict):
+                return (_trust_by_rowid.get(id(row), {}).get("hit") or {}).get("rating")
+
+            _show_fade_kill = st.checkbox(
+                "Show FADE / KILL pockets", value=False, key="nba_show_fade_kill",
+                help="By default only KEEP/WATCH (and unrated) pockets are shown.",
+            )
+            _hidden_count = 0
+            if not _show_fade_kill:
+                _before = len(_opp_display)
+                _opp_display = [r for r in _opp_display if _rating_of(r) not in ("FADE", "KILL")]
+                _hidden_count = _before - len(_opp_display)
+
+            def _trust_sort_key(row: dict):
+                _h = _trust_by_rowid.get(id(row), {}).get("hit") or {}
+                _ts = _h.get("trust_score")
+                _roi = _pocket_float(row.get("roi"))
+                _gr = int(row.get("graded_games") or 0)
+                return (
+                    _RATING_ORDER.get(_h.get("rating"), 4),
+                    -(_ts if _ts is not None else -1e18),
+                    -(_roi if _roi is not None else -1e18),
+                    -_gr,
+                )
+
+            _opp_display = sorted(_opp_display, key=_trust_sort_key)
+            if _hidden_count:
+                st.caption(
+                    f"**{_hidden_count}** FADE/KILL pocket row(s) hidden by default — "
+                    f"toggle **Show FADE / KILL pockets** to view."
+                )
+
+        def _trust_cells(row: dict) -> dict:
+            info = _trust_by_rowid.get(id(row)) or {}
+            h = info.get("hit")
+            if not h:
+                return {
+                    "Trust Rating": "—", "Trust Score": "—", "2nd-Half ROI": "—",
+                    "Recent ROI": "—", "Postseason ROI": "—", "Robustness Warning": "—",
+                    "Recommendation": "—",
+                }
+            ts = h.get("trust_score")
+            approx = " (approx)" if info.get("approx") else ""
+            return {
+                "Trust Rating": f"{h.get('rating') or '—'}{approx}",
+                "Trust Score": (f"{float(ts):.0f}" if ts is not None else "—"),
+                "2nd-Half ROI": _rpo_num(h.get("second_half_roi")),
+                "Recent ROI": _rpo_num(h.get("recent_roi")),
+                "Postseason ROI": _rpo_num(h.get("postseason_roi")),
+                "Robustness Warning": (", ".join(h.get("flags") or []) or "—"),
+                "Recommendation": (h.get("recommendation") or "—"),
+            }
+
         if not _opp_display:
             st.info(f"No rows match **{_pocket_filter_label}** for this slate.")
         else:
@@ -1563,6 +1808,7 @@ def _render_nba_pocket_roi_view(games: list, selected_date: str) -> None:
                         "ROI": _rpo_num(r.get("roi")),
                         "Win Rate": _rpo_num(r.get("win_rate")),
                         "Graded Games": r.get("graded_games") if r.get("graded_games") is not None else "—",
+                        **(_trust_cells(r) if _has_robustness else {}),
                         "Why": (r.get("reason") or "")[:280],
                         "Parlay Eligible": r.get("eligible_for_parlay"),
                     }
