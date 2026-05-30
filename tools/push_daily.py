@@ -71,6 +71,8 @@ def main():
             run_command(f"git add -f {_glob}")
     # UI code and runtime dependencies (stage only if present).
     for _path in (
+        "data/nba/view/nba_pocket_robustness_latest.json",
+        "requirements.txt",
         "eng/ui/bookiex_dashboard.py",
         "eng/execution/build_nba_model_pockets.py",
         "eng/execution/build_nba_pocket_leaderboard_validation.py",
