@@ -74,11 +74,13 @@ def _load_dashboard_league_options() -> list[dict]:
     fallback = [
         {"label": "NBA", "league_key": "nba", "display_name": "NBA"},
         {"label": "NCAAM", "league_key": "ncaam", "display_name": "NCAAM"},
+        {"label": "WNBA", "league_key": "wnba", "display_name": "WNBA"},
+        {"label": "NHL", "league_key": "nhl", "display_name": "NHL"},
     ]
     if not NORMALIZATION_CONFIG_DIR.exists():
         return fallback
 
-    options = []
+    options_by_label = {option["label"]: option for option in fallback}
     for path in sorted(NORMALIZATION_CONFIG_DIR.glob("*.json")):
         if ".sample" in path.name:
             continue
@@ -89,14 +91,12 @@ def _load_dashboard_league_options() -> list[dict]:
         if not config.enabled:
             continue
         label = config.display_name.upper()
-        options.append(
-            {
-                "label": label,
-                "league_key": config.league_key.lower(),
-                "display_name": config.display_name,
-            }
-        )
-    return options or fallback
+        options_by_label[label] = {
+            "label": label,
+            "league_key": config.league_key.lower(),
+            "display_name": config.display_name,
+        }
+    return list(options_by_label.values())
 
 
 LEAGUE_OPTIONS = _load_dashboard_league_options()
