@@ -149,11 +149,15 @@ files = list(DAILY_DIR.glob(file_pattern))
 
 
 def _render_new_league_model_status_page() -> None:
-    status = NEW_LEAGUE_MODEL_STATUS.get(league)
-    if not status:
-        return
+    status = NEW_LEAGUE_MODEL_STATUS.get(
+        league,
+        {
+            "template": "BookieX daily-view contract",
+            "lanes": NBA_MODEL_LANES + NCAAM_MODEL_LANES,
+            "notes": f"{league} is configured in the UI, but its league-specific model artifacts have not been generated yet.",
+        },
+    )
 
-    st.set_page_config(page_title=f"BookieX - {league} Model Status", layout="wide")
     st.title(f"BookieX - {league}")
     st.caption("Configured league, model replication status, and required daily-view artifacts.")
 
@@ -240,7 +244,7 @@ def _resolve_pocket_recommended_bet_daily_games(
     return games_selected, "mismatch_no_file"
 
 
-if not date_map and league in NEW_LEAGUE_MODEL_STATUS:
+if not date_map and league not in ("NBA", "NCAAM"):
     _render_new_league_model_status_page()
     st.stop()
 
