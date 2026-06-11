@@ -81,9 +81,9 @@ NCAAM_MODEL_LANES = [
 ]
 NEW_LEAGUE_MODEL_STATUS = {
     "WNBA": {
-        "template": "NCAAM",
-        "lanes": NCAAM_MODEL_LANES,
-        "notes": "WNBA is presented with the same model contract and display surface as NCAAM: average score, last-5 momentum, and market pressure.",
+        "template": "NBA",
+        "lanes": NBA_MODEL_LANES,
+        "notes": "WNBA is presented with the same model contract and display surface as NBA: baseline, market pressure, blend, momentum, fatigue, injury, and benchmark lanes.",
     },
     "NHL": {
         "template": "NCAAM",
@@ -158,11 +158,31 @@ def _render_new_league_model_status_page() -> None:
         },
     )
 
-    st.title(f"BookieX - {league}")
-    st.caption(
-        "Same presentation contract as NCAAM. Model outputs and ROI stay disabled until real "
-        f"{league} daily-view and backtest artifacts exist."
+    sidebar_bankroll = st.sidebar.number_input(
+        "Current Bankroll ($)",
+        min_value=0,
+        value=1000,
+        step=100,
+        help="Your actual balance for Kelly stake sizing.",
+        key=f"{league_key}_pending_bankroll",
     )
+    qr_code_pending_path = PROJECT_ROOT / "assets" / "qr-code_bookiex_v01.png"
+    if qr_code_pending_path.exists():
+        st.sidebar.image(str(qr_code_pending_path), width=220)
+
+    col1, col2 = st.columns([1, 6])
+    with col1:
+        if Path(header_icon_path).exists():
+            st.image(header_icon_path, width=90)
+    with col2:
+        st.markdown(
+            f"<h1 style='margin-bottom:0;'>BookieX - {league} Daily View</h1>",
+            unsafe_allow_html=True,
+        )
+        st.caption(
+            f"NBA-style dashboard shell. Model outputs and ROI stay disabled until real "
+            f"{league} daily-view and backtest artifacts exist."
+        )
 
     st.warning(
         f"{league} is available in the League dropdown, but no generated daily-view file exists yet at "
@@ -182,10 +202,11 @@ def _render_new_league_model_status_page() -> None:
 
     if slate_dashboard_view == "Pocket ROI View":
         st.caption(
-            f"**Pocket ROI lens** - {league}; same presentation as NCAAM, but waiting on "
+            f"**Pocket ROI lens** - {league}; same presentation as {status['template']}, but waiting on "
             f"`{league_key}_model_pockets.json`, `{league_key}_ranked_pocket_opportunities.json`, "
             f"and `{league_key}_best_pocket_per_game.json`."
         )
+        st.markdown("Per-game pocket summary from the **latest WNBA backtest** live leaderboard. Does not change authority or sweet-spot logic.")
         st.markdown("## Ranked Pocket Opportunities")
         st.dataframe(
             pd.DataFrame(
@@ -211,6 +232,26 @@ def _render_new_league_model_status_page() -> None:
         st.info(
             "Parlay builder is disabled until ranked pocket opportunities have positive historical ROI."
         )
+        with st.expander("Best pocket per game (secondary summary)", expanded=False):
+            st.dataframe(
+                pd.DataFrame(
+                    [
+                        {
+                            "Rank": "Pending",
+                            "Recommended Bet": "Pending daily view",
+                            "Best Pocket Type": "Pending",
+                            "Pocket Models": " / ".join(status["lanes"]),
+                            "Pocket ROI": "Pending",
+                            "Pocket Win Rate": "Pending",
+                            "Pocket Games": "Pending",
+                            "Why": f"Run the {league} pipeline/backtest to calculate NBA-style pocket summaries.",
+                            "Parlay Eligible": "Pending",
+                        }
+                    ]
+                ),
+                width="stretch",
+                hide_index=True,
+            )
         st.subheader("Historical leaderboard validation (read-only)")
         st.dataframe(
             pd.DataFrame(
@@ -270,22 +311,35 @@ def _render_new_league_model_status_page() -> None:
     ]
     st.dataframe(pd.DataFrame(roi_rows), width="stretch", hide_index=True)
 
-    st.subheader("Suggested Bet Sizing")
-    st.dataframe(
-        pd.DataFrame(
-            [
-                {
-                    "Game": "Pending daily view",
-                    "Pick": "Pending model edge",
-                    "Regime": "Pending execution overlay",
-                    "Bet $": "Pending",
-                    "Models Align": "Pending",
-                }
-            ]
-        ),
-        width="stretch",
-        hide_index=True,
-    )
+    with st.expander("KBX Bet Sizing System", expanded=False):
+        st.warning(
+            "Dynamic overlay data is unavailable for this league. Suggested Bet Sizing is pending "
+            "until WNBA/NHL backtests populate execution bucket Win% and ROI."
+        )
+        st.markdown("### Suggested Bet Sizing")
+        st.dataframe(
+            pd.DataFrame(
+                [
+                    {
+                        "Game": "Pending daily view",
+                        "Pick": "Pending model edge",
+                        "Regime": "Pending execution overlay",
+                        "Bet $": "Pending",
+                        "Models Align": "Pending",
+                    }
+                ]
+            ),
+            width="stretch",
+            hide_index=True,
+        )
+        st.markdown(
+            "<sub>"
+            f"1. Uses current bankroll (sidebar) = ${sidebar_bankroll:,}. "
+            "2. Full Kelly will use historical win rate of the qualifying regime once available. "
+            "3. Historical win rate is context, not guarantee."
+            "</sub>",
+            unsafe_allow_html=True,
+        )
 
     st.subheader("Replicated Model Surface")
     st.write(status["notes"])
@@ -339,6 +393,41 @@ def _render_new_league_model_status_page() -> None:
         width="stretch",
         hide_index=True,
     )
+
+    st.subheader("Pending Slate Preview")
+    with st.expander(f"Pending {league} matchup card", expanded=True):
+        st.write("Tipoff: Pending")
+        st.write("Market: Pending spread | Total Pending")
+        st.markdown("### Signal Strength - Pending")
+        st.progress(0, text="Overall pending")
+        st.progress(0, text="Spread Strength pending")
+        st.progress(0, text="Total Strength pending")
+        st.subheader("Model vs Market")
+        st.write("Spread Pick:", "Pending")
+        st.write("Projected Margin (Home):", "Pending")
+        st.write("Spread Edge:", "Pending")
+        st.write("Total Pick:", "Pending")
+        st.write("Projected Total:", "Pending")
+        st.write("Total Edge:", "Pending")
+        st.subheader("Full Model Breakdown")
+        st.dataframe(
+            pd.DataFrame(
+                [
+                    {
+                        "Model": model_name,
+                        "Spread Pick": "Pending",
+                        "Home Line Projection": "Pending",
+                        "Spread Edge": "Pending",
+                        "Total Pick": "Pending",
+                        "Total Projection": "Pending",
+                        "Total Edge": "Pending",
+                    }
+                    for model_name in status["lanes"]
+                ]
+            ),
+            width="stretch",
+            hide_index=True,
+        )
 
     st.subheader("Required Artifact Contract")
     artifact_rows = [
