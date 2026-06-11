@@ -65,6 +65,33 @@ EXECUTION_OVERLAY_PERFORMANCE = [
     {"Bucket": "All Games", "Games": 476, "Win%": 0.519, "ROI": -0.001, "Explanation": BUCKET_EXPLANATIONS_STATIC["All Games"]},
 ]
 
+NBA_MODEL_LANES = [
+    "Joel_Baseline_v1",
+    "MarketPressure_v2",
+    "MarketBlend_v1",
+    "Momentum5Game_v1",
+    "FatiguePlus_v3",
+    "InjuryModel_v2",
+    "MonkeyDarts_v2",
+]
+NCAAM_MODEL_LANES = [
+    "ncaam_avg_score_model",
+    "ncaam_momentum5_model",
+    "ncaam_market_pressure_model",
+]
+NEW_LEAGUE_MODEL_STATUS = {
+    "WNBA": {
+        "template": "NBA",
+        "lanes": NBA_MODEL_LANES,
+        "notes": "WNBA should mirror the NBA model surface, but needs WNBA schedule, boxscore, rest, injury, and market artifacts before those models can calculate real picks.",
+    },
+    "NHL": {
+        "template": "NBA/NCAAM hybrid",
+        "lanes": NBA_MODEL_LANES + NCAAM_MODEL_LANES,
+        "notes": "NHL can share the BookieX daily-view and odds-normalization contract, but hockey-specific pace/scoring and puck-line features must be added before model outputs are trustworthy.",
+    },
+}
+
 # --------------------------------------------------
 # LOAD FILES
 # --------------------------------------------------
@@ -121,6 +148,48 @@ else:
 files = list(DAILY_DIR.glob(file_pattern))
 
 
+def _render_new_league_model_status_page() -> None:
+    status = NEW_LEAGUE_MODEL_STATUS.get(league)
+    if not status:
+        return
+
+    st.set_page_config(page_title=f"BookieX - {league} Model Status", layout="wide")
+    st.title(f"BookieX - {league}")
+    st.caption("Configured league, model replication status, and required daily-view artifacts.")
+
+    st.warning(
+        f"{league} is available in the League dropdown, but no generated daily-view file exists yet at "
+        f"`{DAILY_DIR.resolve()}`."
+    )
+
+    st.subheader("Replicated Model Surface")
+    st.write(status["notes"])
+    model_rows = [
+        {
+            "Model Lane": model_name,
+            "Source Template": status["template"],
+            "UI Status": "Visible",
+            "Calculation Status": "Waiting on league-specific input artifacts",
+        }
+        for model_name in status["lanes"]
+    ]
+    st.dataframe(pd.DataFrame(model_rows), width="stretch", hide_index=True)
+
+    st.subheader("Required Artifact Contract")
+    artifact_rows = [
+        {"Artifact": "Daily view JSON", "Expected Path": str(DAILY_DIR / file_pattern), "Status": "Missing"},
+        {"Artifact": "Odds normalization config", "Expected Path": str(NORMALIZATION_CONFIG_DIR), "Status": "Present"},
+        {"Artifact": "Final model view", "Expected Path": str(PROJECT_ROOT / "data" / league_key / "view"), "Status": "Missing"},
+        {"Artifact": "Backtest outputs", "Expected Path": str(PROJECT_ROOT / "data" / league_key / "backtests"), "Status": "Missing"},
+    ]
+    st.dataframe(pd.DataFrame(artifact_rows), width="stretch", hide_index=True)
+
+    st.info(
+        "This page is intentionally not inventing picks. The next build pass needs to generate "
+        f"`daily_view_{league_key}_<date>_v1.json` from real {league} schedule, odds, and model artifacts."
+    )
+
+
 def _date_from_name(path: Path, is_ncaam: bool) -> str:
     parts = path.name.split("_")
     if len(parts) >= 5 and parts[0] == "daily" and parts[1] == "view":
@@ -170,6 +239,10 @@ def _resolve_pocket_recommended_bet_daily_games(
             pass
     return games_selected, "mismatch_no_file"
 
+
+if not date_map and league in NEW_LEAGUE_MODEL_STATUS:
+    _render_new_league_model_status_page()
+    st.stop()
 
 if not date_map:
     st.error(
