@@ -81,14 +81,14 @@ NCAAM_MODEL_LANES = [
 ]
 NEW_LEAGUE_MODEL_STATUS = {
     "WNBA": {
-        "template": "NBA",
-        "lanes": NBA_MODEL_LANES,
-        "notes": "WNBA should mirror the NBA model surface, but needs WNBA schedule, boxscore, rest, injury, and market artifacts before those models can calculate real picks.",
+        "template": "NCAAM",
+        "lanes": NCAAM_MODEL_LANES,
+        "notes": "WNBA is presented with the same model contract and display surface as NCAAM: average score, last-5 momentum, and market pressure.",
     },
     "NHL": {
-        "template": "NBA/NCAAM hybrid",
-        "lanes": NBA_MODEL_LANES + NCAAM_MODEL_LANES,
-        "notes": "NHL can share the BookieX daily-view and odds-normalization contract, but hockey-specific pace/scoring and puck-line features must be added before model outputs are trustworthy.",
+        "template": "NCAAM",
+        "lanes": NCAAM_MODEL_LANES,
+        "notes": "NHL is presented with the same model contract and display surface as NCAAM: average score, last-5 momentum, and market pressure.",
     },
 }
 
@@ -152,23 +152,82 @@ def _render_new_league_model_status_page() -> None:
     status = NEW_LEAGUE_MODEL_STATUS.get(
         league,
         {
-            "template": "BookieX daily-view contract",
-            "lanes": NBA_MODEL_LANES + NCAAM_MODEL_LANES,
+            "template": "NCAAM",
+            "lanes": NCAAM_MODEL_LANES,
             "notes": f"{league} is configured in the UI, but its league-specific model artifacts have not been generated yet.",
         },
     )
 
     st.title(f"BookieX - {league}")
-    st.caption("Configured league, model replication status, and required daily-view artifacts.")
+    st.caption(
+        "Same presentation contract as NCAAM. Model outputs and ROI stay disabled until real "
+        f"{league} daily-view and backtest artifacts exist."
+    )
 
     st.warning(
         f"{league} is available in the League dropdown, but no generated daily-view file exists yet at "
         f"`{DAILY_DIR.resolve()}`."
     )
 
+    slate_dashboard_view = st.radio(
+        "Dashboard view",
+        ("Standard Slate View", "Pocket ROI View"),
+        index=0,
+        horizontal=True,
+        help="Matches the NBA/NCAAM view switch; values are pending until league artifacts exist.",
+    )
+
+    st.markdown("**Last Odds Update:** Pending odds artifact")
+    st.caption(f"{league} pockets: use Pocket ROI View for ranked best-pocket per game and positive-ROI diagnostics once backtests exist.")
+
+    if slate_dashboard_view == "Pocket ROI View":
+        st.caption(
+            f"**Pocket ROI lens** - {league}; same presentation as NCAAM, but waiting on "
+            f"`{league_key}_model_pockets.json`, `{league_key}_ranked_pocket_opportunities.json`, "
+            f"and `{league_key}_best_pocket_per_game.json`."
+        )
+        st.markdown("## Ranked Pocket Opportunities")
+        st.dataframe(
+            pd.DataFrame(
+                [
+                    {
+                        "Rank": "Pending",
+                        "Recommended Bet": "Pending daily view",
+                        "Pocket Type": "Pending backtest",
+                        "Pocket Models": " / ".join(status["lanes"]),
+                        "State Signature": "Pending settled sample",
+                        "ROI": "Pending",
+                        "Win Rate": "Pending",
+                        "Graded Games": "Pending",
+                        "Why": f"Run the {league} pipeline/backtest to calculate the NCAAM-style pocket board.",
+                        "Parlay Eligible": "Pending",
+                    }
+                ]
+            ),
+            width="stretch",
+            hide_index=True,
+        )
+        st.markdown("## Best 2-leg parlay (positive ROI only)")
+        st.info(
+            "Parlay builder is disabled until ranked pocket opportunities have positive historical ROI."
+        )
+        st.subheader("Historical leaderboard validation (read-only)")
+        st.dataframe(
+            pd.DataFrame(
+                [
+                    {"metric": "Pair spread combo - top tercile", "graded": "Pending", "Win%": "Pending", "ROI": "Pending", "notes": "Requires pocket validation artifact"},
+                    {"metric": "Cluster - strong authority spread", "graded": "Pending", "Win%": "Pending", "ROI": "Pending", "notes": "Requires settled backtest results"},
+                    {"metric": "Pass candidates authority spread", "graded": "Pending", "Win%": "Pending", "ROI": "Pending", "notes": "Requires ranked opportunity artifact"},
+                ]
+            ),
+            width="stretch",
+            hide_index=True,
+        )
+        return
+
     st.subheader("ROI / Predictive Value Surface")
     st.write(
-        "These are the same decision-support slots used by the NBA/NCAAM dashboard. "
+        "These are the same decision-support slots used by the NCAAM dashboard. "
         "They are visible here now, but remain uncalculated until the league has settled-game backtests "
         "and pocket artifacts."
     )
@@ -211,6 +270,23 @@ def _render_new_league_model_status_page() -> None:
     ]
     st.dataframe(pd.DataFrame(roi_rows), width="stretch", hide_index=True)
 
+    st.subheader("Suggested Bet Sizing")
+    st.dataframe(
+        pd.DataFrame(
+            [
+                {
+                    "Game": "Pending daily view",
+                    "Pick": "Pending model edge",
+                    "Regime": "Pending execution overlay",
+                    "Bet $": "Pending",
+                    "Models Align": "Pending",
+                }
+            ]
+        ),
+        width="stretch",
+        hide_index=True,
+    )
+
     st.subheader("Replicated Model Surface")
     st.write(status["notes"])
     model_rows = [
@@ -223,6 +299,46 @@ def _render_new_league_model_status_page() -> None:
         for model_name in status["lanes"]
     ]
     st.dataframe(pd.DataFrame(model_rows), width="stretch", hide_index=True)
+
+    st.subheader("Model vs Market")
+    st.dataframe(
+        pd.DataFrame(
+            [
+                {
+                    "Field": "Spread Pick",
+                    "NCAAM Contract": "selected model spread_pick",
+                    "Current Value": "Pending",
+                },
+                {
+                    "Field": "Projected Margin (Home)",
+                    "NCAAM Contract": "home_line_proj",
+                    "Current Value": "Pending",
+                },
+                {
+                    "Field": "Spread Edge",
+                    "NCAAM Contract": "spread_edge",
+                    "Current Value": "Pending",
+                },
+                {
+                    "Field": "Total Pick",
+                    "NCAAM Contract": "total_pick",
+                    "Current Value": "Pending",
+                },
+                {
+                    "Field": "Projected Total",
+                    "NCAAM Contract": "total_projection",
+                    "Current Value": "Pending",
+                },
+                {
+                    "Field": "Total Edge",
+                    "NCAAM Contract": "total_edge",
+                    "Current Value": "Pending",
+                },
+            ]
+        ),
+        width="stretch",
+        hide_index=True,
+    )
 
     st.subheader("Required Artifact Contract")
     artifact_rows = [
