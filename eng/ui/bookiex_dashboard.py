@@ -166,6 +166,51 @@ def _render_new_league_model_status_page() -> None:
         f"`{DAILY_DIR.resolve()}`."
     )
 
+    st.subheader("ROI / Predictive Value Surface")
+    st.write(
+        "These are the same decision-support slots used by the NBA/NCAAM dashboard. "
+        "They are visible here now, but remain uncalculated until the league has settled-game backtests "
+        "and pocket artifacts."
+    )
+    roi_rows = [
+        {
+            "Metric": "Execution Overlay ROI",
+            "NBA/NCAAM Source": "analysis_039b execution overlay",
+            "Display Contract": "Bucket, Games, Win%, ROI, Status",
+            "Current Value": "Pending artifact",
+            "Required Input": f"data/{league_key}/backtests/backtest_*/execution_overlay_performance.json",
+        },
+        {
+            "Metric": "Pocket ROI",
+            "NBA/NCAAM Source": "model pocket leaderboard",
+            "Display Contract": "Rank, Recommended Bet, ROI, Win Rate, Graded Games",
+            "Current Value": "Pending artifact",
+            "Required Input": f"data/{league_key}/backtests/backtest_*/{league_key}_ranked_pocket_opportunities.json",
+        },
+        {
+            "Metric": "Best Pocket Per Game",
+            "NBA/NCAAM Source": "best pocket per game board",
+            "Display Contract": "Best Pocket Type, Pocket ROI, Pocket Win Rate, Pocket Games",
+            "Current Value": "Pending artifact",
+            "Required Input": f"data/{league_key}/backtests/backtest_*/{league_key}_best_pocket_per_game.json",
+        },
+        {
+            "Metric": "Pocket Validation ROI",
+            "NBA/NCAAM Source": "leaderboard validation",
+            "Display Contract": "Validation segment, Graded, Win%, ROI",
+            "Current Value": "Pending artifact",
+            "Required Input": f"data/{league_key}/backtests/backtest_*/{league_key}_pocket_leaderboard_validation.json",
+        },
+        {
+            "Metric": "Kelly / Bankroll Sizing",
+            "NBA/NCAAM Source": "overlay win-rate by bucket",
+            "Display Contract": "Current Bankroll, Win%, Kelly %, Stake",
+            "Current Value": "Pending ROI + Win%",
+            "Required Input": "Positive, validated Win% by execution bucket",
+        },
+    ]
+    st.dataframe(pd.DataFrame(roi_rows), width="stretch", hide_index=True)
+
     st.subheader("Replicated Model Surface")
     st.write(status["notes"])
     model_rows = [
