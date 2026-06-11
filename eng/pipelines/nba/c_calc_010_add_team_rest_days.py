@@ -17,6 +17,11 @@ import csv
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
+import sys
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from configs.leagues.league_nba import BOXSCORES_TEAM_JSON_PATH, DERIVED_DIR
 

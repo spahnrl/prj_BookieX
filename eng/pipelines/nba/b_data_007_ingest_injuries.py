@@ -10,6 +10,11 @@ import json
 import csv
 from pathlib import Path
 from datetime import datetime, timezone
+import sys
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from configs.leagues.league_nba import DERIVED_DIR
 
@@ -31,8 +36,23 @@ HEADERS = {
 # FETCH
 # =============================
 
+def requests_get(url: str, **kwargs):
+    try:
+        import certifi
+        kwargs.setdefault("verify", certifi.where())
+    except Exception:
+        pass
+
+    try:
+        return requests.get(url, **kwargs)
+    except requests.exceptions.SSLError as exc:
+        print(f"[WARN] SSL verification failed for {url}; retrying without verification.")
+        kwargs["verify"] = False
+        return requests.get(url, **kwargs)
+
+
 def fetch_injuries():
-    r = requests.get(ESPN_INJURY_URL, headers=HEADERS, timeout=(5, 10))
+    r = requests_get(ESPN_INJURY_URL, headers=HEADERS, timeout=(5, 10))
     r.raise_for_status()
     return r.json()
 

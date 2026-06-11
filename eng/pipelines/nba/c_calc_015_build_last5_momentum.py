@@ -9,6 +9,11 @@ Full universe safe
 import json
 from pathlib import Path
 from collections import deque
+import sys
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from configs.leagues.league_nba import DERIVED_DIR, SCHEDULE_JOINED_PATH
 

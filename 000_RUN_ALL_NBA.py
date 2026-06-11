@@ -92,6 +92,7 @@ BEST_EFFORT_EVALUATION = frozenset([
 
 EXECUTION = [
     "eng/execution/build_execution_overlay.py",
+    "eng/execution/build_nba_model_pockets.py",
 ]
 
 DAILY_VIEW = [
@@ -224,7 +225,7 @@ def run(script_spec):
     start = datetime.now()
 
     if not QUIET:
-        print(f"\n▶ RUNNING: {script}")
+        print(f"\nRUNNING: {script}")
     process = subprocess.Popen(
         cmd,
         stdout=sys.stdout,

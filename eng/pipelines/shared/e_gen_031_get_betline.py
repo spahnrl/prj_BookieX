@@ -3,8 +3,9 @@ e_gen_031_get_betline.py
 
 Unified market retrieval: fetch current betting lines from The Odds API for NBA or NCAAM.
 
-- Checks existing data (NBA: data/external/odds_api_raw.json; NCAAM: market/raw) before
-  making API calls. Token Guard: if we already have odds for a game_id and commence_time
+- Checks existing data (NBA: data/external/odds_api_raw.json; NCAAM: data/ncaam/raw
+  ncaam_odds_api_raw.json list + legacy data/ncaam/market/raw + timestamped raw) before API calls.
+  Token Guard: if we already have odds for a game_id and commence_time
   has passed, we do NOT call the API for that game.
 - Optional --skip-if-recent N: skip fetch if we have a snapshot from the last N minutes.
 - Optional --backfill-ncaam: use paid key to fetch historical odds for canonical games
@@ -15,6 +16,7 @@ Usage:
   python e_gen_031_get_betline.py --league ncaam
   python e_gen_031_get_betline.py --league ncaam --skip-if-recent 60
   python e_gen_031_get_betline.py --league ncaam --backfill-ncaam
+  python e_gen_031_get_betline.py --league ncaam --gap-fill-ncaam
 
 Environment: ODDS_API_KEY required.
 """
@@ -106,45 +108,79 @@ def load_existing_nba(project_root: Path) -> tuple[list, set[tuple[str, str]]]:
     return data, past_set
 
 
-def load_existing_ncaam(project_root: Path) -> tuple[list[dict], set[tuple[str, str]]]:
-    """
-    Load existing NCAAM odds from latest + all timestamped raw JSONs in market/raw.
-    Returns (list of snapshot dicts, set of (game_id, commence_time) for past games we have).
-    """
-    from configs.leagues.league_ncaam import ODDS_RAW_LATEST_PATH, MARKET_RAW_DIR
+def _load_ncaam_accum_from_disk() -> list[dict]:
+    """JSON array of snapshot dicts (NBA-parity). Empty if missing or invalid."""
+    from configs.leagues.league_ncaam import LEGACY_ODDS_RAW_ACCUM_PATH, ODDS_RAW_ACCUM_PATH
 
-    snapshots = []
-    past_set = set()
-    now = _now_utc()
-
-    paths_to_try = [ODDS_RAW_LATEST_PATH]
-    if MARKET_RAW_DIR.exists():
-        paths_to_try.extend(sorted(MARKET_RAW_DIR.glob("ncaam_odds_raw_*.json")))
-
-    for path in paths_to_try:
+    def _read(path) -> list[dict]:
         if not path.exists():
-            continue
+            return []
         try:
             with open(path, "r", encoding="utf-8") as f:
-                snap = json.load(f)
+                data = json.load(f)
+            if isinstance(data, list):
+                return [s for s in data if isinstance(s, dict)]
         except json.JSONDecodeError:
-            continue
-        if not isinstance(snap, dict):
-            continue
-        snapshots.append(snap)
+            pass
+        return []
+
+    primary = _read(ODDS_RAW_ACCUM_PATH)
+    if primary:
+        return primary
+    return _read(LEGACY_ODDS_RAW_ACCUM_PATH)
+
+
+def load_existing_ncaam(project_root: Path) -> tuple[list[dict], set[tuple[str, str]]]:
+    """
+    Returns (accum_snapshots_from_disk, past_set).
+
+    accum_snapshots_from_disk: list from ncaam_odds_api_raw.json only (for append on next fetch).
+
+    past_set: union across accum + legacy ncaam_odds_raw_*.json + ncaam_odds_latest.json
+    for token-guard (games we already saw with commence in the past).
+    """
+    from configs.leagues.league_ncaam import glob_ncaam_odds_raw_json_files, ncaam_odds_latest_read_path
+
+    past_set: set[tuple[str, str]] = set()
+    now = _now_utc()
+
+    def _ingest_past_from_snap(snap: dict) -> None:
         games = snap.get("data") or []
         if not isinstance(games, list):
-            continue
+            return
         for g in games:
             gid = (g.get("id") or "").strip() if isinstance(g, dict) else ""
-            ct = g.get("commence_time")
+            ct = g.get("commence_time") if isinstance(g, dict) else None
             if not gid:
                 continue
             ct_dt = _parse_commence(ct)
             if ct_dt is not None and ct_dt < now:
                 past_set.add((gid, str(ct) if ct else ""))
 
-    return snapshots, past_set
+    accum_snapshots = _load_ncaam_accum_from_disk()
+    for snap in accum_snapshots:
+        _ingest_past_from_snap(snap)
+
+    for path in glob_ncaam_odds_raw_json_files():
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                snap = json.load(f)
+            if isinstance(snap, dict):
+                _ingest_past_from_snap(snap)
+        except json.JSONDecodeError:
+            continue
+
+    latest_path = ncaam_odds_latest_read_path()
+    if latest_path:
+        try:
+            with open(latest_path, "r", encoding="utf-8") as f:
+                snap = json.load(f)
+            if isinstance(snap, dict):
+                _ingest_past_from_snap(snap)
+        except json.JSONDecodeError:
+            pass
+
+    return accum_snapshots, past_set
 
 
 def token_guard_skip(game_id: str, commence_time: str | None, past_set: set[tuple[str, str]]) -> bool:
@@ -180,6 +216,21 @@ def _print_first_last_odds_dates(league_label: str, games: list) -> None:
 # FETCH (shared)
 # =====================================================
 
+def requests_get(url: str, **kwargs):
+    try:
+        import certifi
+        kwargs.setdefault("verify", certifi.where())
+    except Exception:
+        pass
+
+    try:
+        return requests.get(url, **kwargs)
+    except requests.exceptions.SSLError as exc:
+        log_info(f"SSL verification failed for {url}; retrying odds fetch with verify=False: {exc}")
+        kwargs["verify"] = False
+        return requests.get(url, **kwargs)
+
+
 def fetch_current_odds(sport_key: str) -> list:
     url = f"{BASE_URL}/{sport_key}/odds"
     params = {
@@ -190,7 +241,7 @@ def fetch_current_odds(sport_key: str) -> list:
     }
     if sport_key == "basketball_ncaab":
         params["dateFormat"] = "iso"
-    response = requests.get(url, params=params, timeout=30)
+    response = requests_get(url, params=params, timeout=30)
     response.raise_for_status()
     return response.json()
 
@@ -207,7 +258,7 @@ def fetch_event_odds(sport_key: str, event_id: str) -> dict | None:
     if sport_key == "basketball_ncaab":
         params["dateFormat"] = "iso"
     try:
-        response = requests.get(url, params=params, timeout=30)
+        response = requests_get(url, params=params, timeout=30)
         response.raise_for_status()
         return response.json()
     except Exception:
@@ -221,11 +272,38 @@ def fetch_events_list(sport_key: str) -> list:
     if sport_key == "basketball_ncaab":
         params["dateFormat"] = "iso"
     try:
-        response = requests.get(url, params=params, timeout=30)
+        response = requests_get(url, params=params, timeout=30)
         response.raise_for_status()
         return response.json() if isinstance(response.json(), list) else []
     except Exception:
         return []
+
+
+def fetch_historical_odds(sport_key: str, date_iso: str) -> dict | None:
+    """
+    Fetch historical odds snapshot for one date (featured markets).
+    GET /v4/historical/sports/{sport}/odds with date=YYYY-MM-DDTHH:MM:SSZ.
+    Returns wrapper dict with timestamp, data (list of games), or None on failure.
+    """
+    url = f"https://api.the-odds-api.com/v4/historical/sports/{sport_key}/odds"
+    params = {
+        "apiKey": API_KEY,
+        "regions": REGIONS,
+        "markets": MARKETS,
+        "oddsFormat": ODDS_FORMAT,
+        "date": date_iso,
+    }
+    if sport_key == "basketball_ncaab":
+        params["dateFormat"] = "iso"
+    try:
+        response = requests_get(url, params=params, timeout=60)
+        response.raise_for_status()
+        data = response.json()
+        if not isinstance(data, dict):
+            return None
+        return data
+    except Exception:
+        return None
 
 
 # =====================================================
@@ -330,17 +408,29 @@ def run_nba(skip_if_recent_minutes: int | None = None) -> None:
 
 def run_ncaam(skip_if_recent_minutes: int | None = None) -> None:
     from configs.leagues.league_ncaam import (
+        ODDS_RAW_ACCUM_PATH,
         ODDS_RAW_LATEST_PATH,
         ensure_ncaam_dirs,
+        ncaam_odds_latest_read_path,
         timestamped_odds_raw_path,
     )
     sport_key = "basketball_ncaab"
     ensure_ncaam_dirs()
 
-    existing_snapshots, past_set = load_existing_ncaam(PROJECT_ROOT)
+    accum_on_disk, _ = load_existing_ncaam(PROJECT_ROOT)
+    snapshots_for_recent = list(accum_on_disk)
+    _latest_read = ncaam_odds_latest_read_path()
+    if not snapshots_for_recent and _latest_read:
+        try:
+            with open(_latest_read, "r", encoding="utf-8") as f:
+                legacy_latest = json.load(f)
+            if isinstance(legacy_latest, dict):
+                snapshots_for_recent = [legacy_latest]
+        except json.JSONDecodeError:
+            pass
 
-    if skip_if_recent_minutes is not None and skip_if_recent_minutes > 0 and existing_snapshots:
-        latest = existing_snapshots[-1]
+    if skip_if_recent_minutes is not None and skip_if_recent_minutes > 0 and snapshots_for_recent:
+        latest = snapshots_for_recent[-1]
         cap = latest.get("captured_at_utc")
         if cap:
             try:
@@ -349,7 +439,7 @@ def run_ncaam(skip_if_recent_minutes: int | None = None) -> None:
                     raw_from_existing = latest.get("data") or []
                     log_info(f"Skipped API call (data from last {skip_if_recent_minutes} min). Using existing.")
                     _print_first_last_odds_dates("NCAAM", raw_from_existing)
-                    log_info(f"Latest -> {ODDS_RAW_LATEST_PATH}")
+                    log_info(f"Latest -> {ODDS_RAW_LATEST_PATH} (skip-if-recent satisfied)")
                     return
             except Exception:
                 pass
@@ -364,10 +454,24 @@ def run_ncaam(skip_if_recent_minutes: int | None = None) -> None:
         "data": raw_data,
     }
 
+    accum_list = list(accum_on_disk)
+    if not accum_list and _latest_read:
+        try:
+            with open(_latest_read, "r", encoding="utf-8") as f:
+                seed = json.load(f)
+            if isinstance(seed, dict) and isinstance(seed.get("data"), list):
+                accum_list = [seed]
+        except json.JSONDecodeError:
+            pass
+    accum_list.append(snapshot)
+
     ts_label = datetime.now().strftime("%Y%m%d_%H%M%S")
     ts_path = timestamped_odds_raw_path(ts_label)
 
     ODDS_RAW_LATEST_PATH.parent.mkdir(parents=True, exist_ok=True)
+    ODDS_RAW_ACCUM_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(ODDS_RAW_ACCUM_PATH, "w", encoding="utf-8") as f:
+        json.dump(accum_list, f, indent=2)
     with open(ODDS_RAW_LATEST_PATH, "w", encoding="utf-8") as f:
         json.dump(snapshot, f, indent=2)
     ts_path.parent.mkdir(parents=True, exist_ok=True)
@@ -376,6 +480,7 @@ def run_ncaam(skip_if_recent_minutes: int | None = None) -> None:
 
     log_info(f"Retrieved {len(raw_data)} games")
     _print_first_last_odds_dates("NCAAM", raw_data)
+    log_info(f"Accum JSON  -> {ODDS_RAW_ACCUM_PATH} ({len(accum_list)} snapshots)")
     log_info(f"Latest JSON -> {ODDS_RAW_LATEST_PATH}")
     log_info(f"Timestamped  -> {ts_path}")
 
@@ -401,12 +506,15 @@ def run_backfill_ncaam() -> None:
     """
     Fetch odds for NCAAM canonical games that are missing lines.
     Uses event list to match by date + home/away, then fetches per-event odds (token guard applied).
-    Output format is same as normal run (latest + timestamped raw) so 032/041 stay compatible.
+    Output format is same as normal run (accum list + latest + timestamped raw) so 032/041 stay compatible.
     """
     from configs.leagues.league_ncaam import (
         CANONICAL_GAMES_PATH,
+        ODDS_RAW_ACCUM_PATH,
         ODDS_RAW_LATEST_PATH,
         ensure_ncaam_dirs,
+        glob_ncaam_odds_raw_json_files,
+        ncaam_odds_latest_read_path,
         timestamped_odds_raw_path,
     )
     sport_key = "basketball_ncaab"
@@ -426,6 +534,29 @@ def run_backfill_ncaam() -> None:
             eid = (g.get("id") or "").strip()
             if eid:
                 have_event_ids.add(eid)
+    for path in glob_ncaam_odds_raw_json_files():
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                snap = json.load(f)
+            if isinstance(snap, dict):
+                for g in (snap.get("data") or []):
+                    eid = (g.get("id") or "").strip() if isinstance(g, dict) else ""
+                    if eid:
+                        have_event_ids.add(eid)
+        except json.JSONDecodeError:
+            continue
+    _lr = ncaam_odds_latest_read_path()
+    if _lr:
+        try:
+            with open(_lr, "r", encoding="utf-8") as f:
+                snap = json.load(f)
+            if isinstance(snap, dict):
+                for g in (snap.get("data") or []):
+                    eid = (g.get("id") or "").strip() if isinstance(g, dict) else ""
+                    if eid:
+                        have_event_ids.add(eid)
+        except json.JSONDecodeError:
+            pass
 
     events = fetch_events_list(sport_key)
     # Build key -> event_id: (norm_date, norm_home, norm_away) -> event_id
@@ -495,14 +626,135 @@ def run_backfill_ncaam() -> None:
         "data": merged_data,
     }
     ODDS_RAW_LATEST_PATH.parent.mkdir(parents=True, exist_ok=True)
+    ODDS_RAW_ACCUM_PATH.parent.mkdir(parents=True, exist_ok=True)
     ts_label = datetime.now().strftime("%Y%m%d_%H%M%S")
     ts_path = timestamped_odds_raw_path(ts_label)
     with open(ODDS_RAW_LATEST_PATH, "w", encoding="utf-8") as f:
         json.dump(snapshot, f, indent=2)
     with open(ts_path, "w", encoding="utf-8") as f:
         json.dump(snapshot, f, indent=2)
+    accum_list = _load_ncaam_accum_from_disk()
+    accum_list.append(snapshot)
+    with open(ODDS_RAW_ACCUM_PATH, "w", encoding="utf-8") as f:
+        json.dump(accum_list, f, indent=2)
     _print_first_last_odds_dates("NCAAM (backfill)", merged_data)
-    log_info(f"Backfill: added {len(backfill_games)} events; latest now has {len(merged_data)} total. Wrote {ts_path}")
+    log_info(
+        f"Backfill: added {len(backfill_games)} events; latest now has {len(merged_data)} total. "
+        f"Wrote {ts_path}; accum now {len(accum_list)} snapshots"
+    )
+
+
+# =====================================================
+# NCAAM GAP-FILL (historical by date)
+# =====================================================
+
+def get_ncaam_covered_dates() -> set[str]:
+    """
+    From canonical ``data/ncaam/raw`` and legacy ``data/ncaam/market/raw``, treat a date as
+    covered only if we have a gap-fill snapshot for that date: ncaam_odds_raw_YYYYMMDD.json
+    (exactly 8 digits, no suffix).
+    This avoids incorrectly skipping 2025-11-04 when 20251103.json contains games that
+    commence on 2025-11-04 UTC (late-evening Nov 3 US).
+    """
+    from configs.leagues.league_ncaam import glob_ncaam_odds_raw_json_files
+
+    covered = set()
+    # Only date-only filenames from gap-fill (ncaam_odds_raw_YYYYMMDD.json)
+    pattern = re.compile(r"^ncaam_odds_raw_(\d{8})\.json$")
+    for path in glob_ncaam_odds_raw_json_files():
+        m = pattern.match(path.name)
+        if not m:
+            continue
+        yyyymmdd = m.group(1)
+        if len(yyyymmdd) == 8:
+            covered.add(f"{yyyymmdd[:4]}-{yyyymmdd[4:6]}-{yyyymmdd[6:8]}")
+    return covered
+
+
+def get_ncaam_target_date_range() -> tuple[str, str]:
+    """
+    Target season date range for gap-fill: from canonical games game_date min/max.
+    Falls back to 2025-11-03..2026-03-13 if canonical missing.
+    """
+    from configs.leagues.league_ncaam import CANONICAL_GAMES_PATH
+
+    default_start = "2025-11-03"
+    default_end = "2026-03-13"
+    path = Path(CANONICAL_GAMES_PATH)
+    if not path.exists():
+        return default_start, default_end
+    try:
+        with open(path, "r", encoding="utf-8", newline="") as f:
+            rows = list(csv.DictReader(f))
+    except Exception:
+        return default_start, default_end
+    dates = [(r.get("game_date") or "").strip()[:10] for r in rows]
+    dates = [d for d in dates if len(d) == 10 and d.count("-") == 2]
+    if not dates:
+        return default_start, default_end
+    return min(dates), max(dates)
+
+
+def run_gap_fill_ncaam() -> None:
+    """
+    Gap-fill historical NCAAM odds by date. Reads existing raw files to compute covered dates,
+    derives target range from canonical games, fetches only missing dates via historical API,
+    writes one ncaam_odds_raw_YYYYMMDD.json per missing date (existing snapshot shape).
+    Idempotent: re-run skips dates already present in any raw file.
+    """
+    from datetime import datetime, timedelta, timezone
+
+    from configs.leagues.league_ncaam import (
+        ensure_ncaam_dirs,
+        timestamped_odds_raw_path,
+    )
+
+    sport_key = "basketball_ncaab"
+    ensure_ncaam_dirs()
+
+    covered = get_ncaam_covered_dates()
+    start_str, end_str = get_ncaam_target_date_range()
+    start_dt = datetime.strptime(start_str, "%Y-%m-%d")
+    end_dt = datetime.strptime(end_str, "%Y-%m-%d")
+    target_dates = []
+    d = start_dt
+    while d <= end_dt:
+        target_dates.append(d.strftime("%Y-%m-%d"))
+        d += timedelta(days=1)
+    missing = [d for d in target_dates if d not in covered]
+    missing.sort()
+
+    log_info(f"NCAAM gap-fill: target range {start_str}..{end_str} ({len(target_dates)} days)")
+    log_info(f"Already covered: {len(covered)} distinct game dates in raw files")
+    log_info(f"Missing dates to fetch: {len(missing)}")
+
+    if not missing:
+        log_info("No missing dates; nothing to fetch.")
+        return
+
+    written = 0
+    for date_str in missing:
+        date_iso = f"{date_str}T12:00:00Z"
+        resp = fetch_historical_odds(sport_key, date_iso)
+        if not resp or not isinstance(resp.get("data"), list):
+            log_info(f"  {date_str}: no data (skip)")
+            continue
+        snapshot_ts = (resp.get("timestamp") or date_iso).strip()
+        snapshot = {
+            "captured_at_utc": snapshot_ts,
+            "sport": sport_key,
+            "source": "the_odds_api",
+            "data": resp["data"],
+        }
+        label = date_str.replace("-", "")
+        out_path = timestamped_odds_raw_path(label)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(snapshot, f, indent=2)
+        written += 1
+        log_info(f"  {date_str}: wrote {out_path.name} ({len(resp['data'])} games)")
+
+    log_info(f"Gap-fill complete: wrote {written} new raw snapshot(s).")
 
 
 # =====================================================
@@ -525,9 +777,20 @@ def main() -> None:
         action="store_true",
         help="Fetch historical odds for NCAAM canonical games missing lines (uses paid key)",
     )
+    parser.add_argument(
+        "--gap-fill-ncaam",
+        action="store_true",
+        help="Gap-fill missing NCAAM odds by date (historical API); skips dates already in raw",
+    )
     parser.add_argument("--silent", action="store_true", help="Only print critical errors")
     args = parser.parse_args()
     set_silent(args.silent)
+
+    if args.gap_fill_ncaam:
+        if args.league != "ncaam":
+            raise SystemExit("--gap-fill-ncaam requires --league ncaam")
+        run_gap_fill_ncaam()
+        return
 
     if args.backfill_ncaam:
         if args.league != "ncaam":

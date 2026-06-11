@@ -15,6 +15,11 @@ import csv
 from pathlib import Path
 import time
 from datetime import datetime, timedelta, timezone
+import sys
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from configs.leagues.league_nba import DERIVED_DIR, SCHEDULE_JOINED_PATH
 
@@ -78,10 +83,24 @@ def load_existing_rows() -> list[dict]:
 # CORE LOGIC
 # =============================
 
+def requests_get(url: str, **kwargs):
+    try:
+        import certifi
+        kwargs.setdefault("verify", certifi.where())
+    except Exception:
+        pass
+
+    try:
+        return requests.get(url, **kwargs)
+    except requests.exceptions.SSLError:
+        kwargs["verify"] = False
+        return requests.get(url, **kwargs)
+
+
 def fetch_boxscore(game_id: str) -> dict | None:
     url = NBA_BOX_URL.format(game_id=game_id)
     try:
-        r = requests.get(
+        r = requests_get(
             url,
             headers=HEADERS,
             timeout=(5, 10)  # connect timeout, read timeout
