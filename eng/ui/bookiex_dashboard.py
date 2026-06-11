@@ -386,18 +386,16 @@ def _load_nba_pocket_artifacts() -> tuple[dict | None, dict | None, dict | None,
     Live slate file is optional if present alongside the three core artifacts.
     """
     try:
-        root = get_backtest_output_root("nba")
-        if not root.exists():
+        latest = _latest_nba_backtest_with_files(
+            "nba_model_pockets.json",
+            "nba_model_combo_pockets.json",
+            "nba_current_game_pocket_view.json",
+        )
+        if latest is None:
             return None, None, None, None, None
-        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
-        if not subdirs:
-            return None, None, None, None, None
-        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
         p1 = latest / "nba_model_pockets.json"
         p2 = latest / "nba_model_combo_pockets.json"
         p3 = latest / "nba_current_game_pocket_view.json"
-        if not p1.exists() or not p2.exists() or not p3.exists():
-            return None, None, None, None, None
         with open(p1, "r", encoding="utf-8") as f:
             d1 = json.load(f)
         with open(p2, "r", encoding="utf-8") as f:
@@ -419,6 +417,20 @@ def _load_nba_pocket_artifacts() -> tuple[dict | None, dict | None, dict | None,
         return None, None, None, None, None
 
 
+def _latest_nba_backtest_with_files(*filenames: str) -> Path | None:
+    root = get_backtest_output_root("nba")
+    if not root.exists():
+        return None
+    subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
+    candidates = [
+        d for d in subdirs
+        if all((d / name).exists() for name in filenames)
+    ]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda d: d.stat().st_mtime)
+
+
 _nba_pockets_doc, _nba_combo_doc, _nba_current_pockets_doc, _nba_live_pockets_doc, _nba_pockets_date = (
     _load_nba_pocket_artifacts() if league == "NBA" else (None, None, None, None, None)
 )
@@ -427,16 +439,10 @@ _nba_pockets_doc, _nba_combo_doc, _nba_current_pockets_doc, _nba_live_pockets_do
 def _load_nba_live_pocket_leaderboard() -> dict | None:
     """Optional nba_live_pocket_leaderboard.json from latest NBA backtest dir."""
     try:
-        root = get_backtest_output_root("nba")
-        if not root.exists():
+        latest = _latest_nba_backtest_with_files("nba_live_pocket_leaderboard.json")
+        if latest is None:
             return None
-        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
-        if not subdirs:
-            return None
-        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
         p = latest / "nba_live_pocket_leaderboard.json"
-        if not p.exists():
-            return None
         with open(p, "r", encoding="utf-8") as f:
             doc = json.load(f)
         return doc if isinstance(doc, dict) else None
@@ -450,16 +456,10 @@ _nba_live_pocket_leaderboard_doc = _load_nba_live_pocket_leaderboard() if league
 def _load_nba_best_pocket_per_game() -> dict | None:
     """Optional nba_best_pocket_per_game.json from latest NBA backtest dir."""
     try:
-        root = get_backtest_output_root("nba")
-        if not root.exists():
+        latest = _latest_nba_backtest_with_files("nba_best_pocket_per_game.json")
+        if latest is None:
             return None
-        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
-        if not subdirs:
-            return None
-        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
         p = latest / "nba_best_pocket_per_game.json"
-        if not p.exists():
-            return None
         with open(p, "r", encoding="utf-8") as f:
             doc = json.load(f)
         return doc if isinstance(doc, dict) else None
@@ -473,16 +473,10 @@ _nba_best_pocket_doc = _load_nba_best_pocket_per_game() if league == "NBA" else 
 def _load_nba_ranked_pocket_opportunities() -> dict | None:
     """Optional nba_ranked_pocket_opportunities.json from latest NBA backtest dir."""
     try:
-        root = get_backtest_output_root("nba")
-        if not root.exists():
+        latest = _latest_nba_backtest_with_files("nba_ranked_pocket_opportunities.json")
+        if latest is None:
             return None
-        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
-        if not subdirs:
-            return None
-        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
         p = latest / "nba_ranked_pocket_opportunities.json"
-        if not p.exists():
-            return None
         with open(p, "r", encoding="utf-8") as f:
             doc = json.load(f)
         return doc if isinstance(doc, dict) else None
@@ -496,16 +490,10 @@ _nba_ranked_pocket_doc = _load_nba_ranked_pocket_opportunities() if league == "N
 def _load_nba_pocket_leaderboard_validation() -> dict | None:
     """Optional nba_pocket_leaderboard_validation.json from latest NBA backtest dir."""
     try:
-        root = get_backtest_output_root("nba")
-        if not root.exists():
+        latest = _latest_nba_backtest_with_files("nba_pocket_leaderboard_validation.json")
+        if latest is None:
             return None
-        subdirs = [d for d in root.iterdir() if d.is_dir() and d.name.startswith("backtest_")]
-        if not subdirs:
-            return None
-        latest = max(subdirs, key=lambda d: d.stat().st_mtime)
         p = latest / "nba_pocket_leaderboard_validation.json"
-        if not p.exists():
-            return None
         with open(p, "r", encoding="utf-8") as f:
             doc = json.load(f)
         return doc if isinstance(doc, dict) else None
