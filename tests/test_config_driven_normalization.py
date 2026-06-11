@@ -4,6 +4,13 @@ from eng.normalization import load_default_registry
 
 
 class ConfigDrivenNormalizationTest(unittest.TestCase):
+    def test_default_registry_discovers_enabled_leagues(self):
+        registry = load_default_registry()
+        self.assertEqual(
+            registry.keys(),
+            ["basketball_nba", "basketball_ncaab", "basketball_wnba", "icehockey_nhl"],
+        )
+
     def test_nba_odds_api_snapshot_normalizes_events_and_markets(self):
         registry = load_default_registry(active_sport_keys=["basketball_nba"])
         self.assertEqual(registry.keys(), ["basketball_nba"])

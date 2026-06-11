@@ -22,12 +22,14 @@ from zoneinfo import ZoneInfo
 # --------------------------------------------------
 
 from utils.io_helpers import get_daily_view_output_dir, get_backtest_output_root
+from eng.normalization.config import load_league_config
 
 NBA_DAILY_DIR = get_daily_view_output_dir("nba")
 NCAAM_DAILY_DIR = get_daily_view_output_dir("ncaam")
 
 NBA_HEADER_ICON = "assets/RS_JP_BookieX_v02.png"
 NCAAM_HEADER_ICON = "assets/RS_JP_BookieX_v04_COLLEGE.png"
+DEFAULT_HEADER_ICON = NBA_HEADER_ICON
 
 # Kelly / execution overlay assumptions
 # Edit these as new backtesting information becomes available.
@@ -40,6 +42,7 @@ KELLY_PAYOUT_RATIO = 100 / 110
 
 # Project root; attribution report path is league-specific (see _attribution_report_path_for_league).
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+NORMALIZATION_CONFIG_DIR = PROJECT_ROOT / "configs" / "normalization" / "leagues"
 
 # Backtest reference date shown to user
 EXECUTION_OVERLAY_LAST_UPDATED = "3/6/2025"
@@ -66,22 +69,62 @@ EXECUTION_OVERLAY_PERFORMANCE = [
 # LOAD FILES
 # --------------------------------------------------
 
-league = st.selectbox("League", ["NBA", "NCAAM"], index=0)
+def _load_dashboard_league_options() -> list[dict]:
+    """Load enabled league options from normalization configs for the Streamlit selector."""
+    fallback = [
+        {"label": "NBA", "league_key": "nba", "display_name": "NBA"},
+        {"label": "NCAAM", "league_key": "ncaam", "display_name": "NCAAM"},
+    ]
+    if not NORMALIZATION_CONFIG_DIR.exists():
+        return fallback
+
+    options = []
+    for path in sorted(NORMALIZATION_CONFIG_DIR.glob("*.json")):
+        if ".sample" in path.name:
+            continue
+        try:
+            config = load_league_config(path)
+        except Exception:
+            continue
+        if not config.enabled:
+            continue
+        label = config.display_name.upper()
+        options.append(
+            {
+                "label": label,
+                "league_key": config.league_key.lower(),
+                "display_name": config.display_name,
+            }
+        )
+    return options or fallback
+
+
+LEAGUE_OPTIONS = _load_dashboard_league_options()
+_league_by_label = {option["label"]: option for option in LEAGUE_OPTIONS}
+league = st.selectbox("League", list(_league_by_label), index=0)
+league_meta = _league_by_label[league]
+league_key = league_meta["league_key"]
 
 if league == "NBA":
     DAILY_DIR = NBA_DAILY_DIR
     file_pattern = "daily_view_*_v1.json"
     header_icon_path = NBA_HEADER_ICON
-else:
+elif league == "NCAAM":
     DAILY_DIR = NCAAM_DAILY_DIR
     file_pattern = "daily_view_ncaam_*_v1.json"
     header_icon_path = NCAAM_HEADER_ICON
+else:
+    DAILY_DIR = PROJECT_ROOT / "data" / league_key / "daily"
+    file_pattern = f"daily_view_{league_key}_*_v1.json"
+    header_icon_path = DEFAULT_HEADER_ICON
 
 files = list(DAILY_DIR.glob(file_pattern))
 
 
 def _date_from_name(path: Path, is_ncaam: bool) -> str:
     parts = path.name.split("_")
+    if len(parts) >= 5 and parts[0] == "daily" and parts[1] == "view":
+        return parts[3] if is_ncaam or parts[2] == league_key else parts[2]
     return parts[3] if is_ncaam else parts[2]
 
 
