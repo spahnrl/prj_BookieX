@@ -1,4 +1,4 @@
-# daily/build_daily_view.py
+# eng/daily/build_daily_view.py
 
 """
 build_daily_view.py — NBA-only.
@@ -108,6 +108,90 @@ def determine_percentile(edge_value, percentile_definitions):
     else:
         return 0.10
 
+
+def _cluster_score(alignment):
+    if not isinstance(alignment, dict):
+        return None
+    return round(
+        3 * int(alignment.get("hot") or 0)
+        + int(alignment.get("warm") or 0)
+        - 0.5 * int(alignment.get("cold") or 0)
+        - 0.25 * int(alignment.get("insufficient") or 0),
+        4,
+    )
+
+
+def _best_pocket_ref(*candidates):
+    rows = [c for c in candidates if isinstance(c, dict)]
+    if not rows:
+        return None
+    rows.sort(
+        key=lambda r: (
+            float(r.get("roi") or -999),
+            int(r.get("graded_games") or 0),
+            1 if r.get("combo_kind") == "triple" else 0,
+        ),
+        reverse=True,
+    )
+    r = rows[0]
+    return {
+        "market_type": r.get("market_type"),
+        "combo_kind": r.get("combo_kind"),
+        "models_key": r.get("models_key"),
+        "state_signature": r.get("state_signature"),
+        "state": r.get("state"),
+        "graded_games": r.get("graded_games"),
+        "win_rate": r.get("win_rate"),
+        "roi": r.get("roi"),
+    }
+
+
+def _compact_pocket_row(row):
+    if not isinstance(row, dict):
+        return None
+
+    spread_alignment = row.get("spread_pocket_alignment") or {}
+    total_alignment = row.get("total_pocket_alignment") or {}
+    spread_score = _cluster_score(spread_alignment)
+    total_score = _cluster_score(total_alignment)
+
+    return {
+        "source": "nba_current_game_pocket_view",
+        "spread_cluster_score": spread_score,
+        "total_cluster_score": total_score,
+        "spread_pocket_alignment": dict(spread_alignment) if isinstance(spread_alignment, dict) else {},
+        "total_pocket_alignment": dict(total_alignment) if isinstance(total_alignment, dict) else {},
+        "best_spread_pocket": _best_pocket_ref(row.get("best_triple_spread"), row.get("best_pair_spread")),
+        "best_total_pocket": _best_pocket_ref(row.get("best_triple_total"), row.get("best_pair_total")),
+    }
+
+
+def _load_pocket_lookup():
+    root = PROJECT_ROOT / "data" / "nba" / "backtests"
+    if not root.exists():
+        return {}
+    paths = sorted(
+        root.glob("backtest_*/nba_current_game_pocket_view.json"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    for path in paths:
+        try:
+            payload = load_json(path)
+        except Exception:
+            continue
+        games = payload.get("games") if isinstance(payload, dict) else payload
+        if not isinstance(games, list):
+            continue
+        out = {}
+        for row in games:
+            gid = str((row or {}).get("game_id") or "").strip()
+            if gid:
+                out[gid] = _compact_pocket_row(row)
+        if out:
+            return out
+    return {}
+
 # ------------------------------------------------------------
 # EXECUTION OVERLAY (Deterministic, Read-Only)
 # ------------------------------------------------------------
@@ -207,6 +291,7 @@ def build_daily_view():
 
     model_data = load_json(_model_artifact_path())
     calibration = load_json(_calibration_path())
+    pocket_lookup = _load_pocket_lookup()
 
     # Handle multi-model payload wrapper
     if isinstance(model_data, dict) and "games" in model_data:
@@ -219,14 +304,11 @@ def build_daily_view():
     if len(sys.argv) > 1:
         target_date = sys.argv[1]
     else:
-        today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        from utils.datetime_bridge import get_default_target_slate_date, slate_date_for_game
+        today_str = get_default_target_slate_date()
 
-        available_dates = sorted(
-            g["game_date"][:10]
-            for g in model_data
-            if g.get("game_date")
-            and g["game_date"][:10] >= today_str
-        )
+        slate_dates = [slate_date_for_game(g) for g in model_data]
+        available_dates = sorted(set(d for d in slate_dates if d and d >= today_str))
 
         if not available_dates:
             print("No upcoming games available.")
@@ -235,20 +317,11 @@ def build_daily_view():
         target_date = available_dates[0]
 
     # --------------------------------------------------------
-    # Filter to selected date
+    # Filter to selected date (slate-date authority)
     # --------------------------------------------------------
+    from utils.datetime_bridge import slate_date_for_game as _slate_date
 
-    today_games = []
-
-    for g in model_data:
-        raw_date = g.get("game_date")
-        if not raw_date:
-            continue
-
-        normalized_date = raw_date[:10]
-
-        if normalized_date == target_date:
-            today_games.append(g)
+    today_games = [g for g in model_data if _slate_date(g) == target_date]
 
     today_games = sorted(today_games, key=lambda x: x["game_id"])
 
@@ -266,6 +339,9 @@ def build_daily_view():
         # Skip games without signal
         if spread_edge is None or total_edge is None:
             continue
+
+        game_id = str(g.get("game_id") or "").strip()
+        pocket = pocket_lookup.get(game_id)
 
         spread_bucket = determine_bucket(spread_edge)
 
@@ -411,6 +487,12 @@ def build_daily_view():
             "execution_overlay": g.get("execution_overlay"),
 
             # ------------------------------------------------
+            # POCKET SCORE (Read-Only Historical Pocket Lens)
+            # ------------------------------------------------
+            "pocket_score": (pocket or {}).get("spread_cluster_score"),
+            "pocket": pocket,
+
+            # ------------------------------------------------
             # CALIBRATION TAGS
             # ------------------------------------------------
             "calibration_tags": {
@@ -429,7 +511,9 @@ def build_daily_view():
                 "tipoff_time_cst": tipoff_cst,
                 "tipoff_local_day": local_day,
                 "schedule_matches_local_day": schedule_matches_local,
-                "utc_rollover_flag": utc_rollover_flag
+                "utc_rollover_flag": utc_rollover_flag,
+                "odds_commence_time_utc": tipoff_utc,
+                "odds_commence_time_cst": tipoff_cst,
             },
         })
 
@@ -449,6 +533,8 @@ def build_daily_view():
 
     _output_dir().mkdir(parents=True, exist_ok=True)
 
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+
     output_path = _output_dir() / f"daily_view_{target_date}_v1.json"
 
     with output_path.open("w", encoding="utf-8") as f:
@@ -457,13 +543,18 @@ def build_daily_view():
     print(f"Daily View written: {output_path}")
     print(f"Games included: {len(structured_games)}")
 
+    snapshots_dir = _output_dir() / "snapshots"
+    snapshots_dir.mkdir(parents=True, exist_ok=True)
+    snapshot_path = snapshots_dir / f"daily_view_{target_date}_v1_{timestamp}.json"
+    with snapshot_path.open("w", encoding="utf-8") as f:
+        json.dump(final_output, f, indent=2)
+    print(f"Daily View snapshot written: {snapshot_path}")
+
     # --------------------------------------------------------
     # WRITE FULL EXPOSURE CSV
     # --------------------------------------------------------
 
     csv_rows = flatten_for_csv(structured_games)
-
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 
     csv_output_path = _output_dir() / f"daily_view_{target_date}_v1_{timestamp}.csv"
 
