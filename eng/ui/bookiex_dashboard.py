@@ -8,7 +8,9 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+import os
 import re
+import requests
 import streamlit as st
 import json
 import pandas as pd
@@ -43,6 +45,13 @@ KELLY_PAYOUT_RATIO = 100 / 110
 # Project root; attribution report path is league-specific (see _attribution_report_path_for_league).
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 NORMALIZATION_CONFIG_DIR = PROJECT_ROOT / "configs" / "normalization" / "leagues"
+
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(dotenv_path=PROJECT_ROOT / ".env")
+except Exception:
+    pass
 
 # Backtest reference date shown to user
 EXECUTION_OVERLAY_LAST_UPDATED = "3/6/2025"
@@ -169,6 +178,264 @@ BRIDGE_SLATE_COLUMNS = [
     "completed",
 ]
 
+LIVE_ODDS_REGISTRY = {
+    "NBA": {"sport_key": "basketball_nba", "enabled": True},
+    "NCAAM": {"sport_key": "basketball_ncaab", "enabled": True},
+    "NCAAB": {"sport_key": "basketball_ncaab", "enabled": True},
+    "WNBA": {"sport_key": "basketball_wnba", "enabled": True},
+    "NHL": {"sport_key": "icehockey_nhl", "enabled": True},
+}
+LIVE_ODDS_MARKETS = "h2h,spreads,totals"
+LIVE_ODDS_REGION = "us"
+LIVE_ODDS_FORMAT = "american"
+LIVE_ODDS_URL = "https://api.the-odds-api.com/v4/sports/{sport_key}/odds"
+LIVE_ODDS_COLUMNS = [
+    "sport",
+    "commence_time",
+    "away_team",
+    "home_team",
+    "bookmaker",
+    "moneyline_away",
+    "moneyline_home",
+    "spread_away",
+    "spread_away_price",
+    "spread_home",
+    "spread_home_price",
+    "total",
+    "over_price",
+    "under_price",
+    "last_update",
+    "event_id",
+]
+
+
+def _get_odds_api_key_for_dashboard() -> str | None:
+    key = os.getenv("ODDS_API_KEY")
+    if key:
+        return key
+    try:
+        key = st.secrets.get("ODDS_API_KEY")
+    except Exception:
+        key = None
+    return str(key).strip() if key else None
+
+
+def _live_requests_get(url: str, **kwargs):
+    try:
+        import certifi
+
+        kwargs.setdefault("verify", certifi.where())
+    except Exception:
+        pass
+    try:
+        return requests.get(url, **kwargs)
+    except requests.exceptions.SSLError:
+        try:
+            import urllib3
+
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        except Exception:
+            pass
+        kwargs["verify"] = False
+        return requests.get(url, **kwargs)
+
+
+def _market_by_key(bookmaker: dict) -> dict:
+    markets = bookmaker.get("markets") if isinstance(bookmaker, dict) else []
+    if not isinstance(markets, list):
+        return {}
+    return {
+        str(market.get("key") or "").strip().lower(): market
+        for market in markets
+        if isinstance(market, dict)
+    }
+
+
+def _outcome_for_name(market: dict | None, name: str) -> dict:
+    if not isinstance(market, dict):
+        return {}
+    outcomes = market.get("outcomes")
+    if not isinstance(outcomes, list):
+        return {}
+    target = str(name or "").strip().lower()
+    for outcome in outcomes:
+        if not isinstance(outcome, dict):
+            continue
+        if str(outcome.get("name") or "").strip().lower() == target:
+            return outcome
+    return {}
+
+
+def _normalize_live_odds_rows(sport_label: str, events: list) -> list[dict]:
+    rows = []
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        away_team = event.get("away_team") or ""
+        home_team = event.get("home_team") or ""
+        bookmakers = event.get("bookmakers") if isinstance(event.get("bookmakers"), list) else []
+        for bookmaker in bookmakers:
+            market_lookup = _market_by_key(bookmaker)
+            h2h = market_lookup.get("h2h")
+            spreads = market_lookup.get("spreads")
+            totals = market_lookup.get("totals")
+
+            away_ml = _outcome_for_name(h2h, away_team)
+            home_ml = _outcome_for_name(h2h, home_team)
+            away_spread = _outcome_for_name(spreads, away_team)
+            home_spread = _outcome_for_name(spreads, home_team)
+            over_total = _outcome_for_name(totals, "Over")
+            under_total = _outcome_for_name(totals, "Under")
+
+            last_update = (
+                bookmaker.get("last_update")
+                or (h2h or {}).get("last_update")
+                or (spreads or {}).get("last_update")
+                or (totals or {}).get("last_update")
+                or ""
+            )
+            rows.append(
+                {
+                    "sport": sport_label,
+                    "commence_time": event.get("commence_time") or "",
+                    "away_team": away_team,
+                    "home_team": home_team,
+                    "bookmaker": bookmaker.get("title") or bookmaker.get("key") or "",
+                    "moneyline_away": away_ml.get("price", ""),
+                    "moneyline_home": home_ml.get("price", ""),
+                    "spread_away": away_spread.get("point", ""),
+                    "spread_away_price": away_spread.get("price", ""),
+                    "spread_home": home_spread.get("point", ""),
+                    "spread_home_price": home_spread.get("price", ""),
+                    "total": over_total.get("point", under_total.get("point", "")),
+                    "over_price": over_total.get("price", ""),
+                    "under_price": under_total.get("price", ""),
+                    "last_update": last_update,
+                    "event_id": event.get("id") or "",
+                }
+            )
+    return rows
+
+
+@st.cache_data(ttl=120, show_spinner=False)
+def _fetch_live_odds_for_dashboard(
+    sport_label: str,
+    sport_key: str,
+    api_key: str,
+) -> dict:
+    url = LIVE_ODDS_URL.format(sport_key=sport_key)
+    params = {
+        "apiKey": api_key,
+        "regions": LIVE_ODDS_REGION,
+        "markets": LIVE_ODDS_MARKETS,
+        "oddsFormat": LIVE_ODDS_FORMAT,
+        "dateFormat": "iso",
+    }
+    fetch_time = datetime.now(timezone.utc).isoformat()
+    try:
+        response = _live_requests_get(url, params=params, timeout=20)
+        status_code = response.status_code
+        if not response.ok:
+            body = (response.text or "").strip()
+            if len(body) > 400:
+                body = body[:400] + "..."
+            return {
+                "ok": False,
+                "status_code": status_code,
+                "error": f"The Odds API returned HTTP {status_code}: {body}",
+                "events": [],
+                "rows": [],
+                "fetch_time_utc": fetch_time,
+            }
+        events = response.json()
+    except Exception as exc:
+        return {
+            "ok": False,
+            "status_code": None,
+            "error": f"The Odds API request failed: {exc}",
+            "events": [],
+            "rows": [],
+            "fetch_time_utc": fetch_time,
+        }
+
+    if not isinstance(events, list):
+        return {
+            "ok": False,
+            "status_code": status_code,
+            "error": "The Odds API response was not a list of events.",
+            "events": [],
+            "rows": [],
+            "fetch_time_utc": fetch_time,
+        }
+
+    rows = _normalize_live_odds_rows(sport_label, events)
+    return {
+        "ok": True,
+        "status_code": status_code,
+        "error": None,
+        "events": events,
+        "rows": rows,
+        "fetch_time_utc": fetch_time,
+    }
+
+
+def _render_live_odds_section(sport_label: str) -> bool:
+    registry = LIVE_ODDS_REGISTRY.get(sport_label)
+    if not registry or not registry.get("enabled"):
+        return False
+
+    sport_key = str(registry.get("sport_key") or "").strip()
+    st.subheader("Live Odds")
+    st.caption(
+        "Source: The Odds API v4 odds endpoint. "
+        f"Markets: `{LIVE_ODDS_MARKETS}` | Region: `{LIVE_ODDS_REGION}` | Odds: `{LIVE_ODDS_FORMAT}`"
+    )
+
+    if st.button("Refresh live odds", key=f"{sport_label.lower()}_live_odds_refresh"):
+        _fetch_live_odds_for_dashboard.clear()
+
+    api_key = _get_odds_api_key_for_dashboard()
+    if not api_key:
+        st.error(
+            "Live odds are unavailable because `ODDS_API_KEY` is not configured in the "
+            "environment or Streamlit secrets."
+        )
+        return False
+
+    result = _fetch_live_odds_for_dashboard(sport_label, sport_key, api_key)
+    events = result.get("events") or []
+    rows = result.get("rows") or []
+
+    with st.expander("Live odds diagnostics", expanded=False):
+        st.write("Selected sport:", sport_label)
+        st.write("Sport key:", sport_key)
+        st.write("Events returned:", len(events))
+        st.write("Normalized rows:", len(rows))
+        st.write("Last API fetch time:", result.get("fetch_time_utc") or "")
+        st.write("Markets requested:", LIVE_ODDS_MARKETS)
+        st.write("Region requested:", LIVE_ODDS_REGION)
+        st.write("HTTP status:", result.get("status_code") or "N/A")
+
+    if not result.get("ok"):
+        st.error(result.get("error") or "The Odds API request failed.")
+        return False
+
+    if not events:
+        st.info(f"No upcoming/live {sport_label} games were returned by The Odds API right now.")
+        return False
+
+    if not rows:
+        st.warning(
+            f"The Odds API returned {len(events)} {sport_label} event(s), but no bookmaker odds rows "
+            "were available for h2h, spreads, or totals."
+        )
+        return False
+
+    st.success(f"Loaded {len(events)} {sport_label} event(s) and {len(rows)} bookmaker odds row(s).")
+    display_df = pd.DataFrame(rows, columns=LIVE_ODDS_COLUMNS).fillna("").astype(str)
+    st.dataframe(display_df, width="stretch", hide_index=True)
+    return True
+
 
 def _bridge_slate_path(selected_league_key: str) -> Path:
     return PROJECT_ROOT / "data" / selected_league_key / "daily" / f"{selected_league_key}_daily_slate_bridge.json"
@@ -212,10 +479,16 @@ def _render_bridge_slate_page() -> None:
             st.image(header_icon_path, width=90)
     with col2:
         st.markdown(
-            f"<h1 style='margin-bottom:0;'>BookieX - {league} Bridge Slate</h1>",
+            f"<h1 style='margin-bottom:0;'>BookieX - {league} Odds Slate</h1>",
             unsafe_allow_html=True,
         )
-        st.caption(f"Source: `{bridge_path}`")
+        st.caption("Live odds first; local bridge artifact remains available below as a non-model fallback.")
+
+    live_rows_displayed = _render_live_odds_section(league)
+
+    st.markdown("---")
+    st.subheader("Bridge Slate Artifact")
+    st.caption(f"Source: `{bridge_path}`")
 
     if error:
         st.warning(error)
