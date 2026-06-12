@@ -147,6 +147,109 @@ else:
 
 files = list(DAILY_DIR.glob(file_pattern))
 
+BRIDGE_SLATE_WARNING = (
+    "Bridge slate only - not a predictive model output. No pick, edge, confidence, ROI, "
+    "or backtest result has been generated yet."
+)
+BRIDGE_SLATE_COLUMNS = [
+    "game_date",
+    "commence_time",
+    "display_matchup",
+    "away_team",
+    "home_team",
+    "away_team_key",
+    "home_team_key",
+    "bookmaker_count",
+    "market_count",
+    "has_h2h",
+    "has_spreads",
+    "has_totals",
+    "has_schedule_match",
+    "status",
+    "completed",
+]
+
+
+def _bridge_slate_path(selected_league_key: str) -> Path:
+    return PROJECT_ROOT / "data" / selected_league_key / "daily" / f"{selected_league_key}_daily_slate_bridge.json"
+
+
+def _load_bridge_slate(selected_league_key: str) -> tuple[dict | None, Path, str | None]:
+    path = _bridge_slate_path(selected_league_key)
+    if not path.exists():
+        return None, path, f"No bridge slate data for {selected_league_key.upper()}. Expected file: `{path.resolve()}`."
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            payload = json.load(f)
+    except Exception as exc:
+        return None, path, f"Bridge slate file exists but could not be loaded: `{path.resolve()}`. Error: {exc}"
+    if not isinstance(payload, dict):
+        return None, path, f"Bridge slate file has an invalid shape: `{path.resolve()}`."
+    games = payload.get("games")
+    if not isinstance(games, list):
+        return None, path, f"Bridge slate file is missing a `games` list: `{path.resolve()}`."
+    return payload, path, None
+
+
+def _render_bridge_slate_page() -> None:
+    payload, bridge_path, error = _load_bridge_slate(league_key)
+
+    current_bankroll_bridge = st.sidebar.number_input(
+        "Current Bankroll ($)",
+        min_value=0,
+        value=1000,
+        step=100,
+        help="Your actual balance. Bridge slates do not calculate Kelly sizing yet.",
+        key=f"{league_key}_bridge_bankroll",
+    )
+    qr_code_bridge_path = PROJECT_ROOT / "assets" / "qr-code_bookiex_v01.png"
+    if qr_code_bridge_path.exists():
+        st.sidebar.image(str(qr_code_bridge_path), width=220)
+
+    col1, col2 = st.columns([1, 6])
+    with col1:
+        if Path(header_icon_path).exists():
+            st.image(header_icon_path, width=90)
+    with col2:
+        st.markdown(
+            f"<h1 style='margin-bottom:0;'>BookieX - {league} Bridge Slate</h1>",
+            unsafe_allow_html=True,
+        )
+        st.caption(f"Source: `{bridge_path}`")
+
+    if error:
+        st.warning(error)
+        return
+
+    st.warning(BRIDGE_SLATE_WARNING)
+
+    is_model_output = bool(payload.get("is_model_output"))
+    is_roi_output = bool(payload.get("is_roi_output"))
+    games = payload.get("games") or []
+    record_count = int(payload.get("record_count") or len(games))
+
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Slate Games", record_count)
+    c2.metric("Model Output", "No" if not is_model_output else "Yes")
+    c3.metric("ROI Output", "No" if not is_roi_output else "Yes")
+    c4.metric("Current Bankroll", f"${current_bankroll_bridge:,}")
+
+    rows = []
+    for game in games:
+        if not isinstance(game, dict):
+            continue
+        rows.append({column: game.get(column, "") for column in BRIDGE_SLATE_COLUMNS})
+
+    if not rows:
+        st.warning(f"Bridge slate loaded, but no game records were present in `{bridge_path.resolve()}`.")
+        return
+
+    st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
+    st.caption(
+        "Displayed fields come directly from the daily slate bridge artifact. "
+        "No pick, edge, confidence, ROI, model score, or backtest-derived field is calculated here."
+    )
+
 
 def _render_new_league_model_status_page() -> None:
     status = NEW_LEAGUE_MODEL_STATUS.get(
@@ -493,6 +596,10 @@ def _resolve_pocket_recommended_bet_daily_games(
             pass
     return games_selected, "mismatch_no_file"
 
+
+if not date_map and league in ("WNBA", "NHL"):
+    _render_bridge_slate_page()
+    st.stop()
 
 if not date_map and league not in ("NBA", "NCAAM"):
     _render_new_league_model_status_page()

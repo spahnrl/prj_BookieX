@@ -13,6 +13,8 @@ Unified schedule ingestion for NBA and NCAAM.
 Usage:
   python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league nba
   python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league ncaam [--start-date YYYYMMDD] [--end-date YYYYMMDD]
+  python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league wnba --start-date YYYYMMDD --end-date YYYYMMDD
+  python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league nhl --start-date YYYYMMDD --end-date YYYYMMDD
 
 Forward-only: reads only external APIs; writes only schedule raw JSON + legacy CSV audit.
 """
@@ -305,6 +307,19 @@ def _ncaam_build_dates(start_date: str, end_date: str) -> list[str]:
     return out
 
 
+def _write_schedule_csv(league: str, rows: list[dict]) -> None:
+    if not rows:
+        return
+    path = get_schedule_raw_path(league).with_suffix(".csv")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = sorted({k for row in rows for k in row.keys()})
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(rows)
+    log_info(f"Legacy audit CSV: {path}")
+
+
 def _ncaam_team_name_norm_key(value: str) -> str:
     text = (value or "").strip().lower()
     for old, new in [("&", " and "), ("'", ""), (".", " "), ("-", " "), ("/", " "), (",", " "), ("(", " "), (")", " ")]:
@@ -537,21 +552,125 @@ def run_ncaam(start_date: str, end_date: str) -> None:
 
 
 # =============================================================================
+# WNBA/NHL: ESPN SCOREBOARD PROBE, NORMALIZE, WRITE
+# =============================================================================
+
+SCOREBOARD_URL_BY_LEAGUE = {
+    "wnba": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard",
+    "nhl": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard",
+}
+
+
+def _scoreboard_score(c: dict):
+    v = c.get("score")
+    if v in (None, ""):
+        return ""
+    try:
+        return str(int(v))
+    except (TypeError, ValueError):
+        return str(v).strip()
+
+
+def _scoreboard_team_name(c: dict) -> str:
+    t = (c or {}).get("team") or {}
+    return (t.get("displayName") or t.get("shortDisplayName") or t.get("name") or "").strip()
+
+
+def _normalize_scoreboard_payload_minimal(league: str, payload: dict, requested_date: str) -> list[dict]:
+    rows = []
+    season_obj = payload.get("season") or {}
+    for event in payload.get("events", []) or []:
+        comps = event.get("competitions") or []
+        if not comps:
+            continue
+        comp0 = comps[0] or {}
+        competitors = comp0.get("competitors") or []
+        home = _ncaam_extract_competitor(competitors, "home")
+        away = _ncaam_extract_competitor(competitors, "away")
+        if not home or not away:
+            continue
+        status_type = ((event.get("status") or {}).get("type") or {})
+        event_date = event.get("date") or ""
+        venue = comp0.get("venue") or {}
+        completed = bool(status_type.get("completed"))
+        rows.append({
+            "game_id": str(event.get("id") or "").strip(),
+            "game_date": event_date[:10] if event_date else datetime.strptime(requested_date, "%Y%m%d").date().isoformat(),
+            "game_time_utc": event_date,
+            "status": status_type.get("name") or status_type.get("description") or "",
+            "status_state": status_type.get("state") or "",
+            "completed": int(completed),
+            "home_team_raw": _scoreboard_team_name(home),
+            "away_team_raw": _scoreboard_team_name(away),
+            "home_score": _scoreboard_score(home),
+            "away_score": _scoreboard_score(away),
+            "venue": venue.get("fullName") or venue.get("name") or "",
+            "season": season_obj.get("year") or "",
+            "source_system": f"espn_public_scoreboard_{league}",
+            "requested_date": requested_date,
+        })
+    return rows
+
+
+def run_scoreboard_league(league: str, start_date: str, end_date: str) -> None:
+    league = (league or "").strip().lower()
+    if league not in SCOREBOARD_URL_BY_LEAGUE:
+        raise ValueError(f"Unsupported scoreboard league: {league!r}")
+    date_list = _ncaam_build_dates(start_date, end_date)
+    url = SCOREBOARD_URL_BY_LEAGUE[league]
+    rows = []
+    payloads = []
+
+    for date_str in date_list:
+        resp = _requests_get(url, params={"dates": date_str, "limit": 500}, timeout=30)
+        resp.raise_for_status()
+        payload = resp.json()
+        events = payload.get("events") or []
+        payloads.append({"requested_date": date_str, "event_count": len(events), "payload": payload})
+        daily_rows = _normalize_scoreboard_payload_minimal(league, payload, date_str)
+        rows.extend(daily_rows)
+        log_info(f"{league.upper()} ESPN scoreboard {date_str}: events={len(events)} normalized={len(daily_rows)}")
+
+    deduped = _ncaam_dedupe(rows)
+    if not deduped:
+        log_error(f"{league.upper()} schedule provider returned zero usable events; no schedule file written")
+        return
+
+    raw_path = get_schedule_raw_path(league)
+    raw_path.parent.mkdir(parents=True, exist_ok=True)
+    save_schedule_raw(league, deduped)
+    _write_schedule_csv(league, deduped)
+
+    latest_path = raw_path.parent / f"{league}_schedule_raw_latest.json"
+    with open(latest_path, "w", encoding="utf-8") as f:
+        json.dump({
+            "captured_at_utc": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            "source": f"espn_public_scoreboard_{league}",
+            "requested_start_date": start_date,
+            "requested_end_date": end_date,
+            "date_payloads": payloads,
+        }, f, indent=2)
+    log_info(f"Schedule JSON: {raw_path}")
+    log_info(f"Latest raw JSON: {latest_path}")
+    log_info(f"Date count: {len(date_list)}; saved rows: {len(deduped)}")
+
+
+# =============================================================================
 # ENTRYPOINT
 # =============================================================================
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Ingest schedule (NBA or NCAAM)")
-    parser.add_argument("--league", required=True, choices=["nba", "ncaam"])
-    parser.add_argument("--start-date", dest="start_date", help="NCAAM only: YYYYMMDD")
-    parser.add_argument("--end-date", dest="end_date", help="NCAAM only: YYYYMMDD")
+    parser = argparse.ArgumentParser(description="Ingest schedule")
+    parser.add_argument("--league", required=True, choices=["nba", "ncaam", "wnba", "nhl"])
+    parser.add_argument("--start-date", dest="start_date", help="YYYYMMDD")
+    parser.add_argument("--end-date", dest="end_date", help="YYYYMMDD")
     parser.add_argument("--silent", action="store_true", help="Only print critical errors")
     args = parser.parse_args()
     set_silent(args.silent)
 
     if args.league == "nba":
         run_nba()
-    else:
+    elif args.league == "ncaam":
         if (args.start_date and not args.end_date) or (args.end_date and not args.start_date):
             raise ValueError("NCAAM: provide both --start-date and --end-date or neither")
         if args.start_date and args.end_date:
@@ -563,6 +682,16 @@ def main() -> None:
             end_date = today_cst + timedelta(days=NCAAM_DEFAULT_END_LOOKAHEAD_DAYS)
             end_str = end_date.strftime("%Y%m%d")
             run_ncaam(start_str, end_str)
+    else:
+        if (args.start_date and not args.end_date) or (args.end_date and not args.start_date):
+            raise ValueError(f"{args.league.upper()}: provide both --start-date and --end-date or neither")
+        if args.start_date and args.end_date:
+            run_scoreboard_league(args.league, args.start_date, args.end_date)
+        else:
+            today_cst = datetime.now(SLATE_TIMEZONE).date()
+            start_str = today_cst.strftime("%Y%m%d")
+            end_str = (today_cst + timedelta(days=14)).strftime("%Y%m%d")
+            run_scoreboard_league(args.league, start_str, end_str)
 
 
 if __name__ == "__main__":

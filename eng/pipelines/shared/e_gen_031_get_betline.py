@@ -1,7 +1,7 @@
 """
 e_gen_031_get_betline.py
 
-Unified market retrieval: fetch current betting lines from The Odds API for NBA or NCAAM.
+Unified market retrieval: fetch current betting lines from The Odds API.
 
 - Checks existing data (NBA: data/external/odds_api_raw.json; NCAAM: data/ncaam/raw
   ncaam_odds_api_raw.json list + legacy data/ncaam/market/raw + timestamped raw) before API calls.
@@ -14,6 +14,8 @@ Unified market retrieval: fetch current betting lines from The Odds API for NBA 
 Usage:
   python e_gen_031_get_betline.py --league nba
   python e_gen_031_get_betline.py --league ncaam
+  python e_gen_031_get_betline.py --league wnba
+  python e_gen_031_get_betline.py --league nhl
   python e_gen_031_get_betline.py --league ncaam --skip-if-recent 60
   python e_gen_031_get_betline.py --league ncaam --backfill-ncaam
   python e_gen_031_get_betline.py --league ncaam --gap-fill-ncaam
@@ -38,6 +40,11 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 from dotenv import load_dotenv
 
+from utils.io_helpers import (
+    get_odds_raw_accum_path,
+    get_odds_raw_latest_path,
+    get_timestamped_odds_raw_path,
+)
 from utils.run_log import set_silent, log_info
 
 # =====================================================
@@ -52,10 +59,20 @@ BASE_URL = "https://api.the-odds-api.com/v4/sports"
 MARKETS = "spreads,totals,h2h"
 REGIONS = "us"
 ODDS_FORMAT = "american"
+SPORT_KEY_BY_LEAGUE = {
+    "nba": "basketball_nba",
+    "ncaam": "basketball_ncaab",
+    "wnba": "basketball_wnba",
+    "nhl": "icehockey_nhl",
+}
 
 API_KEY = os.getenv("ODDS_API_KEY")
 if not API_KEY:
     raise RuntimeError("Missing required environment variable: ODDS_API_KEY")
+
+
+def _redact_api_key(text: object) -> str:
+    return re.sub(r"apiKey=[^&\s)]+", "apiKey=<REDACTED>", str(text))
 
 
 # =====================================================
@@ -128,6 +145,31 @@ def _load_ncaam_accum_from_disk() -> list[dict]:
     if primary:
         return primary
     return _read(LEGACY_ODDS_RAW_ACCUM_PATH)
+
+
+def _load_accum_from_path(path: Path) -> list[dict]:
+    """JSON array of snapshot dicts. Empty if missing or invalid."""
+    if not path.exists():
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, list):
+            return [s for s in data if isinstance(s, dict)]
+    except json.JSONDecodeError:
+        pass
+    return []
+
+
+def _load_latest_snapshot(path: Path | None) -> dict | None:
+    if path is None or not path.exists():
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else None
+    except json.JSONDecodeError:
+        return None
 
 
 def load_existing_ncaam(project_root: Path) -> tuple[list[dict], set[tuple[str, str]]]:
@@ -226,7 +268,7 @@ def requests_get(url: str, **kwargs):
     try:
         return requests.get(url, **kwargs)
     except requests.exceptions.SSLError as exc:
-        log_info(f"SSL verification failed for {url}; retrying odds fetch with verify=False: {exc}")
+        log_info(f"SSL verification failed for {url}; retrying odds fetch with verify=False: {_redact_api_key(exc)}")
         kwargs["verify"] = False
         return requests.get(url, **kwargs)
 
@@ -483,6 +525,79 @@ def run_ncaam(skip_if_recent_minutes: int | None = None) -> None:
     log_info(f"Accum JSON  -> {ODDS_RAW_ACCUM_PATH} ({len(accum_list)} snapshots)")
     log_info(f"Latest JSON -> {ODDS_RAW_LATEST_PATH}")
     log_info(f"Timestamped  -> {ts_path}")
+
+
+# =====================================================
+# CONFIGURED LEAGUES: latest + timestamped raw JSON
+# =====================================================
+
+def run_configured_league(league: str, skip_if_recent_minutes: int | None = None) -> None:
+    league = (league or "").strip().lower()
+    if league not in ("wnba", "nhl"):
+        raise ValueError(f"run_configured_league is only wired for WNBA/NHL in Phase 2A, got {league!r}")
+
+    sport_key = SPORT_KEY_BY_LEAGUE[league]
+    accum_path = get_odds_raw_accum_path(league)
+    latest_path = get_odds_raw_latest_path(league)
+    if latest_path is None:
+        raise ValueError(f"No latest raw odds path configured for {league!r}")
+
+    accum_on_disk = _load_accum_from_path(accum_path)
+    latest_snapshot = _load_latest_snapshot(latest_path)
+    snapshots_for_recent = list(accum_on_disk)
+    if not snapshots_for_recent and latest_snapshot:
+        snapshots_for_recent = [latest_snapshot]
+
+    if skip_if_recent_minutes is not None and skip_if_recent_minutes > 0 and snapshots_for_recent:
+        latest = snapshots_for_recent[-1]
+        cap = latest.get("captured_at_utc")
+        if cap:
+            try:
+                cap_dt = _parse_commence(cap) or datetime.min.replace(tzinfo=timezone.utc)
+                if (_now_utc() - cap_dt).total_seconds() < skip_if_recent_minutes * 60:
+                    raw_from_existing = latest.get("data") or []
+                    log_info(f"Skipped API call (data from last {skip_if_recent_minutes} min). Using existing.")
+                    _print_first_last_odds_dates(league.upper(), raw_from_existing)
+                    log_info(f"Latest -> {latest_path} (skip-if-recent satisfied)")
+                    return
+            except Exception:
+                pass
+
+    log_info(f"Fetching {league.upper()} odds from The Odds API ({sport_key})...")
+    raw_data = fetch_current_odds(sport_key)
+    captured_at = datetime.now(timezone.utc).isoformat()
+    snapshot = {
+        "captured_at_utc": captured_at,
+        "sport": sport_key,
+        "source": "the_odds_api",
+        "data": raw_data,
+    }
+
+    accum_list = list(accum_on_disk)
+    if not accum_list and latest_snapshot and isinstance(latest_snapshot.get("data"), list):
+        accum_list = [latest_snapshot]
+    accum_list.append(snapshot)
+
+    ts_label = datetime.now().strftime("%Y%m%d_%H%M%S")
+    ts_path = get_timestamped_odds_raw_path(league, ts_label)
+
+    accum_path.parent.mkdir(parents=True, exist_ok=True)
+    latest_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(accum_path, "w", encoding="utf-8") as f:
+        json.dump(accum_list, f, indent=2)
+    with open(latest_path, "w", encoding="utf-8") as f:
+        json.dump(snapshot, f, indent=2)
+    if ts_path is not None:
+        ts_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(ts_path, "w", encoding="utf-8") as f:
+            json.dump(snapshot, f, indent=2)
+
+    log_info(f"Retrieved {len(raw_data)} games")
+    _print_first_last_odds_dates(league.upper(), raw_data)
+    log_info(f"Accum JSON  -> {accum_path} ({len(accum_list)} snapshots)")
+    log_info(f"Latest JSON -> {latest_path}")
+    if ts_path is not None:
+        log_info(f"Timestamped  -> {ts_path}")
 
 
 # =====================================================
@@ -764,7 +879,7 @@ def run_gap_fill_ncaam() -> None:
 def main() -> None:
     import argparse
     parser = argparse.ArgumentParser(description="Fetch betting lines from The Odds API")
-    parser.add_argument("--league", required=True, choices=["nba", "ncaam"])
+    parser.add_argument("--league", required=True, choices=sorted(SPORT_KEY_BY_LEAGUE))
     parser.add_argument(
         "--skip-if-recent",
         type=int,
@@ -800,8 +915,10 @@ def main() -> None:
 
     if args.league == "nba":
         run_nba(skip_if_recent_minutes=args.skip_if_recent)
-    else:
+    elif args.league == "ncaam":
         run_ncaam(skip_if_recent_minutes=args.skip_if_recent)
+    else:
+        run_configured_league(args.league, skip_if_recent_minutes=args.skip_if_recent)
 
 
 if __name__ == "__main__":
