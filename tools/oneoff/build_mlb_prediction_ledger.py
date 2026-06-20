@@ -31,6 +31,7 @@ INTERIM_DIR = PROJECT_ROOT / "data" / "mlb" / "interim"
 
 ESPN_MLB_SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"
 FLAT_ODDS_PATH = DERIVED_DIR / "mlb_betlines_flattened.csv"
+HISTORICAL_FLAT_DIR = DERIVED_DIR / "historical"
 
 
 def _utc_now_stamp() -> str:
@@ -222,10 +223,15 @@ def _write_csv(path: Path, rows: list[dict]) -> None:
 
 
 def _load_flat_odds() -> list[dict]:
-    if not FLAT_ODDS_PATH.exists():
-        return []
-    with FLAT_ODDS_PATH.open("r", encoding="utf-8-sig", newline="") as f:
-        return list(csv.DictReader(f))
+    rows: list[dict] = []
+    if FLAT_ODDS_PATH.exists():
+        with FLAT_ODDS_PATH.open("r", encoding="utf-8-sig", newline="") as f:
+            rows.extend(csv.DictReader(f))
+    if HISTORICAL_FLAT_DIR.exists():
+        for path in sorted(HISTORICAL_FLAT_DIR.glob("mlb_betlines_flattened_*.csv")):
+            with path.open("r", encoding="utf-8-sig", newline="") as f:
+                rows.extend(csv.DictReader(f))
+    return rows
 
 
 def _find_price(flat_rows: list[dict], odds_game_id: str, market: str, outcome: str, point, book: str):
