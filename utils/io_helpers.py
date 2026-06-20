@@ -50,34 +50,42 @@ def _league_paths(league: str) -> dict[str, Path | None]:
         }
     if league == "ncaam":
         from configs.leagues import league_ncaam as cfg
+        data_root = getattr(cfg, "DATA_ROOT", PROJECT_ROOT / "data" / "ncaam")
+        raw_dir = getattr(cfg, "RAW_DIR", data_root / "raw")
+        interim_dir = getattr(cfg, "INTERIM_DIR", data_root / "interim")
+        canonical_dir = getattr(cfg, "CANONICAL_DIR", data_root / "canonical")
+        model_dir = getattr(cfg, "MODEL_DIR", data_root / "model")
+        view_dir = getattr(cfg, "VIEW_DIR", data_root / "view")
+        daily_dir = getattr(cfg, "DAILY_DIR", data_root / "daily")
+        backtest_dir = getattr(cfg, "BACKTEST_DIR", data_root / "backtests")
         odds_raw_latest = getattr(
             cfg,
             "ODDS_RAW_LATEST_PATH",
-            cfg.RAW_DIR / "ncaam_odds_latest.json",
+            raw_dir / "ncaam_odds_latest.json",
         )
         odds_raw_accum = getattr(
             cfg,
             "ODDS_RAW_ACCUM_PATH",
-            cfg.RAW_DIR / "ncaam_odds_api_raw.json",
+            raw_dir / "ncaam_odds_api_raw.json",
         )
         return {
-            "game_state": cfg.MODEL_DIR / "ncaam_canonical_games_with_lines.json",
-            "boxscore": cfg.INTERIM_DIR / "ncaam_boxscores_raw.json",
-            "schedule_raw": cfg.RAW_DIR / "ncaam_schedule_raw.json",
-            "schedule_joined": cfg.INTERIM_DIR / "ncaam_schedule_mapped.json",
-            "team_map": cfg.RAW_DIR / "ncaam_team_map.csv",
-            "canonical_csv": cfg.CANONICAL_GAMES_PATH,
+            "game_state": model_dir / "ncaam_canonical_games_with_lines.json",
+            "boxscore": interim_dir / "ncaam_boxscores_raw.json",
+            "schedule_raw": raw_dir / "ncaam_schedule_raw.json",
+            "schedule_joined": interim_dir / "ncaam_schedule_mapped.json",
+            "team_map": raw_dir / "ncaam_team_map.csv",
+            "canonical_csv": getattr(cfg, "CANONICAL_GAMES_PATH", canonical_dir / "ncaam_canonical_games.csv"),
             "canonical_json": None,
             "game_level_json": None,
-            "game_level_csv": cfg.GAME_LEVEL_PATH,
-            "model_json": cfg.MODEL_DIR / "ncaam_games_multi_model_v1.json",
-            "model_csv": cfg.MODEL_DIR / "ncaam_games_multi_model_v1.csv",
-            "final_json": cfg.VIEW_DIR / "final_game_view_ncaam.json",
-            "final_csv": cfg.VIEW_DIR / "final_game_view_ncaam.csv",
-            "active_final_json": cfg.VIEW_DIR / "final_game_view_ncaam_active.json",
-            "daily_dir": cfg.DAILY_DIR,
-            "backtest_dir": cfg.BACKTEST_DIR,
-            "odds_master": cfg.RAW_DIR / "odds_master_ncaam.json",
+            "game_level_csv": getattr(cfg, "GAME_LEVEL_PATH", canonical_dir / "ncaam_game_level.csv"),
+            "model_json": model_dir / "ncaam_games_multi_model_v1.json",
+            "model_csv": model_dir / "ncaam_games_multi_model_v1.csv",
+            "final_json": view_dir / "final_game_view_ncaam.json",
+            "final_csv": view_dir / "final_game_view_ncaam.csv",
+            "active_final_json": view_dir / "final_game_view_ncaam_active.json",
+            "daily_dir": daily_dir,
+            "backtest_dir": backtest_dir,
+            "odds_master": raw_dir / "odds_master_ncaam.json",
             "odds_raw_latest": odds_raw_latest,
             "odds_raw_accum": odds_raw_accum,
         }
