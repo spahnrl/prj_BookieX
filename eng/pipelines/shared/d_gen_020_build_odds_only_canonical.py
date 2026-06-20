@@ -1,7 +1,7 @@
 """
 d_gen_020_build_odds_only_canonical.py
 
-Build minimal WNBA/NHL canonical game artifacts from flattened Odds API rows.
+Build minimal WNBA/NHL/MLB canonical game artifacts from flattened Odds API rows.
 Schedule rows are used only as an optional match signal; odds-only games are kept.
 """
 
@@ -24,7 +24,7 @@ from utils.io_helpers import get_schedule_raw_path
 from utils.run_log import set_silent, log_info
 
 
-SUPPORTED = ("wnba", "nhl")
+SUPPORTED = ("wnba", "nhl", "mlb")
 
 
 def _league_config(league: str):
@@ -32,13 +32,20 @@ def _league_config(league: str):
         from configs.leagues import league_wnba as cfg
     elif league == "nhl":
         from configs.leagues import league_nhl as cfg
+    elif league == "mlb":
+        from configs.leagues import league_mlb as cfg
     else:
         raise ValueError(f"Unsupported league: {league!r}")
     return cfg
 
 
 def _normalization_config_path(league: str) -> Path:
-    name = "basketball_wnba.json" if league == "wnba" else "icehockey_nhl.json"
+    names = {
+        "wnba": "basketball_wnba.json",
+        "nhl": "icehockey_nhl.json",
+        "mlb": "baseball_mlb.json",
+    }
+    name = names[league]
     return _PROJECT_ROOT / "configs" / "normalization" / "leagues" / name
 
 
@@ -306,7 +313,7 @@ def run(league: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build odds-only canonical games for WNBA/NHL")
+    parser = argparse.ArgumentParser(description="Build odds-only canonical games for WNBA/NHL/MLB")
     parser.add_argument("--league", required=True, choices=list(SUPPORTED))
     parser.add_argument("--silent", action="store_true", help="Only print critical errors")
     args = parser.parse_args()

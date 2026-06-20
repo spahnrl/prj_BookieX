@@ -15,6 +15,7 @@ Usage:
   python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league ncaam [--start-date YYYYMMDD] [--end-date YYYYMMDD]
   python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league wnba --start-date YYYYMMDD --end-date YYYYMMDD
   python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league nhl --start-date YYYYMMDD --end-date YYYYMMDD
+  python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league mlb --start-date YYYYMMDD --end-date YYYYMMDD
 
 Forward-only: reads only external APIs; writes only schedule raw JSON + legacy CSV audit.
 """
@@ -552,12 +553,13 @@ def run_ncaam(start_date: str, end_date: str) -> None:
 
 
 # =============================================================================
-# WNBA/NHL: ESPN SCOREBOARD PROBE, NORMALIZE, WRITE
+# WNBA/NHL/MLB: ESPN SCOREBOARD PROBE, NORMALIZE, WRITE
 # =============================================================================
 
 SCOREBOARD_URL_BY_LEAGUE = {
     "wnba": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard",
     "nhl": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard",
+    "mlb": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard",
 }
 
 
@@ -661,7 +663,7 @@ def run_scoreboard_league(league: str, start_date: str, end_date: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Ingest schedule")
-    parser.add_argument("--league", required=True, choices=["nba", "ncaam", "wnba", "nhl"])
+    parser.add_argument("--league", required=True, choices=["nba", "ncaam", "wnba", "nhl", "mlb"])
     parser.add_argument("--start-date", dest="start_date", help="YYYYMMDD")
     parser.add_argument("--end-date", dest="end_date", help="YYYYMMDD")
     parser.add_argument("--silent", action="store_true", help="Only print critical errors")

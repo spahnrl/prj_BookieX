@@ -99,6 +99,16 @@ NEW_LEAGUE_MODEL_STATUS = {
         "lanes": NCAAM_MODEL_LANES,
         "notes": "NHL is presented with the same model contract and display surface as NCAAM: average score, last-5 momentum, and market pressure.",
     },
+    "MLB": {
+        "template": "WNBA",
+        "lanes": [
+            "MLB_MarketConsensus_v1",
+            "MLB_SpreadValue_v1",
+            "MLB_TotalValue_v1",
+            "MLB_MarketValueBlend_v1",
+        ],
+        "notes": "MLB is presented with the same market-value daily contract as WNBA: consensus, run-line value, total value, and blended market-value lanes.",
+    },
 }
 
 # --------------------------------------------------
@@ -112,6 +122,7 @@ def _load_dashboard_league_options() -> list[dict]:
         {"label": "NCAAM", "league_key": "ncaam", "display_name": "NCAAM"},
         {"label": "WNBA", "league_key": "wnba", "display_name": "WNBA"},
         {"label": "NHL", "league_key": "nhl", "display_name": "NHL"},
+        {"label": "MLB", "league_key": "mlb", "display_name": "MLB"},
     ]
     if not NORMALIZATION_CONFIG_DIR.exists():
         return fallback
@@ -184,6 +195,7 @@ LIVE_ODDS_REGISTRY = {
     "NCAAB": {"sport_key": "basketball_ncaab", "enabled": True},
     "WNBA": {"sport_key": "basketball_wnba", "enabled": True},
     "NHL": {"sport_key": "icehockey_nhl", "enabled": True},
+    "MLB": {"sport_key": "baseball_mlb", "enabled": True},
 }
 LIVE_ODDS_MARKETS = "h2h,spreads,totals"
 LIVE_ODDS_REGION = "us"
@@ -833,18 +845,18 @@ for f in files:
     by_date[_date_from_name(f, league == "NCAAM")].append(f)
 date_map = {d: max(flist, key=lambda p: p.stat().st_mtime) for d, flist in by_date.items()}
 
-if league == "WNBA":
-    wnba_page_view = st.radio(
-        "WNBA page",
+if league in ("WNBA", "MLB"):
+    new_daily_page_view = st.radio(
+        f"{league} page",
         ("Live Odds Slate", "Daily View"),
         index=0,
         horizontal=True,
         help=(
             "Live Odds Slate keeps the current Odds API board. Daily View uses the generated "
-            "WNBA daily-view artifact and mirrors the NBA dashboard structure."
+            f"{league} daily-view artifact and mirrors the NBA dashboard structure."
         ),
     )
-    if wnba_page_view == "Live Odds Slate":
+    if new_daily_page_view == "Live Odds Slate":
         _render_bridge_slate_page()
         st.stop()
 
@@ -3718,19 +3730,19 @@ def _render_ncaam_pocket_roi_view(games: list, selected_date: str) -> None:
             _st_pocket_roi_table(_wrows, ["ROI"])
 
 
-def _render_wnba_pocket_roi_view(games: list, selected_date: str) -> None:
+def _render_seed_pocket_roi_view(games: list, selected_date: str, league_code: str, league_label: str) -> None:
     """
-    WNBA Pocket ROI presentation shell.
+    Limited-sample Pocket ROI presentation shell.
 
     This mirrors the NBA/NCAAM Pocket ROI layout, but it intentionally does not
-    create ROI, picks, confidence, or backtest-derived values before settled
-    WNBA pocket artifacts exist.
+    create mature ROI, confidence, or backtest-derived values before larger
+    settled-game pocket artifacts exist.
     """
-    seed_root = PROJECT_ROOT / "data" / "wnba" / "backtests"
-    ranked_path = seed_root / "wnba_ranked_pocket_opportunities.json"
-    best_path = seed_root / "wnba_best_pocket_per_game.json"
-    live_path = seed_root / "wnba_live_pocket_leaderboard.json"
-    model_pockets_path = seed_root / "wnba_model_pockets.json"
+    seed_root = PROJECT_ROOT / "data" / league_code / "backtests"
+    ranked_path = seed_root / f"{league_code}_ranked_pocket_opportunities.json"
+    best_path = seed_root / f"{league_code}_best_pocket_per_game.json"
+    live_path = seed_root / f"{league_code}_live_pocket_leaderboard.json"
+    model_pockets_path = seed_root / f"{league_code}_model_pockets.json"
 
     def _load_seed(path: Path) -> dict | None:
         if not path.exists():
@@ -3747,14 +3759,14 @@ def _render_wnba_pocket_roi_view(games: list, selected_date: str) -> None:
     live_doc = _load_seed(live_path)
     pockets_doc = _load_seed(model_pockets_path)
 
-    st.markdown("Per-game pocket summary from the **WNBA seed prediction ledger**.")
+    st.markdown(f"Per-game pocket summary from the **{league_label} seed prediction ledger**.")
     if not ranked_doc:
         st.info(
-            "No WNBA seed Pocket ROI artifacts found yet. Run "
-            "`tools/oneoff/build_wnba_pocket_roi_seed.py` after the prediction ledger validates."
+            f"No {league_label} seed Pocket ROI artifacts found yet. Run "
+            f"`tools/oneoff/build_{league_code}_pocket_roi_seed.py` after the prediction ledger validates."
         )
     else:
-        warning = ranked_doc.get("sample_warning") or "WNBA seed artifact; limited sample."
+        warning = ranked_doc.get("sample_warning") or f"{league_label} seed artifact; limited sample."
         st.warning(warning)
         overall = (pockets_doc or ranked_doc).get("overall") or {}
         c1, c2, c3, c4 = st.columns(4)
@@ -3783,7 +3795,7 @@ def _render_wnba_pocket_roi_view(games: list, selected_date: str) -> None:
         st.dataframe(pd.DataFrame(ranked_rows)[ranked_columns], width="stretch", hide_index=True)
     else:
         st.dataframe(pd.DataFrame(columns=ranked_columns), width="stretch", hide_index=True)
-        st.caption("No WNBA seed opportunities available yet.")
+        st.caption(f"No {league_label} seed opportunities available yet.")
 
     with st.expander("Best pocket per game (secondary summary)", expanded=False):
         best_rows = (best_doc or {}).get("games") or []
@@ -3803,7 +3815,7 @@ def _render_wnba_pocket_roi_view(games: list, selected_date: str) -> None:
             st.dataframe(pd.DataFrame(best_rows)[best_columns], width="stretch", hide_index=True)
         else:
             st.dataframe(pd.DataFrame(columns=best_columns), width="stretch", hide_index=True)
-            st.caption("Pending WNBA best-pocket-per-game seed artifact.")
+            st.caption(f"Pending {league_label} best-pocket-per-game seed artifact.")
 
     st.markdown("## Best 2-leg parlay (positive ROI only)")
     positive_rows = [
@@ -3814,22 +3826,30 @@ def _render_wnba_pocket_roi_view(games: list, selected_date: str) -> None:
         st.dataframe(pd.DataFrame(positive_rows[:2])[ranked_columns], width="stretch", hide_index=True)
         st.caption("Seed-only parlay candidate; sample is too small for production authority.")
     else:
-        st.info("No WNBA seed rows currently qualify for a positive-ROI 2-leg parlay.")
+        st.info(f"No {league_label} seed rows currently qualify for a positive-ROI 2-leg parlay.")
 
-    with st.expander("WNBA Pocket ROI readiness", expanded=False):
+    with st.expander(f"{league_label} Pocket ROI readiness", expanded=False):
         st.write(
             {
                 "selected_date": selected_date,
                 "daily_games_loaded": len(games),
-                "expected_backtest_root": str((PROJECT_ROOT / "data" / "wnba" / "backtests").resolve()),
-                "wnba_model_pockets.json": "loaded" if pockets_doc else "missing",
-                "wnba_ranked_pocket_opportunities.json": "loaded" if ranked_doc else "missing",
-                "wnba_best_pocket_per_game.json": "loaded" if best_doc else "missing",
-                "wnba_live_pocket_leaderboard.json": "loaded" if live_doc else "missing",
+                "expected_backtest_root": str(seed_root.resolve()),
+                f"{league_code}_model_pockets.json": "loaded" if pockets_doc else "missing",
+                f"{league_code}_ranked_pocket_opportunities.json": "loaded" if ranked_doc else "missing",
+                f"{league_code}_best_pocket_per_game.json": "loaded" if best_doc else "missing",
+                f"{league_code}_live_pocket_leaderboard.json": "loaded" if live_doc else "missing",
                 "live_seed_slate_date": (live_doc or {}).get("slate_date"),
                 "sample_warning": (ranked_doc or {}).get("sample_warning"),
             }
         )
+
+
+def _render_wnba_pocket_roi_view(games: list, selected_date: str) -> None:
+    _render_seed_pocket_roi_view(games, selected_date, "wnba", "WNBA")
+
+
+def _render_mlb_pocket_roi_view(games: list, selected_date: str) -> None:
+    _render_seed_pocket_roi_view(games, selected_date, "mlb", "MLB")
 
 
 # --------------------------------------------------
@@ -3910,7 +3930,7 @@ elif _overlay_status == "mismatch":
 else:
     st.caption("Agent overlay: loaded; slate date unknown — may not match selected slate")
 
-if league in ("NBA", "NCAAM", "WNBA"):
+if league in ("NBA", "NCAAM", "WNBA", "MLB"):
     slate_dashboard_view = st.radio(
         "Dashboard view",
         ("Standard Slate View", "Pocket ROI View"),
@@ -3941,10 +3961,18 @@ if league == "NCAAM" and slate_dashboard_view == "Pocket ROI View":
 
 if league == "WNBA" and slate_dashboard_view == "Pocket ROI View":
     st.caption(
-        "**Pocket ROI lens** - WNBA; display contract mirrors NBA, but ROI remains disabled until real "
-        "WNBA backtest and pocket artifacts exist."
+        "**Pocket ROI lens** - WNBA; display contract mirrors NBA, using limited-sample seed artifacts "
+        "until larger settled-game backtests exist."
     )
     _render_wnba_pocket_roi_view(games, selected_date)
+    st.stop()
+
+if league == "MLB" and slate_dashboard_view == "Pocket ROI View":
+    st.caption(
+        "**Pocket ROI lens** - MLB; display contract mirrors WNBA/NBA, using limited-sample seed artifacts "
+        "until larger settled-game backtests exist."
+    )
+    _render_mlb_pocket_roi_view(games, selected_date)
     st.stop()
 
 if league == "NBA" and slate_dashboard_view == "Standard Slate View":
@@ -3962,6 +3990,12 @@ if league == "WNBA" and slate_dashboard_view == "Standard Slate View":
         "**WNBA Daily View:** market-value picks compare available lines against cross-book consensus. "
         "Use **Live Odds Slate** for the live bookmaker table; Pocket ROI requires WNBA settled "
         "backtests before any ROI-ranked picks can appear."
+    )
+
+if league == "MLB" and slate_dashboard_view == "Standard Slate View":
+    st.caption(
+        "**MLB Daily View:** market-value picks compare available moneyline, run-line, and total lines "
+        "against cross-book consensus. Use **Live Odds Slate** for the live bookmaker table."
     )
 
 # --------------------------------------------------

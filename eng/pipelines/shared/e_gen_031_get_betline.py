@@ -16,6 +16,7 @@ Usage:
   python e_gen_031_get_betline.py --league ncaam
   python e_gen_031_get_betline.py --league wnba
   python e_gen_031_get_betline.py --league nhl
+  python e_gen_031_get_betline.py --league mlb
   python e_gen_031_get_betline.py --league ncaam --skip-if-recent 60
   python e_gen_031_get_betline.py --league ncaam --backfill-ncaam
   python e_gen_031_get_betline.py --league ncaam --gap-fill-ncaam
@@ -64,6 +65,7 @@ SPORT_KEY_BY_LEAGUE = {
     "ncaam": "basketball_ncaab",
     "wnba": "basketball_wnba",
     "nhl": "icehockey_nhl",
+    "mlb": "baseball_mlb",
 }
 
 API_KEY = os.getenv("ODDS_API_KEY")
@@ -533,7 +535,7 @@ def run_ncaam(skip_if_recent_minutes: int | None = None) -> None:
 
 def run_configured_league(league: str, skip_if_recent_minutes: int | None = None) -> None:
     league = (league or "").strip().lower()
-    if league not in ("wnba", "nhl"):
+    if league not in ("wnba", "nhl", "mlb"):
         raise ValueError(f"run_configured_league is only wired for WNBA/NHL in Phase 2A, got {league!r}")
 
     sport_key = SPORT_KEY_BY_LEAGUE[league]
