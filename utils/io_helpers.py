@@ -50,6 +50,16 @@ def _league_paths(league: str) -> dict[str, Path | None]:
         }
     if league == "ncaam":
         from configs.leagues import league_ncaam as cfg
+        odds_raw_latest = getattr(
+            cfg,
+            "ODDS_RAW_LATEST_PATH",
+            cfg.RAW_DIR / "ncaam_odds_latest.json",
+        )
+        odds_raw_accum = getattr(
+            cfg,
+            "ODDS_RAW_ACCUM_PATH",
+            cfg.RAW_DIR / "ncaam_odds_api_raw.json",
+        )
         return {
             "game_state": cfg.MODEL_DIR / "ncaam_canonical_games_with_lines.json",
             "boxscore": cfg.INTERIM_DIR / "ncaam_boxscores_raw.json",
@@ -68,8 +78,8 @@ def _league_paths(league: str) -> dict[str, Path | None]:
             "daily_dir": cfg.DAILY_DIR,
             "backtest_dir": cfg.BACKTEST_DIR,
             "odds_master": cfg.RAW_DIR / "odds_master_ncaam.json",
-            "odds_raw_latest": cfg.ODDS_RAW_LATEST_PATH,
-            "odds_raw_accum": cfg.ODDS_RAW_ACCUM_PATH,
+            "odds_raw_latest": odds_raw_latest,
+            "odds_raw_accum": odds_raw_accum,
         }
     if league == "wnba":
         from configs.leagues import league_wnba as cfg
