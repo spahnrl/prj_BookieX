@@ -7,7 +7,8 @@ Bridge-only scope:
 3. ingest schedule
 4. build odds-only canonical bridge
 5. build daily slate bridge
-6. validate final daily bridge JSON
+6. for WNBA, build market-value daily model view
+7. validate final daily bridge JSON and WNBA daily model JSON
 """
 
 from __future__ import annotations
@@ -24,6 +25,11 @@ SUPPORTED_LEAGUES = ("wnba", "nhl")
 
 def _bridge_json_path(league: str) -> Path:
     return PROJECT_ROOT / "data" / league / "daily" / f"{league}_daily_slate_bridge.json"
+
+
+def _daily_model_paths(league: str) -> list[Path]:
+    daily_dir = PROJECT_ROOT / "data" / league / "daily"
+    return sorted(daily_dir.glob(f"daily_view_{league}_*_v1.json"))
 
 
 def _run_step(cmd: list[str]) -> None:
@@ -66,6 +72,47 @@ def _validate_bridge_json(league: str) -> dict:
     }
 
 
+def _validate_wnba_daily_model_json() -> dict:
+    paths = _daily_model_paths("wnba")
+    if not paths:
+        raise SystemExit("[bridge_refresh] FAIL missing WNBA daily model JSON: data/wnba/daily/daily_view_wnba_*_v1.json")
+
+    total_games = 0
+    total_picks = 0
+    latest_path = max(paths, key=lambda p: p.stat().st_mtime)
+    latest_payload: dict | None = None
+
+    for path in paths:
+        with path.open("r", encoding="utf-8") as f:
+            payload = json.load(f)
+        if not isinstance(payload, dict):
+            raise SystemExit(f"[bridge_refresh] FAIL invalid WNBA daily model shape: {path}")
+        if payload.get("is_model_output") is not True:
+            raise SystemExit(f"[bridge_refresh] FAIL WNBA daily model is_model_output must be true: {path}")
+        if payload.get("is_roi_output") is not False:
+            raise SystemExit(f"[bridge_refresh] FAIL WNBA daily model is_roi_output must be false: {path}")
+        games = payload.get("games")
+        if not isinstance(games, list) or not games:
+            raise SystemExit(f"[bridge_refresh] FAIL WNBA daily model has no games: {path}")
+        total_games += len(games)
+        for game in games:
+            model = (game or {}).get("model_output") or {}
+            if model.get("spread_pick") or model.get("total_pick"):
+                total_picks += 1
+        if path == latest_path:
+            latest_payload = payload
+
+    return {
+        "daily_model_file_count": len(paths),
+        "daily_model_latest_path": latest_path,
+        "daily_model_latest_date": (latest_payload or {}).get("date"),
+        "daily_model_latest_game_count": len((latest_payload or {}).get("games") or []),
+        "daily_model_total_games": total_games,
+        "daily_model_games_with_picks": total_picks,
+        "daily_model_version": (latest_payload or {}).get("model_version"),
+    }
+
+
 def _build_commands(args: argparse.Namespace) -> list[list[str]]:
     py = sys.executable
     league = args.league
@@ -86,6 +133,11 @@ def _build_commands(args: argparse.Namespace) -> list[list[str]]:
 
     commands.append([py, "eng/pipelines/shared/d_gen_020_build_odds_only_canonical.py", "--league", league])
     commands.append([py, "eng/daily/build_gen_daily_slate_bridge.py", "--league", league])
+    if league == "wnba" and not args.skip_daily_model:
+        daily_cmd = [py, "eng/daily/build_wnba_daily_view.py"]
+        if args.daily_model_date:
+            daily_cmd.extend(["--date", args.daily_model_date])
+        commands.append(daily_cmd)
     return commands
 
 
@@ -96,12 +148,15 @@ def main() -> None:
     parser.add_argument("--end-date", help="Schedule end date YYYYMMDD. Must be used with --start-date.")
     parser.add_argument("--skip-odds-fetch", action="store_true", help="Use existing raw odds snapshot.")
     parser.add_argument("--skip-schedule", action="store_true", help="Use existing schedule snapshot.")
+    parser.add_argument("--skip-daily-model", action="store_true", help="WNBA only: skip market-value daily model build.")
+    parser.add_argument("--daily-model-date", help="WNBA only: optional YYYY-MM-DD date passed to build_wnba_daily_view.py.")
     args = parser.parse_args()
 
     for cmd in _build_commands(args):
         _run_step(cmd)
 
     summary = _validate_bridge_json(args.league)
+    daily_summary = _validate_wnba_daily_model_json() if args.league == "wnba" and not args.skip_daily_model else None
     print("\n[bridge_refresh] OK")
     print(f"league={args.league}")
     print(f"daily_bridge_path={summary['path']}")
@@ -109,6 +164,13 @@ def main() -> None:
     print(f"generated_at_utc={summary['generated_at_utc']}")
     print(f"is_model_output={summary['is_model_output']}")
     print(f"is_roi_output={summary['is_roi_output']}")
+    if daily_summary:
+        print(f"daily_model_latest_path={daily_summary['daily_model_latest_path']}")
+        print(f"daily_model_latest_date={daily_summary['daily_model_latest_date']}")
+        print(f"daily_model_latest_game_count={daily_summary['daily_model_latest_game_count']}")
+        print(f"daily_model_total_games={daily_summary['daily_model_total_games']}")
+        print(f"daily_model_games_with_picks={daily_summary['daily_model_games_with_picks']}")
+        print(f"daily_model_version={daily_summary['daily_model_version']}")
 
 
 if __name__ == "__main__":

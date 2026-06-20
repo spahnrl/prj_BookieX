@@ -1,0 +1,355 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "model_version": "WNBA_MARKET_VALUE_V1",
+  "calibration_version": "WNBA_MARKET_VALUE_NO_BACKTEST",
+  "generated_from_artifact_hash": "2494db757deab4f2aed089f968143581870b9dedc126941794b06c9467d4ebb5",
+  "date": "2026-06-13",
+  "build_timestamp_utc": "2026-06-20T20:32:51Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "WNBA Daily View uses a cross-book market-value model. Picks mean available line value versus consensus, not historical ROI or win-probability confidence. No WNBA ROI, pocket score, or backtest has been generated yet.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "2460c3f96c0544953ffbc6f0e4f0b2a0",
+        "game_date_local": "2026-06-13",
+        "home_team": "Phoenix Mercury",
+        "away_team": "Los Angeles Sparks",
+        "tip_time_cst": "2026-06-13T21:00:00-05:00",
+        "season_type": "WNBA"
+      },
+      "market_state": {
+        "spread_home_last": -1.5,
+        "total_last": 176.75,
+        "moneyline_home_last": -116,
+        "moneyline_away_last": -104.5,
+        "spread_home_consensus": -1.5,
+        "total_consensus": 176.75,
+        "spread_home_consensus_all_time": -1.5,
+        "total_consensus_all_time": 176.75,
+        "consensus_book_count": 4,
+        "all_time_snapshot_count": 24,
+        "odds_snapshot_last_utc": "2026-06-12T04:02:28.652591+00:00"
+      },
+      "model_output": {
+        "projected_home_score": "",
+        "projected_away_score": "",
+        "projected_margin_home": -1.5,
+        "projected_total": 176.75,
+        "spread_pick": "Phoenix Mercury",
+        "total_pick": "",
+        "confidence_tier": "LEAN",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "Small cross-book line-value gap detected; no ROI backtest attached.",
+        "actionability": "NONE"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.5,
+        "total_edge": 0.75,
+        "parlay_edge_score": 1.25,
+        "spread_edge_percentile": 0.16666666666666666,
+        "total_edge_percentile": 0.1875
+      },
+      "arbitration": {
+        "spread": "Phoenix Mercury",
+        "total": null,
+        "selection_authority": "WNBA_MarketValueBlend_v1",
+        "reason": "Small cross-book line-value gap detected; no ROI backtest attached."
+      },
+      "models": {
+        "WNBA_MarketConsensus_v1": {
+          "model_name": "WNBA_MarketConsensus_v1",
+          "total_projection": 176.75,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 4
+          }
+        },
+        "WNBA_SpreadValue_v1": {
+          "model_name": "WNBA_SpreadValue_v1",
+          "total_projection": 176.75,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.5,
+          "spread_edge": 0.5,
+          "spread_pick": "Phoenix Mercury",
+          "parlay_edge_score": 0.5,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "MyBookie.ag",
+            "value_line": -1,
+            "reason": "Phoenix Mercury has 0.5 points of spread value vs consensus at MyBookie.ag."
+          }
+        },
+        "WNBA_TotalValue_v1": {
+          "model_name": "WNBA_TotalValue_v1",
+          "total_projection": 176.75,
+          "total_distance": 0.75,
+          "total_edge": 0.75,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.75,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "FanDuel",
+            "value_line": 177.5,
+            "reason": "Best total value is below 1.0 point threshold."
+          }
+        },
+        "WNBA_MarketValueBlend_v1": {
+          "model_name": "WNBA_MarketValueBlend_v1",
+          "total_projection": 176.75,
+          "total_distance": 0.75,
+          "total_edge": 0.75,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.5,
+          "spread_edge": 0.5,
+          "spread_pick": "Phoenix Mercury",
+          "parlay_edge_score": 1.25,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "Small cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "MyBookie.ag",
+            "spread_value_line": -1,
+            "spread_value_reason": "Phoenix Mercury has 0.5 points of spread value vs consensus at MyBookie.ag.",
+            "total_value_book": "FanDuel",
+            "total_value_line": 177.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "WNBA market-value model only; no historical ROI/backtest attached."
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "wnba_model_status": "market_value_model_no_backtest",
+        "wnba_spread_value_book": "MyBookie.ag",
+        "wnba_spread_value_line": -1,
+        "wnba_total_value_book": "FanDuel",
+        "wnba_total_value_line": 177.5
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "0-1",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "WNBA_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-06-14",
+        "tipoff_time_utc": "2026-06-14T02:00:00Z",
+        "tipoff_time_cst": "2026-06-13T21:00:00-05:00",
+        "tipoff_local_day": "2026-06-13",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": true,
+        "odds_commence_time_utc": "2026-06-14T02:00:00Z",
+        "odds_commence_time_cst": "2026-06-13T21:00:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "5bd596e423be0c73cc633d354e6dd1f8",
+        "game_date_local": "2026-06-13",
+        "home_team": "Connecticut Sun",
+        "away_team": "Indiana Fever",
+        "tip_time_cst": "2026-06-13T17:00:00-05:00",
+        "season_type": "WNBA"
+      },
+      "market_state": {
+        "spread_home_last": 11,
+        "total_last": 171.5,
+        "moneyline_home_last": 430,
+        "moneyline_away_last": -600,
+        "spread_home_consensus": 11,
+        "total_consensus": 171.5,
+        "spread_home_consensus_all_time": 11,
+        "total_consensus_all_time": 171.5,
+        "consensus_book_count": 5,
+        "all_time_snapshot_count": 30,
+        "odds_snapshot_last_utc": "2026-06-12T04:02:28.652591+00:00"
+      },
+      "model_output": {
+        "projected_home_score": "",
+        "projected_away_score": "",
+        "projected_margin_home": 11.0,
+        "projected_total": 171.5,
+        "spread_pick": "Connecticut Sun",
+        "total_pick": "",
+        "confidence_tier": "LEAN",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "Small cross-book line-value gap detected; no ROI backtest attached.",
+        "actionability": "NONE"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.5,
+        "total_edge": 0.0,
+        "parlay_edge_score": 0.5,
+        "spread_edge_percentile": 0.16666666666666666,
+        "total_edge_percentile": 0.1
+      },
+      "arbitration": {
+        "spread": "Connecticut Sun",
+        "total": null,
+        "selection_authority": "WNBA_MarketValueBlend_v1",
+        "reason": "Small cross-book line-value gap detected; no ROI backtest attached."
+      },
+      "models": {
+        "WNBA_MarketConsensus_v1": {
+          "model_name": "WNBA_MarketConsensus_v1",
+          "total_projection": 171.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 11.0,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 5
+          }
+        },
+        "WNBA_SpreadValue_v1": {
+          "model_name": "WNBA_SpreadValue_v1",
+          "total_projection": 171.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 11.0,
+          "spread_distance": 0.5,
+          "spread_edge": 0.5,
+          "spread_pick": "Connecticut Sun",
+          "parlay_edge_score": 0.5,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "FanDuel",
+            "value_line": 11.5,
+            "reason": "Connecticut Sun has 0.5 points of spread value vs consensus at FanDuel."
+          }
+        },
+        "WNBA_TotalValue_v1": {
+          "model_name": "WNBA_TotalValue_v1",
+          "total_projection": 171.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 11.0,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "FanDuel",
+            "value_line": 171.5,
+            "reason": "Best total value is below 1.0 point threshold."
+          }
+        },
+        "WNBA_MarketValueBlend_v1": {
+          "model_name": "WNBA_MarketValueBlend_v1",
+          "total_projection": 171.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 11.0,
+          "spread_distance": 0.5,
+          "spread_edge": 0.5,
+          "spread_pick": "Connecticut Sun",
+          "parlay_edge_score": 0.5,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "Small cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "FanDuel",
+            "spread_value_line": 11.5,
+            "spread_value_reason": "Connecticut Sun has 0.5 points of spread value vs consensus at FanDuel.",
+            "total_value_book": "FanDuel",
+            "total_value_line": 171.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "WNBA market-value model only; no historical ROI/backtest attached."
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "wnba_model_status": "market_value_model_no_backtest",
+        "wnba_spread_value_book": "FanDuel",
+        "wnba_spread_value_line": 11.5,
+        "wnba_total_value_book": "FanDuel",
+        "wnba_total_value_line": 171.5
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "0-1",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "WNBA_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-06-13",
+        "tipoff_time_utc": "2026-06-13T22:00:00Z",
+        "tipoff_time_cst": "2026-06-13T17:00:00-05:00",
+        "tipoff_local_day": "2026-06-13",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-06-13T22:00:00Z",
+        "odds_commence_time_cst": "2026-06-13T17:00:00-05:00"
+      }
+    }
+  ]
+}
