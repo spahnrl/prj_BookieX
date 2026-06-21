@@ -848,12 +848,13 @@ date_map = {d: max(flist, key=lambda p: p.stat().st_mtime) for d, flist in by_da
 if league in ("WNBA", "MLB"):
     new_daily_page_view = st.radio(
         f"{league} page",
-        ("Live Odds Slate", "Daily View"),
+        ("Daily View", "Live Odds Slate"),
         index=0,
         horizontal=True,
         help=(
-            "Live Odds Slate keeps the current Odds API board. Daily View uses the generated "
-            f"{league} daily-view artifact and mirrors the NBA dashboard structure."
+            "Daily View uses the generated "
+            f"{league} daily-view artifact and mirrors the NBA dashboard structure. "
+            "Live Odds Slate keeps the current Odds API board."
         ),
     )
     if new_daily_page_view == "Live Odds Slate":
