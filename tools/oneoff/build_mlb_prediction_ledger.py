@@ -121,6 +121,9 @@ def _load_daily_predictions(start_date: str | None = None, end_date: str | None 
                     "model_output": model,
                     "edge_metrics": game.get("edge_metrics") or {},
                     "models": game.get("models") or {},
+                    "selection_authority": _safe_text((game.get("arbitration") or {}).get("selection_authority"))
+                    or _safe_text(model.get("model_name"))
+                    or "MLB_MarketBlend_v1",
                 }
             )
     return predictions, sorted(dates)
@@ -361,11 +364,12 @@ def _ledger_rows(predictions: list[dict], results: list[dict], flat_rows: list[d
         market = pred["market_state"]
         model = pred["model_output"]
         edge = pred["edge_metrics"]
+        selection_authority = _safe_text(pred.get("selection_authority")) or "MLB_MarketBlend_v1"
         for pick_type, pick in (("spread", model.get("spread_pick")), ("total", model.get("total_pick"))):
             pick = _safe_text(pick)
             if not pick:
                 continue
-            book, value_line = _pick_price_context(pred["models"].get("MLB_MarketValueBlend_v1") or model, pick_type)
+            book, value_line = _pick_price_context(pred["models"].get(selection_authority) or model, pick_type)
             if pick_type == "spread":
                 line = value_line if value_line not in (None, "") else market.get("spread_home_last")
                 outcome = pick
@@ -389,6 +393,7 @@ def _ledger_rows(predictions: list[dict], results: list[dict], flat_rows: list[d
                     "away_score": away_score,
                     "home_score": home_score,
                     "pick_type": pick_type,
+                    "model_name": selection_authority,
                     "pick": pick,
                     "line": line,
                     "price": price,

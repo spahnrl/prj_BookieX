@@ -90,7 +90,7 @@ def _group_rows(rows: list[dict], key_fields: tuple[str, ...]) -> list[dict]:
             if field == "edge_bucket":
                 key.append(_edge_bucket(row.get("edge")))
             elif field == "model":
-                key.append("MLB_MarketValueBlend_v1")
+                key.append(_safe_text(row.get("model_name")) or "MLB_MarketBlend_v1")
             else:
                 key.append(_safe_text(row.get(field)) or "UNKNOWN")
         grouped[tuple(key)].append(row)
@@ -110,8 +110,9 @@ def _ranked_opportunities(rows: list[dict], pockets: list[dict]) -> list[dict]:
     pocket_lookup = {p["pocket_type"]: p for p in pockets}
     ranked = []
     for row in rows:
+        model_name = _safe_text(row.get("model_name")) or "MLB_MarketBlend_v1"
         keys = [
-            ("model", "MLB_MarketValueBlend_v1"),
+            ("model", model_name),
             ("pick_type", _safe_text(row.get("pick_type"))),
             ("confidence_tier", _safe_text(row.get("confidence_tier"))),
             ("edge_bucket", _edge_bucket(row.get("edge"))),
@@ -126,7 +127,7 @@ def _ranked_opportunities(rows: list[dict], pockets: list[dict]) -> list[dict]:
                 "slate_date": row.get("slate_date"),
                 "Recommended Bet": f"{row.get('away_team')} @ {row.get('home_team')}: {row.get('pick')} ({row.get('line')})",
                 "Pocket Type": row.get("pick_type"),
-                "Pocket Models": "MLB_MarketValueBlend_v1",
+                "Pocket Models": model_name,
                 "State Signature": pocket_type,
                 "ROI": pocket.get("roi"),
                 "Win Rate": pocket.get("win_rate"),
