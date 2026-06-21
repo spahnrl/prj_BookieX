@@ -1920,6 +1920,16 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
 
     st.markdown("## 🧾 Top Row Summary (Game Roll-Up Line)")
 
+    st.markdown("## Standard Slate View")
+
+    st.write(
+        "Use **Standard Slate View** to read the selected date game by game. "
+        "This view is focused on the current slate: matchup, model side, model total, market line, "
+        "signal strength, execution badges, and the KBX bet sizing example."
+    )
+
+    st.markdown("---")
+
     st.write("Each game appears as a single summary line in this format:")
 
     st.code(
@@ -2113,6 +2123,80 @@ with st.expander("📘 How to Read This Dashboard", expanded=False):
 
     st.write(
         "This section is useful when you want to inspect why the final recommendation looks the way it does."
+    )
+
+    st.markdown("---")
+
+    st.markdown("## Pocket ROI View")
+
+    st.write(
+        "Use **Pocket ROI View** after you understand the slate recommendation and model details. "
+        "This view asks a different question: **when similar model/market conditions happened before, how did they perform?** "
+        "A pocket is a repeated condition group that has been graded against settled results with available prices."
+    )
+
+    st.write(
+        "The selected date matters. The tables should prioritize opportunities tied to the **Select Date** slate. "
+        "If no pocket rows exist for that slate, the dashboard should tell you and keep any global board clearly labeled as reference."
+    )
+
+    st.write("### Example: reading a Ranked Pocket Opportunities row")
+
+    st.write(
+        "Example row: **New York Mets @ Philadelphia Phillies: New York Mets (-1.5)**, "
+        "**Pocket Type = spread**, **Pocket Models = MLB_MarketBlend_v1 + MLB_Last5Runs_v1**, "
+        "**ROI = 0.18**, **Win Rate = 0.57**, **Graded Games = 42**, **Trust Rating = KEEP**.\n\n"
+        "How to read it: the row is saying that this selected-slate bet matches a historical spread pocket where those models aligned. "
+        "The historical pocket returned about **+0.18 units per unit risked**, won **57%** of graded examples, and has **42** graded games behind it. "
+        "That is stronger than a one-game seed row, but it is still historical context, not a guarantee."
+    )
+
+    st.write("### Ranked Pocket Opportunities")
+
+    st.write(
+        "**Ranked Pocket Opportunities** is the main Pocket ROI table. Start here when you want the strongest historical pockets for the slate.\n"
+        "• **Rank** = row order for the available pockets\n"
+        "• **Recommended Bet** = the game, team/side, or total direction the pocket points to\n"
+        "• **Pocket Type** = spread, total, single-model, or aligned-model pocket\n"
+        "• **Pocket Models** = the model or model combination behind the pocket\n"
+        "• **State Signature** = the exact historical condition group used to grade the pocket\n"
+        "• **ROI** = historical unit return for that condition group; positive is favorable, negative is unfavorable\n"
+        "• **Win Rate** = historical hit rate for graded picks in that pocket\n"
+        "• **Graded Games** = sample size; 40 graded games deserves more trust than 1 graded game\n"
+        "• **Trust Rating / Trust Score** = seed trust labels based on the available history\n"
+        "• **Why** = short explanation of why the row appears\n"
+        "• **Parlay Eligible** = whether the row can be considered by the positive-ROI parlay helper"
+    )
+
+    st.write("### Example: using the main table")
+
+    st.write(
+        "A practical reading order is: **Recommended Bet → ROI → Graded Games → Win Rate → Trust Rating → Why**. "
+        "For example, a row with **ROI 0.22**, **Win Rate 0.58**, and **Graded Games 55** is more useful than a row with "
+        "**ROI 1.00** but only **1** graded game. Big ROI with tiny sample size should be treated as a clue, not proof."
+    )
+
+    st.write("### Best pocket per game (secondary summary)")
+
+    st.write(
+        "**Best pocket per game** condenses the ranked table into one preferred pocket per matchup when available. "
+        "Use it when you want a quick scan of the slate without reading every ranked row. "
+        "Example: if one game has three total pockets and two spread pockets, this table tries to surface the best single pocket for that game. "
+        "It is a secondary summary; use **Ranked Pocket Opportunities** above when you need the full context."
+    )
+
+    st.write("### Best 2-leg parlay (positive ROI only)")
+
+    st.write(
+        "**Best 2-leg parlay** appears only when at least two positive-ROI, parlay-eligible pocket rows are available. "
+        "Example: if the slate has a positive-ROI spread pocket and a separate positive-ROI total pocket, this section may show them together. "
+        "Read it as a diagnostic shortlist, not a command to parlay. If this section is empty, the selected slate does not have enough "
+        "positive-ROI eligible pocket rows."
+    )
+
+    st.write(
+        "Best use: treat Pocket ROI as a **filter and prioritization layer**. It helps you decide which model picks deserve more attention, "
+        "which ones have weak history, and which ones may be better ignored even if they appear in Standard Slate View."
     )
 
     st.markdown("---")
