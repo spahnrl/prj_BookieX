@@ -12,6 +12,7 @@ import argparse
 import json
 from collections import defaultdict
 from datetime import UTC, datetime
+from itertools import combinations
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -50,6 +51,10 @@ def _edge_bucket(edge) -> str:
     return "0-0.5"
 
 
+def _norm_pick(value: str) -> str:
+    return " ".join(_safe_text(value).upper().split())
+
+
 def _load_ledger() -> dict:
     if not LEDGER_PATH.exists():
         raise SystemExit(f"Missing MLB prediction ledger seed: {LEDGER_PATH}")
@@ -80,6 +85,48 @@ def _summarize(rows: list[dict]) -> dict:
         "roi": round(units / risked, 4) if risked else None,
         "sample_notes": SEED_WARNING,
     }
+
+
+def _combo_rows(rows: list[dict]) -> list[dict]:
+    by_alignment: dict[tuple, dict[str, dict]] = defaultdict(dict)
+    for row in rows:
+        model_name = _safe_text(row.get("model_name"))
+        if not model_name:
+            continue
+        key = (
+            _safe_text(row.get("slate_date")),
+            _safe_text(row.get("odds_game_id")),
+            _safe_text(row.get("pick_type")),
+            _norm_pick(row.get("pick")),
+        )
+        if not all(key):
+            continue
+        by_alignment[key][model_name] = row
+
+    combos = []
+    for (_slate_date, _game_id, pick_type, _pick), model_rows in by_alignment.items():
+        model_names = sorted(model_rows)
+        for size in range(2, min(3, len(model_names)) + 1):
+            for model_set in combinations(model_names, size):
+                aligned = [model_rows[name] for name in model_set]
+                representative = aligned[0]
+                avg_edge = round(sum(_safe_float(row.get("edge")) for row in aligned) / len(aligned), 4)
+                combo_name = "+".join(model_set)
+                combo = dict(representative)
+                combo.update(
+                    {
+                        "model_name": combo_name,
+                        "combo_models": list(model_set),
+                        "combo_size": size,
+                        "pocket_family": f"combo_{size}_model",
+                        "confidence_tier": f"{size}_MODEL_ALIGN",
+                        "actionability": "ALIGNED",
+                        "edge": avg_edge,
+                        "source_row_type": "model_alignment_combo",
+                    }
+                )
+                combos.append(combo)
+    return combos
 
 
 def _group_rows(rows: list[dict], key_fields: tuple[str, ...]) -> list[dict]:
@@ -120,13 +167,20 @@ def _ranked_opportunities(rows: list[dict], pockets: list[dict]) -> list[dict]:
         ]
         pocket_type = "+".join(f"{k}:{v}" for k, v in keys)
         pocket = pocket_lookup.get(pocket_type) or _summarize([row])
+        pocket_family = _safe_text(row.get("pocket_family")) or "single_model"
+        model_count = _safe_text(row.get("combo_size")) or "1"
+        why_prefix = (
+            f"{model_count} MLB models aligned; "
+            if pocket_family.startswith("combo_")
+            else ""
+        )
         ranked.append(
             {
                 "Rank": 0,
                 "game_id": row.get("odds_game_id"),
                 "slate_date": row.get("slate_date"),
                 "Recommended Bet": f"{row.get('away_team')} @ {row.get('home_team')}: {row.get('pick')} ({row.get('line')})",
-                "Pocket Type": row.get("pick_type"),
+                "Pocket Type": f"{pocket_family}_{row.get('pick_type')}",
                 "Pocket Models": model_name,
                 "State Signature": pocket_type,
                 "ROI": pocket.get("roi"),
@@ -134,8 +188,9 @@ def _ranked_opportunities(rows: list[dict], pockets: list[dict]) -> list[dict]:
                 "Graded Games": pocket.get("graded_games"),
                 "Trust Rating": "SEED",
                 "Trust Score": min(50, int((pocket.get("graded_games") or 0) * 10)),
-                "Why": f"Seed pocket from {pocket.get('graded_games')} graded MLB pick(s); result={row.get('result')}.",
+                "Why": f"{why_prefix}Seed pocket from {pocket.get('graded_games')} graded MLB pick(s); result={row.get('result')}.",
                 "Parlay Eligible": bool((pocket.get("roi") or 0) > 0 and (pocket.get("graded_games") or 0) >= 2),
+                "Source Row Type": _safe_text(row.get("source_row_type")) or "single_model",
                 "sample_warning": SEED_WARNING,
             }
         )
@@ -186,6 +241,9 @@ def build_seed_artifacts() -> dict:
     if not rows:
         raise SystemExit("No ROI-ready MLB ledger rows available.")
 
+    combo_rows = _combo_rows(rows)
+    opportunity_rows = rows + combo_rows
+
     generated_at = datetime.now(UTC).isoformat().replace("+00:00", "Z")
     group_specs = [
         ("model",),
@@ -198,12 +256,12 @@ def build_seed_artifacts() -> dict:
     pockets = []
     summaries = {}
     for spec in group_specs:
-        grouped = _group_rows(rows, spec)
+        grouped = _group_rows(opportunity_rows, spec)
         summaries["+".join(spec)] = grouped
         if spec == ("model", "pick_type", "confidence_tier", "edge_bucket", "actionability"):
             pockets = grouped
 
-    ranked = _ranked_opportunities(rows, pockets)
+    ranked = _ranked_opportunities(opportunity_rows, pockets)
     best = _best_per_game(ranked)
 
     base = {
@@ -215,6 +273,9 @@ def build_seed_artifacts() -> dict:
         "is_pocket_roi_output": True,
         "is_limited_sample": True,
         "graded_pick_count": len(rows),
+        "single_model_pick_count": len(rows),
+        "combo_alignment_pick_count": len(combo_rows),
+        "opportunity_pick_count": len(opportunity_rows),
         "overall": _summarize(rows),
     }
     model_pockets = {**base, "artifact_type": "model_pockets", "summaries": summaries, "pockets": pockets}

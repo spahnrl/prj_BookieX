@@ -32,6 +32,12 @@ INTERIM_DIR = PROJECT_ROOT / "data" / "mlb" / "interim"
 ESPN_MLB_SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"
 FLAT_ODDS_PATH = DERIVED_DIR / "mlb_betlines_flattened.csv"
 HISTORICAL_FLAT_DIR = DERIVED_DIR / "historical"
+LEDGER_MODEL_NAMES = (
+    "MLB_RunsBaseline_v1",
+    "MLB_Last5Runs_v1",
+    "MLB_MarketPressure_v1",
+    "MLB_MarketBlend_v1",
+)
 
 
 def _utc_now_stamp() -> str:
@@ -107,25 +113,32 @@ def _load_daily_predictions(start_date: str | None = None, end_date: str | None 
         dates.add(slate_date)
         for game in games:
             identity = game.get("identity") or {}
-            model = game.get("model_output") or {}
-            if not model.get("spread_pick") and not model.get("total_pick"):
-                continue
-            predictions.append(
-                {
-                    "source_daily_path": str(path),
-                    "slate_date": slate_date,
-                    "odds_game_id": _safe_text(identity.get("game_id")),
-                    "home_team": _safe_text(identity.get("home_team")),
-                    "away_team": _safe_text(identity.get("away_team")),
-                    "market_state": game.get("market_state") or {},
-                    "model_output": model,
-                    "edge_metrics": game.get("edge_metrics") or {},
-                    "models": game.get("models") or {},
-                    "selection_authority": _safe_text((game.get("arbitration") or {}).get("selection_authority"))
-                    or _safe_text(model.get("model_name"))
-                    or "MLB_MarketBlend_v1",
-                }
-            )
+            models = game.get("models") or {}
+            candidate_models = [(name, models.get(name) or {}) for name in LEDGER_MODEL_NAMES]
+            if not any(model for _, model in candidate_models):
+                model = game.get("model_output") or {}
+                candidate_models = [(_safe_text(model.get("model_name")) or "MLB_MarketBlend_v1", model)]
+            for model_name, model in candidate_models:
+                if not isinstance(model, dict):
+                    continue
+                if not model.get("spread_pick") and not model.get("total_pick"):
+                    continue
+                predictions.append(
+                    {
+                        "source_daily_path": str(path),
+                        "slate_date": slate_date,
+                        "odds_game_id": _safe_text(identity.get("game_id")),
+                        "home_team": _safe_text(identity.get("home_team")),
+                        "away_team": _safe_text(identity.get("away_team")),
+                        "market_state": game.get("market_state") or {},
+                        "model_output": model,
+                        "edge_metrics": game.get("edge_metrics") or {},
+                        "models": models,
+                        "selection_authority": _safe_text(model_name)
+                        or _safe_text(model.get("model_name"))
+                        or "MLB_MarketBlend_v1",
+                    }
+                )
     return predictions, sorted(dates)
 
 
@@ -339,8 +352,19 @@ def _match_result(pred: dict, results: list[dict]) -> tuple[dict | None, str]:
 def _pick_price_context(model: dict, pick_type: str) -> tuple[str, object]:
     flags = model.get("context_flags") or {}
     if pick_type == "spread":
-        return _safe_text(flags.get("spread_value_book")), flags.get("spread_value_line")
-    return _safe_text(flags.get("total_value_book")), flags.get("total_value_line")
+        return _safe_text(flags.get("spread_value_book") or flags.get("value_book")), flags.get("spread_value_line", flags.get("value_line"))
+    return _safe_text(flags.get("total_value_book") or flags.get("value_book")), flags.get("total_value_line", flags.get("value_line"))
+
+
+def _spread_line_for_pick(pick: str, home_spread, home_team: str, away_team: str):
+    home_spread_f = _safe_float(home_spread)
+    if home_spread_f is None:
+        return home_spread
+    if _norm_team(pick) == _norm_team(home_team):
+        return home_spread_f
+    if _norm_team(pick) == _norm_team(away_team):
+        return -home_spread_f
+    return home_spread
 
 
 def _ledger_rows(predictions: list[dict], results: list[dict], flat_rows: list[dict]) -> tuple[list[dict], list[dict]]:
@@ -363,23 +387,22 @@ def _ledger_rows(predictions: list[dict], results: list[dict], flat_rows: list[d
 
         market = pred["market_state"]
         model = pred["model_output"]
-        edge = pred["edge_metrics"]
         selection_authority = _safe_text(pred.get("selection_authority")) or "MLB_MarketBlend_v1"
         for pick_type, pick in (("spread", model.get("spread_pick")), ("total", model.get("total_pick"))):
             pick = _safe_text(pick)
             if not pick:
                 continue
-            book, value_line = _pick_price_context(pred["models"].get(selection_authority) or model, pick_type)
+            book, value_line = _pick_price_context(model, pick_type)
             if pick_type == "spread":
-                line = value_line if value_line not in (None, "") else market.get("spread_home_last")
+                line = value_line if value_line not in (None, "") else _spread_line_for_pick(pick, market.get("spread_home_last"), pred["home_team"], pred["away_team"])
                 outcome = pick
                 graded = _grade_spread(pick, market.get("spread_home_last"), pred["home_team"], pred["away_team"], home_score, away_score)
-                edge_value = edge.get("spread_edge")
+                edge_value = model.get("spread_edge")
             else:
                 line = value_line if value_line not in (None, "") else market.get("total_last")
                 outcome = pick.upper()
                 graded = _grade_total(pick, market.get("total_last"), home_score, away_score)
-                edge_value = edge.get("total_edge")
+                edge_value = model.get("total_edge")
             price, price_book, captured_at = _find_price(flat_rows, pred["odds_game_id"], "spreads" if pick_type == "spread" else "totals", outcome, line, book)
             ledger.append(
                 {
@@ -396,12 +419,14 @@ def _ledger_rows(predictions: list[dict], results: list[dict], flat_rows: list[d
                     "model_name": selection_authority,
                     "pick": pick,
                     "line": line,
+                    "market_line": market.get("spread_home_last") if pick_type == "spread" else market.get("total_last"),
                     "price": price,
                     "price_book": price_book,
                     "price_captured_at_utc": captured_at,
                     "edge": edge_value,
                     "confidence_tier": model.get("confidence_tier"),
                     "actionability": model.get("actionability"),
+                    "model_source": (model.get("context_flags") or {}).get("source"),
                     "result": graded,
                     "unit_result": _unit_result(graded, price),
                     "roi_ready": price is not None and graded in ("WIN", "LOSS", "PUSH"),
