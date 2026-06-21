@@ -31,6 +31,7 @@ INTERIM_DIR = PROJECT_ROOT / "data" / "wnba" / "interim"
 
 ESPN_WNBA_SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard"
 FLAT_ODDS_PATH = DERIVED_DIR / "wnba_betlines_flattened.csv"
+HISTORICAL_FLAT_DIR = DERIVED_DIR / "historical"
 LEDGER_MODEL_NAMES = (
     "WNBA_PointsBaseline_v1",
     "WNBA_Last5Points_v1",
@@ -238,10 +239,15 @@ def _write_csv(path: Path, rows: list[dict]) -> None:
 
 
 def _load_flat_odds() -> list[dict]:
-    if not FLAT_ODDS_PATH.exists():
-        return []
-    with FLAT_ODDS_PATH.open("r", encoding="utf-8-sig", newline="") as f:
-        return list(csv.DictReader(f))
+    rows: list[dict] = []
+    if FLAT_ODDS_PATH.exists():
+        with FLAT_ODDS_PATH.open("r", encoding="utf-8-sig", newline="") as f:
+            rows.extend(csv.DictReader(f))
+    if HISTORICAL_FLAT_DIR.exists():
+        for path in sorted(HISTORICAL_FLAT_DIR.glob("wnba_betlines_flattened_*.csv")):
+            with path.open("r", encoding="utf-8-sig", newline="") as f:
+                rows.extend(csv.DictReader(f))
+    return rows
 
 
 def _find_price(flat_rows: list[dict], odds_game_id: str, market: str, outcome: str, point, book: str):

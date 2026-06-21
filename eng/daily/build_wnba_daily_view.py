@@ -890,9 +890,18 @@ def _write_csv(path: Path, rows: list[dict]) -> None:
         writer.writerows(rows)
 
 
-def build_wnba_daily_view(date: str | None = None) -> dict:
+def build_wnba_daily_view(date: str | None = None, source_flat_path: Path | None = None) -> dict:
     ensure_wnba_dirs()
-    rows = _load_flattened_rows()
+    source_flat_path = source_flat_path or BETLINES_FLATTENED_CSV_PATH
+    if source_flat_path == BETLINES_FLATTENED_CSV_PATH:
+        rows = _load_flattened_rows()
+    else:
+        if not source_flat_path.exists():
+            raise FileNotFoundError(f"Missing WNBA flattened odds CSV: {source_flat_path}")
+        with source_flat_path.open("r", encoding="utf-8-sig", newline="") as f:
+            rows = list(csv.DictReader(f))
+        if not rows:
+            raise ValueError(f"WNBA flattened odds CSV is empty: {source_flat_path}")
     by_game: dict[str, list[dict]] = defaultdict(list)
     for row in rows:
         gid = _safe_text(row.get("game_id"))
@@ -918,7 +927,7 @@ def build_wnba_daily_view(date: str | None = None) -> dict:
             "schema_version": SCHEMA_VERSION,
             "model_version": MODEL_VERSION,
             "calibration_version": CALIBRATION_VERSION,
-            "generated_from_artifact_hash": _sha256(BETLINES_FLATTENED_CSV_PATH),
+            "generated_from_artifact_hash": _sha256(source_flat_path),
             "date": game_date,
             "build_timestamp_utc": _utc_now_iso(),
             "is_model_output": True,
@@ -936,7 +945,7 @@ def build_wnba_daily_view(date: str | None = None) -> dict:
         outputs.append({"date": game_date, "path": str(out_path), "games": len(slate_games)})
     return {
         "league": "wnba",
-        "source": str(BETLINES_FLATTENED_CSV_PATH),
+        "source": str(source_flat_path),
         "final_view_json": str(FINAL_VIEW_JSON_PATH),
         "final_view_csv": str(FINAL_VIEW_CSV_PATH),
         "daily_outputs": outputs,

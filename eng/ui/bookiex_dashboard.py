@@ -3792,7 +3792,32 @@ def _render_seed_pocket_roi_view(games: list, selected_date: str, league_code: s
         c4.metric("Units", overall.get("units", "n/a"))
 
     st.markdown("## Ranked Pocket Opportunities")
-    ranked_rows = (ranked_doc or {}).get("opportunities") or []
+    all_ranked_rows = (ranked_doc or {}).get("opportunities") or []
+    selected_game_ids = {
+        str((g.get("identity") or {}).get("game_id") or g.get("game_id") or "").strip()
+        for g in games
+    }
+    selected_game_ids = {gid for gid in selected_game_ids if gid}
+    selected_matchups = {
+        f"{(g.get('identity') or {}).get('away_team', g.get('away_team', ''))} @ {(g.get('identity') or {}).get('home_team', g.get('home_team', ''))}".strip()
+        for g in games
+    }
+    selected_matchups = {m for m in selected_matchups if m and m != "@"}
+
+    def _matches_selected_slate(row: dict) -> bool:
+        row_date = str(row.get("slate_date") or "").strip()
+        row_gid = str(row.get("game_id") or "").strip()
+        return row_date == selected_date or (row_gid and row_gid in selected_game_ids)
+
+    if league_code == "wnba":
+        ranked_rows = [r for r in all_ranked_rows if _matches_selected_slate(r)]
+        if all_ranked_rows and not ranked_rows:
+            st.info(
+                f"No {league_label} seed Pocket ROI rows match selected date {selected_date}. "
+                "The global seed board is available below as a reference, but is not being shown as the selected slate."
+            )
+    else:
+        ranked_rows = all_ranked_rows
     ranked_columns = [
         "Rank",
         "Recommended Bet",
@@ -3813,8 +3838,23 @@ def _render_seed_pocket_roi_view(games: list, selected_date: str, league_code: s
         st.dataframe(pd.DataFrame(columns=ranked_columns), width="stretch", hide_index=True)
         st.caption(f"No {league_label} seed opportunities available yet.")
 
+    if league_code == "wnba" and all_ranked_rows and ranked_rows != all_ranked_rows:
+        with st.expander("Global WNBA seed board (reference only)", expanded=False):
+            st.caption(
+                "These rows are from the full seed ledger and may not belong to the selected slate date."
+            )
+            st.dataframe(pd.DataFrame(all_ranked_rows)[ranked_columns], width="stretch", hide_index=True)
+
     with st.expander("Best pocket per game (secondary summary)", expanded=False):
-        best_rows = (best_doc or {}).get("games") or []
+        all_best_rows = (best_doc or {}).get("games") or []
+        if league_code == "wnba":
+            best_rows = [
+                r for r in all_best_rows
+                if str(r.get("Game") or "").strip() in selected_matchups
+                or any(str(r.get("Recommended Bet") or "").startswith(matchup) for matchup in selected_matchups)
+            ]
+        else:
+            best_rows = all_best_rows
         best_columns = [
             "Rank",
             "Game",

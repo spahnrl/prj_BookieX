@@ -1,0 +1,277 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "model_version": "WNBA_MULTI_MODEL_V1",
+  "calibration_version": "WNBA_POINTS_MODEL_SEED_V1",
+  "generated_from_artifact_hash": "6b62a7a91b237d0d50851bda32d72e1cb3cb6b7780a41b24acc831cb5ff0ef1a",
+  "date": "2026-05-31",
+  "build_timestamp_utc": "2026-06-21T02:11:07Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "WNBA Daily View uses seed point-history and market-value models. Picks are limited-sample model-market signals, not mature historical ROI or production betting authority.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "87e8b46b5049f0f26e4f50e3234f28ac",
+        "game_date_local": "2026-05-31",
+        "home_team": "Golden State Valkyries",
+        "away_team": "Las Vegas Aces",
+        "tip_time_cst": "2026-05-31T14:30:00-05:00",
+        "season_type": "WNBA"
+      },
+      "market_state": {
+        "spread_home_last": 2.5,
+        "total_last": 168.5,
+        "moneyline_home_last": 120,
+        "moneyline_away_last": -142,
+        "spread_home_consensus": 2.5,
+        "total_consensus": 168.5,
+        "spread_home_consensus_all_time": 2.5,
+        "total_consensus_all_time": 168.5,
+        "consensus_book_count": 10,
+        "all_time_snapshot_count": 60,
+        "odds_snapshot_last_utc": "2026-05-31T15:55:36Z"
+      },
+      "model_output": {
+        "projected_home_score": 87.59,
+        "projected_away_score": 86.265,
+        "projected_margin_home": -1.325,
+        "projected_total": 173.855,
+        "spread_pick": "Golden State Valkyries",
+        "total_pick": "OVER",
+        "confidence_tier": "STRONG",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=5.355.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 3.825,
+        "total_edge": 5.355,
+        "parlay_edge_score": 9.18,
+        "spread_edge_percentile": 0.99,
+        "total_edge_percentile": 0.99
+      },
+      "arbitration": {
+        "spread": "Golden State Valkyries",
+        "total": "OVER",
+        "selection_authority": "WNBA_MarketBlend_v1",
+        "reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=5.355."
+      },
+      "models": {
+        "WNBA_MarketConsensus_v1": {
+          "model_name": "WNBA_MarketConsensus_v1",
+          "total_projection": 168.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 2.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 10
+          }
+        },
+        "WNBA_SpreadValue_v1": {
+          "model_name": "WNBA_SpreadValue_v1",
+          "total_projection": 173.855,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.325,
+          "spread_distance": 3.825,
+          "spread_edge": 3.825,
+          "spread_pick": "Golden State Valkyries",
+          "parlay_edge_score": 3.825,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_TotalValue_v1": {
+          "model_name": "WNBA_TotalValue_v1",
+          "total_projection": 173.855,
+          "total_distance": 5.355,
+          "total_edge": 5.355,
+          "total_pick": "OVER",
+          "home_line_proj": -1.325,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 5.355,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_MarketValueBlend_v1": {
+          "model_name": "WNBA_MarketValueBlend_v1",
+          "total_projection": 168.5,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "",
+          "home_line_proj": 2.5,
+          "spread_distance": 0.5,
+          "spread_edge": 0.5,
+          "spread_pick": "Las Vegas Aces",
+          "parlay_edge_score": 1.0,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "Small cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "BetRivers",
+            "spread_value_line": -2,
+            "spread_value_reason": "Las Vegas Aces has 0.5 points of spread value vs consensus at BetRivers.",
+            "total_value_book": "BetRivers",
+            "total_value_line": 169,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "WNBA market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": 179.0,
+          "total_distance": 10.5,
+          "total_edge": 10.5,
+          "total_pick": "OVER",
+          "home_line_proj": -5.0,
+          "spread_distance": 7.5,
+          "spread_edge": 7.5,
+          "spread_pick": "Golden State Valkyries",
+          "parlay_edge_score": 18.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_PointsBaseline_v1 compares point projection to current spread/total; largest model-market gap=10.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 7,
+            "away_games": 7,
+            "home_avg_points_for": 90.0,
+            "home_avg_points_against": 79.0,
+            "away_avg_points_for": 95.0,
+            "away_avg_points_against": 94.0
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": 173.0,
+          "total_distance": 4.5,
+          "total_edge": 4.5,
+          "total_pick": "OVER",
+          "home_line_proj": -8.0,
+          "spread_distance": 10.5,
+          "spread_edge": 10.5,
+          "spread_pick": "Golden State Valkyries",
+          "parlay_edge_score": 15.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_Last5Points_v1 compares point projection to current spread/total; largest model-market gap=10.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 5,
+            "away_last5_games": 5,
+            "home_last5_points_for": 87.0,
+            "home_last5_points_against": 70.0,
+            "away_last5_points_for": 95.0,
+            "away_last5_points_against": 94.0
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": 176.375,
+          "total_distance": 7.875,
+          "total_edge": 7.875,
+          "total_pick": "OVER",
+          "home_line_proj": -5.0,
+          "spread_distance": 7.5,
+          "spread_edge": 7.5,
+          "spread_pick": "Golden State Valkyries",
+          "parlay_edge_score": 15.375,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_MarketPressure_v1 compares point projection to current spread/total; largest model-market gap=7.875.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "baseline_total": 179.0,
+            "market_total": 168.5,
+            "pull_weight": 0.25
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": 173.855,
+          "total_distance": 5.355,
+          "total_edge": 5.355,
+          "total_pick": "OVER",
+          "home_line_proj": -1.325,
+          "spread_distance": 3.825,
+          "spread_edge": 3.825,
+          "spread_pick": "Golden State Valkyries",
+          "parlay_edge_score": 9.18,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=5.355.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "baseline_home": 92.0,
+            "baseline_away": 87.0,
+            "market_home": 83.0,
+            "market_away": 85.5,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "wnba_model_status": "multi_model_points_seed",
+        "wnba_spread_value_book": "",
+        "wnba_spread_value_line": null,
+        "wnba_total_value_book": "",
+        "wnba_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "2+",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-05-31",
+        "tipoff_time_utc": "2026-05-31T19:30:00Z",
+        "tipoff_time_cst": "2026-05-31T14:30:00-05:00",
+        "tipoff_local_day": "2026-05-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-05-31T19:30:00Z",
+        "odds_commence_time_cst": "2026-05-31T14:30:00-05:00"
+      }
+    }
+  ]
+}
