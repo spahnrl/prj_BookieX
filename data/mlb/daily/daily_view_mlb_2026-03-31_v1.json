@@ -1,0 +1,3714 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "model_version": "MLB_MULTI_MODEL_V1",
+  "calibration_version": "MLB_RUNS_MODEL_SEED_V1",
+  "generated_from_artifact_hash": "90ffb72b50f18e3aa112af9b6b2644726d3ef4f72fe52d42e09901ce12a20a32",
+  "date": "2026-03-31",
+  "build_timestamp_utc": "2026-06-21T02:24:03Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "MLB Daily View uses a cross-book market-value model built from real historical odds. Picks mean available line value versus consensus, not mature season-long ROI confidence.",
+  "historical_backfill": {
+    "source_flat_path": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\mlb\\derived\\historical\\mlb_betlines_flattened_2026-03-31.csv",
+    "source": "the_odds_api_historical",
+    "no_future_odds_policy": "Only pregame events at the historical snapshot time are included."
+  },
+  "games": [
+    {
+      "identity": {
+        "game_id": "023399264d3924b30aa040acd7837804",
+        "game_date_local": "2026-03-31",
+        "home_team": "Atlanta Braves",
+        "away_team": "Athletics",
+        "tip_time_cst": "2026-03-31T18:16:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": -1.5,
+        "total_last": 9,
+        "moneyline_home_last": -160,
+        "moneyline_away_last": 135,
+        "spread_home_consensus": -1.5,
+        "total_consensus": 9,
+        "spread_home_consensus_all_time": -1.5,
+        "total_consensus_all_time": 9,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 4.9945,
+        "projected_away_score": 2.6025,
+        "projected_margin_home": -2.392,
+        "projected_total": 7.597,
+        "spread_pick": "Atlanta Braves",
+        "total_pick": "UNDER",
+        "confidence_tier": "WATCH",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.403.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.892,
+        "total_edge": 1.403,
+        "parlay_edge_score": 2.295,
+        "spread_edge_percentile": 0.29733333333333334,
+        "total_edge_percentile": 0.35075
+      },
+      "arbitration": {
+        "spread": "Atlanta Braves",
+        "total": "UNDER",
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.403."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 9,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 7.597,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -2.392,
+          "spread_distance": 0.892,
+          "spread_edge": 0.892,
+          "spread_pick": "Atlanta Braves",
+          "parlay_edge_score": 0.892,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 7.597,
+          "total_distance": 1.403,
+          "total_edge": 1.403,
+          "total_pick": "UNDER",
+          "home_line_proj": -2.392,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 1.403,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 9.0,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.5,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "Bovada",
+            "spread_value_line": -1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "Fanatics",
+            "total_value_line": 9.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 6.25,
+          "total_distance": 2.75,
+          "total_edge": 2.75,
+          "total_pick": "UNDER",
+          "home_line_proj": -3.25,
+          "spread_distance": 1.75,
+          "spread_edge": 1.75,
+          "spread_pick": "Atlanta Braves",
+          "parlay_edge_score": 4.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=2.750.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 4,
+            "away_games": 4,
+            "home_avg_runs_for": 5.0,
+            "home_avg_runs_against": 1.0,
+            "away_avg_runs_for": 2.0,
+            "away_avg_runs_against": 4.5
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 6.25,
+          "total_distance": 2.75,
+          "total_edge": 2.75,
+          "total_pick": "UNDER",
+          "home_line_proj": -3.25,
+          "spread_distance": 1.75,
+          "spread_edge": 1.75,
+          "spread_pick": "Atlanta Braves",
+          "parlay_edge_score": 4.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=2.750.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 4,
+            "away_last5_games": 4,
+            "home_last5_runs_for": 5.0,
+            "home_last5_runs_against": 1.0,
+            "away_last5_runs_for": 2.0,
+            "away_last5_runs_against": 4.5
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 6.938,
+          "total_distance": 2.062,
+          "total_edge": 2.062,
+          "total_pick": "UNDER",
+          "home_line_proj": -3.25,
+          "spread_distance": 1.75,
+          "spread_edge": 1.75,
+          "spread_pick": "Atlanta Braves",
+          "parlay_edge_score": 3.812,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=2.062.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 6.25,
+            "market_total": 9.0,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 7.597,
+          "total_distance": 1.403,
+          "total_edge": 1.403,
+          "total_pick": "UNDER",
+          "home_line_proj": -2.392,
+          "spread_distance": 0.892,
+          "spread_edge": 0.892,
+          "spread_pick": "Atlanta Braves",
+          "parlay_edge_score": 2.295,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.403.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 4.75,
+            "baseline_away": 1.5,
+            "market_home": 5.25,
+            "market_away": 3.75,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "1-2",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-03-31",
+        "tipoff_time_utc": "2026-03-31T23:16:00Z",
+        "tipoff_time_cst": "2026-03-31T18:16:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-03-31T23:16:00Z",
+        "odds_commence_time_cst": "2026-03-31T18:16:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "293dc85524404aab44c5329de3f56664",
+        "game_date_local": "2026-03-31",
+        "home_team": "San Diego Padres",
+        "away_team": "San Francisco Giants",
+        "tip_time_cst": "2026-03-31T20:41:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": 1.5,
+        "total_last": 7.5,
+        "moneyline_home_last": 120,
+        "moneyline_away_last": -140,
+        "spread_home_consensus": 1.5,
+        "total_consensus": 7.5,
+        "spread_home_consensus_all_time": 1.5,
+        "total_consensus_all_time": 7.5,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 2.745,
+        "projected_away_score": 3.225,
+        "projected_margin_home": 0.48,
+        "projected_total": 5.97,
+        "spread_pick": "San Diego Padres",
+        "total_pick": "UNDER",
+        "confidence_tier": "WATCH",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.530.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 1.02,
+        "total_edge": 1.53,
+        "parlay_edge_score": 2.55,
+        "spread_edge_percentile": 0.34,
+        "total_edge_percentile": 0.3825
+      },
+      "arbitration": {
+        "spread": "San Diego Padres",
+        "total": "UNDER",
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.530."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 7.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 5.97,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 0.48,
+          "spread_distance": 1.02,
+          "spread_edge": 1.02,
+          "spread_pick": "San Diego Padres",
+          "parlay_edge_score": 1.02,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 5.97,
+          "total_distance": 1.53,
+          "total_edge": 1.53,
+          "total_pick": "UNDER",
+          "home_line_proj": 0.48,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 1.53,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 7.5,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.5,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "Bovada",
+            "spread_value_line": -1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "BetRivers",
+            "total_value_line": 8,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 4.5,
+          "total_distance": 3.0,
+          "total_edge": 3.0,
+          "total_pick": "UNDER",
+          "home_line_proj": -0.5,
+          "spread_distance": 2.0,
+          "spread_edge": 2.0,
+          "spread_pick": "San Diego Padres",
+          "parlay_edge_score": 5.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=3.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 3,
+            "away_games": 3,
+            "home_avg_runs_for": 2.0,
+            "home_avg_runs_against": 3.0,
+            "away_avg_runs_for": 1.0,
+            "away_avg_runs_against": 3.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 4.5,
+          "total_distance": 3.0,
+          "total_edge": 3.0,
+          "total_pick": "UNDER",
+          "home_line_proj": -0.5,
+          "spread_distance": 2.0,
+          "spread_edge": 2.0,
+          "spread_pick": "San Diego Padres",
+          "parlay_edge_score": 5.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=3.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 3,
+            "away_last5_games": 3,
+            "home_last5_runs_for": 2.0,
+            "home_last5_runs_against": 3.0,
+            "away_last5_runs_for": 1.0,
+            "away_last5_runs_against": 3.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 5.25,
+          "total_distance": 2.25,
+          "total_edge": 2.25,
+          "total_pick": "UNDER",
+          "home_line_proj": -0.5,
+          "spread_distance": 2.0,
+          "spread_edge": 2.0,
+          "spread_pick": "San Diego Padres",
+          "parlay_edge_score": 4.25,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=2.250.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 4.5,
+            "market_total": 7.5,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 5.97,
+          "total_distance": 1.53,
+          "total_edge": 1.53,
+          "total_pick": "UNDER",
+          "home_line_proj": 0.48,
+          "spread_distance": 1.02,
+          "spread_edge": 1.02,
+          "spread_pick": "San Diego Padres",
+          "parlay_edge_score": 2.55,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.530.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 2.5,
+            "baseline_away": 2.0,
+            "market_home": 3.0,
+            "market_away": 4.5,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "1-2",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-04-01",
+        "tipoff_time_utc": "2026-04-01T01:41:00Z",
+        "tipoff_time_cst": "2026-03-31T20:41:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": true,
+        "odds_commence_time_utc": "2026-04-01T01:41:00Z",
+        "odds_commence_time_cst": "2026-03-31T20:41:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "3606100715aa7a59a44cebf83296c1ee",
+        "game_date_local": "2026-03-31",
+        "home_team": "Los Angeles Dodgers",
+        "away_team": "Cleveland Guardians",
+        "tip_time_cst": "2026-03-31T21:11:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": -1.5,
+        "total_last": 8,
+        "moneyline_home_last": -260,
+        "moneyline_away_last": 215,
+        "spread_home_consensus": -1.5,
+        "total_consensus": 8,
+        "spread_home_consensus_all_time": -1.5,
+        "total_consensus_all_time": 8,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 4.75,
+        "projected_away_score": 3.25,
+        "projected_margin_home": -1.5,
+        "projected_total": 8.0,
+        "spread_pick": "",
+        "total_pick": "",
+        "confidence_tier": "IGNORE",
+        "cluster_alignment": "NONE",
+        "arbitration_cluster": "NONE",
+        "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+        "actionability": "NONE"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.0,
+        "total_edge": 0.0,
+        "parlay_edge_score": 0.0,
+        "spread_edge_percentile": 0.1,
+        "total_edge_percentile": 0.1
+      },
+      "arbitration": {
+        "spread": null,
+        "total": null,
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "No MLB line-value pick cleared the configured thresholds."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 8,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 8.0,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "BetMGM",
+            "value_line": 1.5,
+            "reason": "Best spread value is below 0.5 point threshold."
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 8.0,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "LowVig.ag",
+            "value_line": 8,
+            "reason": "Best total value is below 1.0 point threshold."
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 8.0,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "BetMGM",
+            "spread_value_line": 1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "LowVig.ag",
+            "total_value_line": 8,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 7.25,
+          "total_distance": 0.75,
+          "total_edge": 0.75,
+          "total_pick": "UNDER",
+          "home_line_proj": -0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "Cleveland Guardians",
+          "parlay_edge_score": 1.5,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=0.750.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 3,
+            "away_games": 4,
+            "home_avg_runs_for": 3.0,
+            "home_avg_runs_against": 4.0,
+            "away_avg_runs_for": 2.5,
+            "away_avg_runs_against": 5.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 7.25,
+          "total_distance": 0.75,
+          "total_edge": 0.75,
+          "total_pick": "UNDER",
+          "home_line_proj": -0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "Cleveland Guardians",
+          "parlay_edge_score": 1.5,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=0.750.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 3,
+            "away_last5_games": 4,
+            "home_last5_runs_for": 3.0,
+            "home_last5_runs_against": 4.0,
+            "away_last5_runs_for": 2.5,
+            "away_last5_runs_against": 5.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 7.438,
+          "total_distance": 0.562,
+          "total_edge": 0.562,
+          "total_pick": "UNDER",
+          "home_line_proj": -0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "Cleveland Guardians",
+          "parlay_edge_score": 1.312,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=0.750.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 7.25,
+            "market_total": 8.0,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 7.617,
+          "total_distance": 0.383,
+          "total_edge": 0.383,
+          "total_pick": "",
+          "home_line_proj": -1.117,
+          "spread_distance": 0.383,
+          "spread_edge": 0.383,
+          "spread_pick": "",
+          "parlay_edge_score": 0.766,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.383.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 4.0,
+            "baseline_away": 3.25,
+            "market_home": 4.75,
+            "market_away": 3.25,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "BetMGM",
+        "mlb_spread_value_line": 1.5,
+        "mlb_total_value_book": "LowVig.ag",
+        "mlb_total_value_line": 8
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "0-1",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-04-01",
+        "tipoff_time_utc": "2026-04-01T02:11:00Z",
+        "tipoff_time_cst": "2026-03-31T21:11:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": true,
+        "odds_commence_time_utc": "2026-04-01T02:11:00Z",
+        "odds_commence_time_cst": "2026-03-31T21:11:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "445445096cf76e57c1a9dee969e15995",
+        "game_date_local": "2026-03-31",
+        "home_team": "Cincinnati Reds",
+        "away_team": "Pittsburgh Pirates",
+        "tip_time_cst": "2026-03-31T17:41:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": 1.5,
+        "total_last": 9,
+        "moneyline_home_last": -105,
+        "moneyline_away_last": -110,
+        "spread_home_consensus": 1.5,
+        "total_consensus": 9,
+        "spread_home_consensus_all_time": 1.5,
+        "total_consensus_all_time": 9,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 3.3675,
+        "projected_away_score": 3.5925,
+        "projected_margin_home": 0.225,
+        "projected_total": 6.96,
+        "spread_pick": "Cincinnati Reds",
+        "total_pick": "UNDER",
+        "confidence_tier": "STRONG",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.040.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 1.275,
+        "total_edge": 2.04,
+        "parlay_edge_score": 3.315,
+        "spread_edge_percentile": 0.425,
+        "total_edge_percentile": 0.51
+      },
+      "arbitration": {
+        "spread": "Cincinnati Reds",
+        "total": "UNDER",
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.040."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 9,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 6.96,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 0.225,
+          "spread_distance": 1.275,
+          "spread_edge": 1.275,
+          "spread_pick": "Cincinnati Reds",
+          "parlay_edge_score": 1.275,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 6.96,
+          "total_distance": 2.04,
+          "total_edge": 2.04,
+          "total_pick": "UNDER",
+          "home_line_proj": 0.225,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 2.04,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 9.0,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "FanDuel",
+            "spread_value_line": -1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "Caesars",
+            "total_value_line": 9,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 5.0,
+          "total_distance": 4.0,
+          "total_edge": 4.0,
+          "total_pick": "UNDER",
+          "home_line_proj": -1.0,
+          "spread_distance": 2.5,
+          "spread_edge": 2.5,
+          "spread_pick": "Cincinnati Reds",
+          "parlay_edge_score": 6.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=4.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 3,
+            "away_games": 3,
+            "home_avg_runs_for": 3.0,
+            "home_avg_runs_against": 2.0,
+            "away_avg_runs_for": 2.0,
+            "away_avg_runs_against": 3.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 5.0,
+          "total_distance": 4.0,
+          "total_edge": 4.0,
+          "total_pick": "UNDER",
+          "home_line_proj": -1.0,
+          "spread_distance": 2.5,
+          "spread_edge": 2.5,
+          "spread_pick": "Cincinnati Reds",
+          "parlay_edge_score": 6.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=4.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 3,
+            "away_last5_games": 3,
+            "home_last5_runs_for": 3.0,
+            "home_last5_runs_against": 2.0,
+            "away_last5_runs_for": 2.0,
+            "away_last5_runs_against": 3.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 6.0,
+          "total_distance": 3.0,
+          "total_edge": 3.0,
+          "total_pick": "UNDER",
+          "home_line_proj": -1.0,
+          "spread_distance": 2.5,
+          "spread_edge": 2.5,
+          "spread_pick": "Cincinnati Reds",
+          "parlay_edge_score": 5.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=3.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 5.0,
+            "market_total": 9.0,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 6.96,
+          "total_distance": 2.04,
+          "total_edge": 2.04,
+          "total_pick": "UNDER",
+          "home_line_proj": 0.225,
+          "spread_distance": 1.275,
+          "spread_edge": 1.275,
+          "spread_pick": "Cincinnati Reds",
+          "parlay_edge_score": 3.315,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.040.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 3.0,
+            "baseline_away": 2.0,
+            "market_home": 3.75,
+            "market_away": 5.25,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "2+",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-03-31",
+        "tipoff_time_utc": "2026-03-31T22:41:00Z",
+        "tipoff_time_cst": "2026-03-31T17:41:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-03-31T22:41:00Z",
+        "odds_commence_time_cst": "2026-03-31T17:41:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "484bcc5bc25e0e38e25dcac48903ccea",
+        "game_date_local": "2026-03-31",
+        "home_team": "Philadelphia Phillies",
+        "away_team": "Washington Nationals",
+        "tip_time_cst": "2026-03-31T17:41:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": -1.5,
+        "total_last": 9,
+        "moneyline_home_last": -189,
+        "moneyline_away_last": 160,
+        "spread_home_consensus": -1.5,
+        "total_consensus": 9,
+        "spread_home_consensus_all_time": -1.5,
+        "total_consensus_all_time": 9,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 4.1025,
+        "projected_away_score": 5.4075,
+        "projected_margin_home": 1.305,
+        "projected_total": 9.51,
+        "spread_pick": "Washington Nationals",
+        "total_pick": "OVER",
+        "confidence_tier": "STRONG",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.805.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 2.805,
+        "total_edge": 0.51,
+        "parlay_edge_score": 3.315,
+        "spread_edge_percentile": 0.935,
+        "total_edge_percentile": 0.1275
+      },
+      "arbitration": {
+        "spread": "Washington Nationals",
+        "total": "OVER",
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.805."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 9,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 9.51,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 1.305,
+          "spread_distance": 2.805,
+          "spread_edge": 2.805,
+          "spread_pick": "Washington Nationals",
+          "parlay_edge_score": 2.805,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 9.51,
+          "total_distance": 0.51,
+          "total_edge": 0.51,
+          "total_pick": "OVER",
+          "home_line_proj": 1.305,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.51,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 9.0,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.5,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "FanDuel",
+            "spread_value_line": -1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "Bovada",
+            "total_value_line": 9.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 10.0,
+          "total_distance": 1.0,
+          "total_edge": 1.0,
+          "total_pick": "OVER",
+          "home_line_proj": 4.0,
+          "spread_distance": 5.5,
+          "spread_edge": 5.5,
+          "spread_pick": "Washington Nationals",
+          "parlay_edge_score": 6.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=5.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 3,
+            "away_games": 3,
+            "home_avg_runs_for": 3.0,
+            "home_avg_runs_against": 8.0,
+            "away_avg_runs_for": 6.0,
+            "away_avg_runs_against": 3.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 10.0,
+          "total_distance": 1.0,
+          "total_edge": 1.0,
+          "total_pick": "OVER",
+          "home_line_proj": 4.0,
+          "spread_distance": 5.5,
+          "spread_edge": 5.5,
+          "spread_pick": "Washington Nationals",
+          "parlay_edge_score": 6.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=5.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 3,
+            "away_last5_games": 3,
+            "home_last5_runs_for": 3.0,
+            "home_last5_runs_against": 8.0,
+            "away_last5_runs_for": 6.0,
+            "away_last5_runs_against": 3.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 9.75,
+          "total_distance": 0.75,
+          "total_edge": 0.75,
+          "total_pick": "OVER",
+          "home_line_proj": 4.0,
+          "spread_distance": 5.5,
+          "spread_edge": 5.5,
+          "spread_pick": "Washington Nationals",
+          "parlay_edge_score": 6.25,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=5.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 10.0,
+            "market_total": 9.0,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 9.51,
+          "total_distance": 0.51,
+          "total_edge": 0.51,
+          "total_pick": "OVER",
+          "home_line_proj": 1.305,
+          "spread_distance": 2.805,
+          "spread_edge": 2.805,
+          "spread_pick": "Washington Nationals",
+          "parlay_edge_score": 3.315,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.805.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 3.0,
+            "baseline_away": 7.0,
+            "market_home": 5.25,
+            "market_away": 3.75,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "2+",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-03-31",
+        "tipoff_time_utc": "2026-03-31T22:41:00Z",
+        "tipoff_time_cst": "2026-03-31T17:41:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-03-31T22:41:00Z",
+        "odds_commence_time_cst": "2026-03-31T17:41:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "4f785ad4f8847d0e028769afc44d9942",
+        "game_date_local": "2026-03-31",
+        "home_team": "Chicago Cubs",
+        "away_team": "Los Angeles Angels",
+        "tip_time_cst": "2026-03-31T18:41:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": -1.5,
+        "total_last": 7,
+        "moneyline_home_last": -145,
+        "moneyline_away_last": 124,
+        "spread_home_consensus": -1.5,
+        "total_consensus": 7,
+        "spread_home_consensus_all_time": -1.5,
+        "total_consensus_all_time": 7,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 5.9075,
+        "projected_away_score": 3.5145,
+        "projected_margin_home": -2.393,
+        "projected_total": 9.422,
+        "spread_pick": "Chicago Cubs",
+        "total_pick": "OVER",
+        "confidence_tier": "STRONG",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.422.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.893,
+        "total_edge": 2.422,
+        "parlay_edge_score": 3.315,
+        "spread_edge_percentile": 0.2976666666666667,
+        "total_edge_percentile": 0.6055
+      },
+      "arbitration": {
+        "spread": "Chicago Cubs",
+        "total": "OVER",
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.422."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 7,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 9.422,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -2.393,
+          "spread_distance": 0.893,
+          "spread_edge": 0.893,
+          "spread_pick": "Chicago Cubs",
+          "parlay_edge_score": 0.893,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 9.422,
+          "total_distance": 2.422,
+          "total_edge": 2.422,
+          "total_pick": "OVER",
+          "home_line_proj": -2.393,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 2.422,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 7.0,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "FanDuel",
+            "spread_value_line": -1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "LowVig.ag",
+            "total_value_line": 7,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 11.75,
+          "total_distance": 4.75,
+          "total_edge": 4.75,
+          "total_pick": "OVER",
+          "home_line_proj": -3.25,
+          "spread_distance": 1.75,
+          "spread_edge": 1.75,
+          "spread_pick": "Chicago Cubs",
+          "parlay_edge_score": 6.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=4.750.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 3,
+            "away_games": 4,
+            "home_avg_runs_for": 7.0,
+            "home_avg_runs_against": 2.0,
+            "away_avg_runs_for": 6.5,
+            "away_avg_runs_against": 8.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 11.75,
+          "total_distance": 4.75,
+          "total_edge": 4.75,
+          "total_pick": "OVER",
+          "home_line_proj": -3.25,
+          "spread_distance": 1.75,
+          "spread_edge": 1.75,
+          "spread_pick": "Chicago Cubs",
+          "parlay_edge_score": 6.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=4.750.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 3,
+            "away_last5_games": 4,
+            "home_last5_runs_for": 7.0,
+            "home_last5_runs_against": 2.0,
+            "away_last5_runs_for": 6.5,
+            "away_last5_runs_against": 8.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 10.562,
+          "total_distance": 3.562,
+          "total_edge": 3.562,
+          "total_pick": "OVER",
+          "home_line_proj": -3.25,
+          "spread_distance": 1.75,
+          "spread_edge": 1.75,
+          "spread_pick": "Chicago Cubs",
+          "parlay_edge_score": 5.312,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=3.562.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 11.75,
+            "market_total": 7.0,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 9.422,
+          "total_distance": 2.422,
+          "total_edge": 2.422,
+          "total_pick": "OVER",
+          "home_line_proj": -2.393,
+          "spread_distance": 0.893,
+          "spread_edge": 0.893,
+          "spread_pick": "Chicago Cubs",
+          "parlay_edge_score": 3.315,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.422.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 7.5,
+            "baseline_away": 4.25,
+            "market_home": 4.25,
+            "market_away": 2.75,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "2+",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-03-31",
+        "tipoff_time_utc": "2026-03-31T23:41:00Z",
+        "tipoff_time_cst": "2026-03-31T18:41:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-03-31T23:41:00Z",
+        "odds_commence_time_cst": "2026-03-31T18:41:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "522613bca37febfdc7fe1b1b858dea09",
+        "game_date_local": "2026-03-31",
+        "home_team": "Milwaukee Brewers",
+        "away_team": "Tampa Bay Rays",
+        "tip_time_cst": "2026-03-31T18:41:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": -1.5,
+        "total_last": 7.5,
+        "moneyline_home_last": -135,
+        "moneyline_away_last": 115,
+        "spread_home_consensus": -1.5,
+        "total_consensus": 7.5,
+        "spread_home_consensus_all_time": -1.5,
+        "total_consensus_all_time": 7.5,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 5.265,
+        "projected_away_score": 3.51,
+        "projected_margin_home": -1.755,
+        "projected_total": 8.775,
+        "spread_pick": "Milwaukee Brewers",
+        "total_pick": "OVER",
+        "confidence_tier": "WATCH",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.275.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.255,
+        "total_edge": 1.275,
+        "parlay_edge_score": 1.53,
+        "spread_edge_percentile": 0.1,
+        "total_edge_percentile": 0.31875
+      },
+      "arbitration": {
+        "spread": "Milwaukee Brewers",
+        "total": "OVER",
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.275."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 7.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 8.775,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.755,
+          "spread_distance": 0.255,
+          "spread_edge": 0.255,
+          "spread_pick": "Milwaukee Brewers",
+          "parlay_edge_score": 0.255,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 8.775,
+          "total_distance": 1.275,
+          "total_edge": 1.275,
+          "total_pick": "OVER",
+          "home_line_proj": -1.755,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 1.275,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 7.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "BetMGM",
+            "spread_value_line": -1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "Bovada",
+            "total_value_line": 7.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 10.0,
+          "total_distance": 2.5,
+          "total_edge": 2.5,
+          "total_pick": "OVER",
+          "home_line_proj": -2.0,
+          "spread_distance": 0.5,
+          "spread_edge": 0.5,
+          "spread_pick": "Milwaukee Brewers",
+          "parlay_edge_score": 3.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=2.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 3,
+            "away_games": 3,
+            "home_avg_runs_for": 6.0,
+            "home_avg_runs_against": 3.0,
+            "away_avg_runs_for": 5.0,
+            "away_avg_runs_against": 6.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 10.0,
+          "total_distance": 2.5,
+          "total_edge": 2.5,
+          "total_pick": "OVER",
+          "home_line_proj": -2.0,
+          "spread_distance": 0.5,
+          "spread_edge": 0.5,
+          "spread_pick": "Milwaukee Brewers",
+          "parlay_edge_score": 3.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=2.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 3,
+            "away_last5_games": 3,
+            "home_last5_runs_for": 6.0,
+            "home_last5_runs_against": 3.0,
+            "away_last5_runs_for": 5.0,
+            "away_last5_runs_against": 6.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 9.375,
+          "total_distance": 1.875,
+          "total_edge": 1.875,
+          "total_pick": "OVER",
+          "home_line_proj": -2.0,
+          "spread_distance": 0.5,
+          "spread_edge": 0.5,
+          "spread_pick": "Milwaukee Brewers",
+          "parlay_edge_score": 2.375,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=1.875.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 10.0,
+            "market_total": 7.5,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 8.775,
+          "total_distance": 1.275,
+          "total_edge": 1.275,
+          "total_pick": "OVER",
+          "home_line_proj": -1.755,
+          "spread_distance": 0.255,
+          "spread_edge": 0.255,
+          "spread_pick": "Milwaukee Brewers",
+          "parlay_edge_score": 1.53,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.275.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 6.0,
+            "baseline_away": 4.0,
+            "market_home": 4.5,
+            "market_away": 3.0,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "1-2",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-03-31",
+        "tipoff_time_utc": "2026-03-31T23:41:00Z",
+        "tipoff_time_cst": "2026-03-31T18:41:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-03-31T23:41:00Z",
+        "odds_commence_time_cst": "2026-03-31T18:41:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "5fa4f7bd1d1be2a30a40c0d7f653d9ff",
+        "game_date_local": "2026-03-31",
+        "home_team": "Houston Astros",
+        "away_team": "Boston Red Sox",
+        "tip_time_cst": "2026-03-31T19:11:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": -1.5,
+        "total_last": 7.5,
+        "moneyline_home_last": -149,
+        "moneyline_away_last": 129,
+        "spread_home_consensus": -1.5,
+        "total_consensus": 7.5,
+        "spread_home_consensus_all_time": -1.5,
+        "total_consensus_all_time": 7.5,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 5.9025,
+        "projected_away_score": 3.6375,
+        "projected_margin_home": -2.265,
+        "projected_total": 9.54,
+        "spread_pick": "Houston Astros",
+        "total_pick": "OVER",
+        "confidence_tier": "STRONG",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.040.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.765,
+        "total_edge": 2.04,
+        "parlay_edge_score": 2.805,
+        "spread_edge_percentile": 0.255,
+        "total_edge_percentile": 0.51
+      },
+      "arbitration": {
+        "spread": "Houston Astros",
+        "total": "OVER",
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.040."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 7.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 9.54,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -2.265,
+          "spread_distance": 0.765,
+          "spread_edge": 0.765,
+          "spread_pick": "Houston Astros",
+          "parlay_edge_score": 0.765,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 9.54,
+          "total_distance": 2.04,
+          "total_edge": 2.04,
+          "total_pick": "OVER",
+          "home_line_proj": -2.265,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 2.04,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 7.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "BetMGM",
+            "spread_value_line": -1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "LowVig.ag",
+            "total_value_line": 7.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 11.5,
+          "total_distance": 4.0,
+          "total_edge": 4.0,
+          "total_pick": "OVER",
+          "home_line_proj": -3.0,
+          "spread_distance": 1.5,
+          "spread_edge": 1.5,
+          "spread_pick": "Houston Astros",
+          "parlay_edge_score": 5.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=4.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 4,
+            "away_games": 3,
+            "home_avg_runs_for": 8.5,
+            "home_avg_runs_against": 6.5,
+            "away_avg_runs_for": 2.0,
+            "away_avg_runs_against": 6.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 11.5,
+          "total_distance": 4.0,
+          "total_edge": 4.0,
+          "total_pick": "OVER",
+          "home_line_proj": -3.0,
+          "spread_distance": 1.5,
+          "spread_edge": 1.5,
+          "spread_pick": "Houston Astros",
+          "parlay_edge_score": 5.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=4.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 4,
+            "away_last5_games": 3,
+            "home_last5_runs_for": 8.5,
+            "home_last5_runs_against": 6.5,
+            "away_last5_runs_for": 2.0,
+            "away_last5_runs_against": 6.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 10.5,
+          "total_distance": 3.0,
+          "total_edge": 3.0,
+          "total_pick": "OVER",
+          "home_line_proj": -3.0,
+          "spread_distance": 1.5,
+          "spread_edge": 1.5,
+          "spread_pick": "Houston Astros",
+          "parlay_edge_score": 4.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=3.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 11.5,
+            "market_total": 7.5,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 9.54,
+          "total_distance": 2.04,
+          "total_edge": 2.04,
+          "total_pick": "OVER",
+          "home_line_proj": -2.265,
+          "spread_distance": 0.765,
+          "spread_edge": 0.765,
+          "spread_pick": "Houston Astros",
+          "parlay_edge_score": 2.805,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=2.040.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 7.25,
+            "baseline_away": 4.25,
+            "market_home": 4.5,
+            "market_away": 3.0,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "2+",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-04-01",
+        "tipoff_time_utc": "2026-04-01T00:11:00Z",
+        "tipoff_time_cst": "2026-03-31T19:11:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": true,
+        "odds_commence_time_utc": "2026-04-01T00:11:00Z",
+        "odds_commence_time_cst": "2026-03-31T19:11:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "85518e9fa7d88ada5c7ef6acc3fb06fc",
+        "game_date_local": "2026-03-31",
+        "home_team": "Arizona Diamondbacks",
+        "away_team": "Detroit Tigers",
+        "tip_time_cst": "2026-03-31T20:40:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": 1.5,
+        "total_last": 9,
+        "moneyline_home_last": -115,
+        "moneyline_away_last": -105,
+        "spread_home_consensus": 1.5,
+        "total_consensus": 9,
+        "spread_home_consensus_all_time": 1.5,
+        "total_consensus_all_time": 9,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 3.75,
+        "projected_away_score": 5.25,
+        "projected_margin_home": 1.5,
+        "projected_total": 9.0,
+        "spread_pick": "Detroit Tigers",
+        "total_pick": "",
+        "confidence_tier": "STRONG",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "Large cross-book line-value gap detected; no ROI backtest attached.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 3.0,
+        "total_edge": 0.5,
+        "parlay_edge_score": 3.5,
+        "spread_edge_percentile": 0.99,
+        "total_edge_percentile": 0.125
+      },
+      "arbitration": {
+        "spread": "Detroit Tigers",
+        "total": null,
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "Large cross-book line-value gap detected; no ROI backtest attached."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 9,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 9.0,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 3.0,
+          "spread_edge": 3.0,
+          "spread_pick": "Detroit Tigers",
+          "parlay_edge_score": 3.0,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "BetUS",
+            "value_line": 1.5,
+            "reason": "Detroit Tigers has 3.0 points of spread value vs consensus at BetUS."
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 9.0,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.5,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "FanDuel",
+            "value_line": 9.5,
+            "reason": "Best total value is below 1.0 point threshold."
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 9.0,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 3.0,
+          "spread_edge": 3.0,
+          "spread_pick": "Detroit Tigers",
+          "parlay_edge_score": 3.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "Large cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "BetUS",
+            "spread_value_line": 1.5,
+            "spread_value_reason": "Detroit Tigers has 3.0 points of spread value vs consensus at BetUS.",
+            "total_value_book": "FanDuel",
+            "total_value_line": 9.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "UNDER",
+          "home_line_proj": 1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.5,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=0.500.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 3,
+            "away_games": 3,
+            "home_avg_runs_for": 4.0,
+            "home_avg_runs_against": 5.0,
+            "away_avg_runs_for": 5.0,
+            "away_avg_runs_against": 3.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "UNDER",
+          "home_line_proj": 1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.5,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=0.500.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 3,
+            "away_last5_games": 3,
+            "home_last5_runs_for": 4.0,
+            "home_last5_runs_against": 5.0,
+            "away_last5_runs_for": 5.0,
+            "away_last5_runs_against": 3.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 8.625,
+          "total_distance": 0.375,
+          "total_edge": 0.375,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.375,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=0.375.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 8.5,
+            "market_total": 9.0,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 8.745,
+          "total_distance": 0.255,
+          "total_edge": 0.255,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.255,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.255.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 3.5,
+            "baseline_away": 5.0,
+            "market_home": 3.75,
+            "market_away": 5.25,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "BetUS",
+        "mlb_spread_value_line": 1.5,
+        "mlb_total_value_book": "FanDuel",
+        "mlb_total_value_line": 9.5
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "2+",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-04-01",
+        "tipoff_time_utc": "2026-04-01T01:40:00Z",
+        "tipoff_time_cst": "2026-03-31T20:40:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": true,
+        "odds_commence_time_utc": "2026-04-01T01:40:00Z",
+        "odds_commence_time_cst": "2026-03-31T20:40:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "8d928227a51e9c7b63c36bcf0a8083f0",
+        "game_date_local": "2026-03-31",
+        "home_team": "Seattle Mariners",
+        "away_team": "New York Yankees",
+        "tip_time_cst": "2026-03-31T20:41:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": 1.5,
+        "total_last": 7,
+        "moneyline_home_last": -105,
+        "moneyline_away_last": -112,
+        "spread_home_consensus": 1.5,
+        "total_consensus": 7,
+        "spread_home_consensus_all_time": 1.5,
+        "total_consensus_all_time": 7,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 2.8775,
+        "projected_away_score": 3.1025,
+        "projected_margin_home": 0.225,
+        "projected_total": 5.98,
+        "spread_pick": "Seattle Mariners",
+        "total_pick": "UNDER",
+        "confidence_tier": "WATCH",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.275.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 1.275,
+        "total_edge": 1.02,
+        "parlay_edge_score": 2.295,
+        "spread_edge_percentile": 0.425,
+        "total_edge_percentile": 0.255
+      },
+      "arbitration": {
+        "spread": "Seattle Mariners",
+        "total": "UNDER",
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.275."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 7,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 5.98,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 0.225,
+          "spread_distance": 1.275,
+          "spread_edge": 1.275,
+          "spread_pick": "Seattle Mariners",
+          "parlay_edge_score": 1.275,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 5.98,
+          "total_distance": 1.02,
+          "total_edge": 1.02,
+          "total_pick": "UNDER",
+          "home_line_proj": 0.225,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 1.02,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 7.0,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 3.0,
+          "spread_edge": 3.0,
+          "spread_pick": "New York Yankees",
+          "parlay_edge_score": 3.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "Large cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "LowVig.ag",
+            "spread_value_line": 1.5,
+            "spread_value_reason": "New York Yankees has 3.0 points of spread value vs consensus at LowVig.ag.",
+            "total_value_book": "LowVig.ag",
+            "total_value_line": 7,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 5.0,
+          "total_distance": 2.0,
+          "total_edge": 2.0,
+          "total_pick": "UNDER",
+          "home_line_proj": -1.0,
+          "spread_distance": 2.5,
+          "spread_edge": 2.5,
+          "spread_pick": "Seattle Mariners",
+          "parlay_edge_score": 4.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=2.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 4,
+            "away_games": 3,
+            "home_avg_runs_for": 5.0,
+            "home_avg_runs_against": 1.0,
+            "away_avg_runs_for": 3.0,
+            "away_avg_runs_against": 1.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 5.0,
+          "total_distance": 2.0,
+          "total_edge": 2.0,
+          "total_pick": "UNDER",
+          "home_line_proj": -1.0,
+          "spread_distance": 2.5,
+          "spread_edge": 2.5,
+          "spread_pick": "Seattle Mariners",
+          "parlay_edge_score": 4.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=2.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 4,
+            "away_last5_games": 3,
+            "home_last5_runs_for": 5.0,
+            "home_last5_runs_against": 1.0,
+            "away_last5_runs_for": 3.0,
+            "away_last5_runs_against": 1.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 5.5,
+          "total_distance": 1.5,
+          "total_edge": 1.5,
+          "total_pick": "UNDER",
+          "home_line_proj": -1.0,
+          "spread_distance": 2.5,
+          "spread_edge": 2.5,
+          "spread_pick": "Seattle Mariners",
+          "parlay_edge_score": 4.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=2.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 5.0,
+            "market_total": 7.0,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 5.98,
+          "total_distance": 1.02,
+          "total_edge": 1.02,
+          "total_pick": "UNDER",
+          "home_line_proj": 0.225,
+          "spread_distance": 1.275,
+          "spread_edge": 1.275,
+          "spread_pick": "Seattle Mariners",
+          "parlay_edge_score": 2.295,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=1.275.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 3.0,
+            "baseline_away": 2.0,
+            "market_home": 2.75,
+            "market_away": 4.25,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "1-2",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-04-01",
+        "tipoff_time_utc": "2026-04-01T01:41:00Z",
+        "tipoff_time_cst": "2026-03-31T20:41:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": true,
+        "odds_commence_time_utc": "2026-04-01T01:41:00Z",
+        "odds_commence_time_cst": "2026-03-31T20:41:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "a7ee9fc9ac1db47a494d6c4c39dfc4de",
+        "game_date_local": "2026-03-31",
+        "home_team": "Baltimore Orioles",
+        "away_team": "Texas Rangers",
+        "tip_time_cst": "2026-03-31T17:36:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": 1.5,
+        "total_last": 8.5,
+        "moneyline_home_last": 110,
+        "moneyline_away_last": -130,
+        "spread_home_consensus": 1.5,
+        "total_consensus": 8.5,
+        "spread_home_consensus_all_time": 1.5,
+        "total_consensus_all_time": 8.5,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 2.99,
+        "projected_away_score": 5,
+        "projected_margin_home": 2.01,
+        "projected_total": 7.99,
+        "spread_pick": "Texas Rangers",
+        "total_pick": "UNDER",
+        "confidence_tier": "LEAN",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.510.",
+        "actionability": "NONE"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.51,
+        "total_edge": 0.51,
+        "parlay_edge_score": 1.02,
+        "spread_edge_percentile": 0.17,
+        "total_edge_percentile": 0.1275
+      },
+      "arbitration": {
+        "spread": "Texas Rangers",
+        "total": "UNDER",
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.510."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 8.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 7.99,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 2.01,
+          "spread_distance": 0.51,
+          "spread_edge": 0.51,
+          "spread_pick": "Texas Rangers",
+          "parlay_edge_score": 0.51,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 7.99,
+          "total_distance": 0.51,
+          "total_edge": 0.51,
+          "total_pick": "UNDER",
+          "home_line_proj": 2.01,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.51,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "LowVig.ag",
+            "spread_value_line": -1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "Caesars",
+            "total_value_line": 8.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 7.5,
+          "total_distance": 1.0,
+          "total_edge": 1.0,
+          "total_pick": "UNDER",
+          "home_line_proj": 2.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "Texas Rangers",
+          "parlay_edge_score": 2.0,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=1.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 3,
+            "away_games": 3,
+            "home_avg_runs_for": 2.0,
+            "home_avg_runs_against": 5.0,
+            "away_avg_runs_for": 5.0,
+            "away_avg_runs_against": 3.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 7.5,
+          "total_distance": 1.0,
+          "total_edge": 1.0,
+          "total_pick": "UNDER",
+          "home_line_proj": 2.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "Texas Rangers",
+          "parlay_edge_score": 2.0,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=1.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 3,
+            "away_last5_games": 3,
+            "home_last5_runs_for": 2.0,
+            "home_last5_runs_against": 5.0,
+            "away_last5_runs_for": 5.0,
+            "away_last5_runs_against": 3.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 7.75,
+          "total_distance": 0.75,
+          "total_edge": 0.75,
+          "total_pick": "UNDER",
+          "home_line_proj": 2.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "Texas Rangers",
+          "parlay_edge_score": 1.75,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=1.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 7.5,
+            "market_total": 8.5,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 7.99,
+          "total_distance": 0.51,
+          "total_edge": 0.51,
+          "total_pick": "UNDER",
+          "home_line_proj": 2.01,
+          "spread_distance": 0.51,
+          "spread_edge": 0.51,
+          "spread_pick": "Texas Rangers",
+          "parlay_edge_score": 1.02,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.510.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 2.5,
+            "baseline_away": 5.0,
+            "market_home": 3.5,
+            "market_away": 5.0,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "0-1",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-03-31",
+        "tipoff_time_utc": "2026-03-31T22:36:00Z",
+        "tipoff_time_cst": "2026-03-31T17:36:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-03-31T22:36:00Z",
+        "odds_commence_time_cst": "2026-03-31T17:36:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "b294b3f2eb02e42a436d439795c7f125",
+        "game_date_local": "2026-03-31",
+        "home_team": "St. Louis Cardinals",
+        "away_team": "New York Mets",
+        "tip_time_cst": "2026-03-31T18:46:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": 1.5,
+        "total_last": 8.5,
+        "moneyline_home_last": 135,
+        "moneyline_away_last": -158,
+        "spread_home_consensus": 1.5,
+        "total_consensus": 8.5,
+        "spread_home_consensus_all_time": 1.5,
+        "total_consensus_all_time": 8.5,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 3.755,
+        "projected_away_score": 4.745,
+        "projected_margin_home": 0.99,
+        "projected_total": 8.5,
+        "spread_pick": "St. Louis Cardinals",
+        "total_pick": "",
+        "confidence_tier": "LEAN",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.510.",
+        "actionability": "NONE"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.51,
+        "total_edge": 0.0,
+        "parlay_edge_score": 0.51,
+        "spread_edge_percentile": 0.17,
+        "total_edge_percentile": 0.1
+      },
+      "arbitration": {
+        "spread": "St. Louis Cardinals",
+        "total": null,
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.510."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 8.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 8.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 0.99,
+          "spread_distance": 0.51,
+          "spread_edge": 0.51,
+          "spread_pick": "St. Louis Cardinals",
+          "parlay_edge_score": 0.51,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 0.99,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "Fanatics",
+            "spread_value_line": -1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "LowVig.ag",
+            "total_value_line": 8.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 0.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "St. Louis Cardinals",
+          "parlay_edge_score": 1.0,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=1.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 3,
+            "away_games": 3,
+            "home_avg_runs_for": 6.0,
+            "home_avg_runs_against": 5.0,
+            "away_avg_runs_for": 4.0,
+            "away_avg_runs_against": 2.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 0.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "St. Louis Cardinals",
+          "parlay_edge_score": 1.0,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=1.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 3,
+            "away_last5_games": 3,
+            "home_last5_runs_for": 6.0,
+            "home_last5_runs_against": 5.0,
+            "away_last5_runs_for": 4.0,
+            "away_last5_runs_against": 2.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 0.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "St. Louis Cardinals",
+          "parlay_edge_score": 1.0,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=1.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 8.5,
+            "market_total": 8.5,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": 0.99,
+          "spread_distance": 0.51,
+          "spread_edge": 0.51,
+          "spread_pick": "St. Louis Cardinals",
+          "parlay_edge_score": 0.51,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.510.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 4.0,
+            "baseline_away": 4.5,
+            "market_home": 3.5,
+            "market_away": 5.0,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "0-1",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-03-31",
+        "tipoff_time_utc": "2026-03-31T23:46:00Z",
+        "tipoff_time_cst": "2026-03-31T18:46:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-03-31T23:46:00Z",
+        "odds_commence_time_cst": "2026-03-31T18:46:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "b724336c8a25a94c67ba0d63ea2c98a0",
+        "game_date_local": "2026-03-31",
+        "home_team": "Toronto Blue Jays",
+        "away_team": "Colorado Rockies",
+        "tip_time_cst": "2026-03-31T18:07:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": -1.5,
+        "total_last": 8.5,
+        "moneyline_home_last": -270,
+        "moneyline_away_last": 222,
+        "spread_home_consensus": -1.5,
+        "total_consensus": 8.5,
+        "spread_home_consensus_all_time": -1.5,
+        "total_consensus_all_time": 8.5,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 5,
+        "projected_away_score": 3.5,
+        "projected_margin_home": -1.5,
+        "projected_total": 8.5,
+        "spread_pick": "",
+        "total_pick": "",
+        "confidence_tier": "IGNORE",
+        "cluster_alignment": "NONE",
+        "arbitration_cluster": "NONE",
+        "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+        "actionability": "NONE"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.0,
+        "total_edge": 0.0,
+        "parlay_edge_score": 0.0,
+        "spread_edge_percentile": 0.1,
+        "total_edge_percentile": 0.1
+      },
+      "arbitration": {
+        "spread": null,
+        "total": null,
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "No MLB line-value pick cleared the configured thresholds."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 8.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 8.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "LowVig.ag",
+            "value_line": 1.5,
+            "reason": "Best spread value is below 0.5 point threshold."
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "Fanatics",
+            "value_line": 8.5,
+            "reason": "Best total value is below 1.0 point threshold."
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.0,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "LowVig.ag",
+            "spread_value_line": 1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "Fanatics",
+            "total_value_line": 8.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 8.25,
+          "total_distance": 0.25,
+          "total_edge": 0.25,
+          "total_pick": "UNDER",
+          "home_line_proj": -0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "Colorado Rockies",
+          "parlay_edge_score": 1.0,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=0.750.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 4,
+            "away_games": 4,
+            "home_avg_runs_for": 5.0,
+            "home_avg_runs_against": 4.5,
+            "away_avg_runs_for": 3.0,
+            "away_avg_runs_against": 4.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 8.25,
+          "total_distance": 0.25,
+          "total_edge": 0.25,
+          "total_pick": "UNDER",
+          "home_line_proj": -0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "Colorado Rockies",
+          "parlay_edge_score": 1.0,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=0.750.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 4,
+            "away_last5_games": 4,
+            "home_last5_runs_for": 5.0,
+            "home_last5_runs_against": 4.5,
+            "away_last5_runs_for": 3.0,
+            "away_last5_runs_against": 4.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 8.312,
+          "total_distance": 0.188,
+          "total_edge": 0.188,
+          "total_pick": "UNDER",
+          "home_line_proj": -0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "Colorado Rockies",
+          "parlay_edge_score": 0.938,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=0.750.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 8.25,
+            "market_total": 8.5,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 8.373,
+          "total_distance": 0.127,
+          "total_edge": 0.127,
+          "total_pick": "",
+          "home_line_proj": -1.118,
+          "spread_distance": 0.382,
+          "spread_edge": 0.382,
+          "spread_pick": "",
+          "parlay_edge_score": 0.509,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.382.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 4.5,
+            "baseline_away": 3.75,
+            "market_home": 5.0,
+            "market_away": 3.5,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "LowVig.ag",
+        "mlb_spread_value_line": 1.5,
+        "mlb_total_value_book": "Fanatics",
+        "mlb_total_value_line": 8.5
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "0-1",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-03-31",
+        "tipoff_time_utc": "2026-03-31T23:07:00Z",
+        "tipoff_time_cst": "2026-03-31T18:07:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-03-31T23:07:00Z",
+        "odds_commence_time_cst": "2026-03-31T18:07:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "c49833eafa15bdd83a074d3229783d86",
+        "game_date_local": "2026-03-31",
+        "home_team": "Miami Marlins",
+        "away_team": "Chicago White Sox",
+        "tip_time_cst": "2026-03-31T17:41:00-05:00",
+        "season_type": "MLB"
+      },
+      "market_state": {
+        "spread_home_last": -1.5,
+        "total_last": 8.5,
+        "moneyline_home_last": -152,
+        "moneyline_away_last": 130,
+        "spread_home_consensus": -1.5,
+        "total_consensus": 8.5,
+        "spread_home_consensus_all_time": -1.5,
+        "total_consensus_all_time": 8.5,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-03-31T15:55:38Z"
+      },
+      "model_output": {
+        "projected_home_score": 5,
+        "projected_away_score": 4.265,
+        "projected_margin_home": -0.735,
+        "projected_total": 9.265,
+        "spread_pick": "Chicago White Sox",
+        "total_pick": "OVER",
+        "confidence_tier": "LEAN",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.765.",
+        "actionability": "NONE"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.765,
+        "total_edge": 0.765,
+        "parlay_edge_score": 1.53,
+        "spread_edge_percentile": 0.255,
+        "total_edge_percentile": 0.19125
+      },
+      "arbitration": {
+        "spread": "Chicago White Sox",
+        "total": "OVER",
+        "selection_authority": "MLB_MarketBlend_v1",
+        "reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.765."
+      },
+      "models": {
+        "MLB_MarketConsensus_v1": {
+          "model_name": "MLB_MarketConsensus_v1",
+          "total_projection": 8.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "MLB_SpreadValue_v1": {
+          "model_name": "MLB_SpreadValue_v1",
+          "total_projection": 9.265,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -0.735,
+          "spread_distance": 0.765,
+          "spread_edge": 0.765,
+          "spread_pick": "Chicago White Sox",
+          "parlay_edge_score": 0.765,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_TotalValue_v1": {
+          "model_name": "MLB_TotalValue_v1",
+          "total_projection": 9.265,
+          "total_distance": 0.765,
+          "total_edge": 0.765,
+          "total_pick": "OVER",
+          "home_line_proj": -0.735,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.765,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "MLB_MarketValueBlend_v1": {
+          "model_name": "MLB_MarketValueBlend_v1",
+          "total_projection": 8.5,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "",
+          "home_line_proj": -1.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.5,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "No MLB line-value pick cleared the configured thresholds.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "BetMGM",
+            "spread_value_line": -1.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "Fanatics",
+            "total_value_line": 8,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "MLB market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "MLB_RunsBaseline_v1": {
+          "model_name": "MLB_RunsBaseline_v1",
+          "total_projection": 10.0,
+          "total_distance": 1.5,
+          "total_edge": 1.5,
+          "total_pick": "OVER",
+          "home_line_proj": 0.0,
+          "spread_distance": 1.5,
+          "spread_edge": 1.5,
+          "spread_pick": "Chicago White Sox",
+          "parlay_edge_score": 3.0,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_RunsBaseline_v1 compares run projection to current run line/total; largest model-market gap=1.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 4,
+            "away_games": 3,
+            "home_avg_runs_for": 4.0,
+            "home_avg_runs_against": 3.0,
+            "away_avg_runs_for": 7.0,
+            "away_avg_runs_against": 6.0
+          }
+        },
+        "MLB_Last5Runs_v1": {
+          "model_name": "MLB_Last5Runs_v1",
+          "total_projection": 10.0,
+          "total_distance": 1.5,
+          "total_edge": 1.5,
+          "total_pick": "OVER",
+          "home_line_proj": 0.0,
+          "spread_distance": 1.5,
+          "spread_edge": 1.5,
+          "spread_pick": "Chicago White Sox",
+          "parlay_edge_score": 3.0,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_Last5Runs_v1 compares run projection to current run line/total; largest model-market gap=1.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 4,
+            "away_last5_games": 3,
+            "home_last5_runs_for": 4.0,
+            "home_last5_runs_against": 3.0,
+            "away_last5_runs_for": 7.0,
+            "away_last5_runs_against": 6.0
+          }
+        },
+        "MLB_MarketPressure_v1": {
+          "model_name": "MLB_MarketPressure_v1",
+          "total_projection": 9.625,
+          "total_distance": 1.125,
+          "total_edge": 1.125,
+          "total_pick": "OVER",
+          "home_line_proj": 0.0,
+          "spread_distance": 1.5,
+          "spread_edge": 1.5,
+          "spread_pick": "Chicago White Sox",
+          "parlay_edge_score": 2.625,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "MLB_MarketPressure_v1 compares run projection to current run line/total; largest model-market gap=1.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "runs_baseline_regressed_to_market_total",
+            "baseline_total": 10.0,
+            "market_total": 8.5,
+            "pull_weight": 0.25
+          }
+        },
+        "MLB_MarketBlend_v1": {
+          "model_name": "MLB_MarketBlend_v1",
+          "total_projection": 9.265,
+          "total_distance": 0.765,
+          "total_edge": 0.765,
+          "total_pick": "OVER",
+          "home_line_proj": -0.735,
+          "spread_distance": 0.765,
+          "spread_edge": 0.765,
+          "spread_pick": "Chicago White Sox",
+          "parlay_edge_score": 1.53,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "MLB_MarketBlend_v1 compares run projection to current run line/total; largest model-market gap=0.765.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "runs_baseline_market_blend",
+            "baseline_home": 5.0,
+            "baseline_away": 5.0,
+            "market_home": 5.0,
+            "market_away": 3.5,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "mlb_model_status": "multi_model_runs_seed",
+        "mlb_spread_value_book": "",
+        "mlb_spread_value_line": null,
+        "mlb_total_value_book": "",
+        "mlb_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "0-1",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "MLB_MARKET_VALUE_NO_BACKTEST"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-03-31",
+        "tipoff_time_utc": "2026-03-31T22:41:00Z",
+        "tipoff_time_cst": "2026-03-31T17:41:00-05:00",
+        "tipoff_local_day": "2026-03-31",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-03-31T22:41:00Z",
+        "odds_commence_time_cst": "2026-03-31T17:41:00-05:00"
+      }
+    }
+  ]
+}
