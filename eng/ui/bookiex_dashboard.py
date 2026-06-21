@@ -117,12 +117,23 @@ NEW_LEAGUE_MODEL_STATUS = {
 
 def _load_dashboard_league_options() -> list[dict]:
     """Load enabled league options from normalization configs for the Streamlit selector."""
+    label_by_key = {
+        "mlb": "Baseball - MLB",
+        "nba": "Basketball - NBA",
+        "ncaam": "Basketball - NCAAM",
+        "wnba": "Basketball - WNBA",
+        "nhl": "Hockey - NHL",
+    }
+    display_by_key = {
+        "mlb": "MLB",
+        "nba": "NBA",
+        "ncaam": "NCAAM",
+        "wnba": "WNBA",
+        "nhl": "NHL",
+    }
     fallback = [
-        {"label": "NBA", "league_key": "nba", "display_name": "NBA"},
-        {"label": "NCAAM", "league_key": "ncaam", "display_name": "NCAAM"},
-        {"label": "WNBA", "league_key": "wnba", "display_name": "WNBA"},
-        {"label": "NHL", "league_key": "nhl", "display_name": "NHL"},
-        {"label": "MLB", "league_key": "mlb", "display_name": "MLB"},
+        {"label": label_by_key[key], "league_key": key, "display_name": display_by_key[key]}
+        for key in ("mlb", "nba", "ncaam", "wnba", "nhl")
     ]
     if not NORMALIZATION_CONFIG_DIR.exists():
         return fallback
@@ -137,20 +148,24 @@ def _load_dashboard_league_options() -> list[dict]:
             continue
         if not config.enabled:
             continue
-        label = config.display_name.upper()
+        key = config.league_key.lower()
+        if key not in label_by_key:
+            continue
+        label = label_by_key[key]
         options_by_label[label] = {
             "label": label,
-            "league_key": config.league_key.lower(),
-            "display_name": config.display_name,
+            "league_key": key,
+            "display_name": display_by_key[key],
         }
-    return list(options_by_label.values())
+    return [options_by_label[label] for label in sorted(options_by_label)]
 
 
 LEAGUE_OPTIONS = _load_dashboard_league_options()
 _league_by_label = {option["label"]: option for option in LEAGUE_OPTIONS}
-league = st.selectbox("League", list(_league_by_label), index=0)
-league_meta = _league_by_label[league]
+league_label = st.selectbox("League", list(_league_by_label), index=0)
+league_meta = _league_by_label[league_label]
 league_key = league_meta["league_key"]
+league = league_meta["display_name"]
 
 if league == "NBA":
     DAILY_DIR = NBA_DAILY_DIR

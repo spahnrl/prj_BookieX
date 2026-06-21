@@ -1,13 +1,13 @@
 {
   "schema_version": "DAILY_VIEW_V1",
-  "model_version": "WNBA_MARKET_VALUE_V1",
-  "calibration_version": "WNBA_MARKET_VALUE_NO_BACKTEST",
+  "model_version": "WNBA_MULTI_MODEL_V1",
+  "calibration_version": "WNBA_POINTS_MODEL_SEED_V1",
   "generated_from_artifact_hash": "2494db757deab4f2aed089f968143581870b9dedc126941794b06c9467d4ebb5",
   "date": "2026-06-21",
-  "build_timestamp_utc": "2026-06-20T20:32:51Z",
+  "build_timestamp_utc": "2026-06-21T01:46:58Z",
   "is_model_output": true,
   "is_roi_output": false,
-  "model_warning": "WNBA Daily View uses a cross-book market-value model. Picks mean available line value versus consensus, not historical ROI or win-probability confidence. No WNBA ROI, pocket score, or backtest has been generated yet.",
+  "model_warning": "WNBA Daily View uses seed point-history and market-value models. Picks are limited-sample model-market signals, not mature historical ROI or production betting authority.",
   "games": [
     {
       "identity": {
@@ -32,35 +32,35 @@
         "odds_snapshot_last_utc": "2026-06-20T20:00:43.523901+00:00"
       },
       "model_output": {
-        "projected_home_score": "",
-        "projected_away_score": "",
-        "projected_margin_home": -13.5,
-        "projected_total": 168.0,
+        "projected_home_score": 90.8775,
+        "projected_away_score": 79.9275,
+        "projected_margin_home": -10.95,
+        "projected_total": 170.805,
         "spread_pick": "Washington Mystics",
-        "total_pick": "",
-        "confidence_tier": "LEAN",
+        "total_pick": "OVER",
+        "confidence_tier": "WATCH",
         "cluster_alignment": "MARKET_VALUE",
         "arbitration_cluster": "MARKET_VALUE",
-        "confidence_reason": "Small cross-book line-value gap detected; no ROI backtest attached.",
-        "actionability": "NONE"
+        "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=2.805.",
+        "actionability": "ACTION"
       },
       "edge_metrics": {
-        "spread_edge": 0.5,
-        "total_edge": 0.5,
-        "parlay_edge_score": 1.0,
-        "spread_edge_percentile": 0.16666666666666666,
-        "total_edge_percentile": 0.125
+        "spread_edge": 2.55,
+        "total_edge": 2.805,
+        "parlay_edge_score": 5.355,
+        "spread_edge_percentile": 0.85,
+        "total_edge_percentile": 0.70125
       },
       "arbitration": {
         "spread": "Washington Mystics",
-        "total": null,
-        "selection_authority": "WNBA_MarketValueBlend_v1",
-        "reason": "Small cross-book line-value gap detected; no ROI backtest attached."
+        "total": "OVER",
+        "selection_authority": "WNBA_MarketBlend_v1",
+        "reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=2.805."
       },
       "models": {
         "WNBA_MarketConsensus_v1": {
           "model_name": "WNBA_MarketConsensus_v1",
-          "total_projection": 168.0,
+          "total_projection": 168,
           "total_distance": 0,
           "total_edge": 0,
           "total_pick": "",
@@ -76,38 +76,38 @@
         },
         "WNBA_SpreadValue_v1": {
           "model_name": "WNBA_SpreadValue_v1",
-          "total_projection": 168.0,
+          "total_projection": 170.805,
           "total_distance": 0,
           "total_edge": 0,
           "total_pick": "",
-          "home_line_proj": -13.5,
-          "spread_distance": 0.5,
-          "spread_edge": 0.5,
+          "home_line_proj": -10.95,
+          "spread_distance": 2.55,
+          "spread_edge": 2.55,
           "spread_pick": "Washington Mystics",
-          "parlay_edge_score": 0.5,
+          "parlay_edge_score": 2.55,
           "context_flags": {
             "source": "spread_line_value_vs_consensus",
-            "value_book": "LowVig.ag",
-            "value_line": 14,
-            "reason": "Washington Mystics has 0.5 points of spread value vs consensus at LowVig.ag."
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
           }
         },
         "WNBA_TotalValue_v1": {
           "model_name": "WNBA_TotalValue_v1",
-          "total_projection": 168.0,
-          "total_distance": 0.5,
-          "total_edge": 0.5,
-          "total_pick": "",
-          "home_line_proj": -13.5,
+          "total_projection": 170.805,
+          "total_distance": 2.805,
+          "total_edge": 2.805,
+          "total_pick": "OVER",
+          "home_line_proj": -10.95,
           "spread_distance": 0,
           "spread_edge": 0,
           "spread_pick": "",
-          "parlay_edge_score": 0.5,
+          "parlay_edge_score": 2.805,
           "context_flags": {
             "source": "total_line_value_vs_consensus",
-            "value_book": "DraftKings",
-            "value_line": 168.5,
-            "reason": "Best total value is below 1.0 point threshold."
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
           }
         },
         "WNBA_MarketValueBlend_v1": {
@@ -134,6 +134,99 @@
             "total_value_reason": "Best total value is below 1.0 point threshold.",
             "warning": "WNBA market-value model only; no historical ROI/backtest attached."
           }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": 173.5,
+          "total_distance": 5.5,
+          "total_edge": 5.5,
+          "total_pick": "OVER",
+          "home_line_proj": -8.5,
+          "spread_distance": 5.0,
+          "spread_edge": 5.0,
+          "spread_pick": "Washington Mystics",
+          "parlay_edge_score": 10.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_PointsBaseline_v1 compares point projection to current spread/total; largest model-market gap=5.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 4,
+            "away_games": 4,
+            "home_avg_points_for": 98.0,
+            "home_avg_points_against": 79.0,
+            "away_avg_points_for": 86.0,
+            "away_avg_points_against": 84.0
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": 173.5,
+          "total_distance": 5.5,
+          "total_edge": 5.5,
+          "total_pick": "OVER",
+          "home_line_proj": -8.5,
+          "spread_distance": 5.0,
+          "spread_edge": 5.0,
+          "spread_pick": "Washington Mystics",
+          "parlay_edge_score": 10.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_Last5Points_v1 compares point projection to current spread/total; largest model-market gap=5.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 4,
+            "away_last5_games": 4,
+            "home_last5_points_for": 98.0,
+            "home_last5_points_against": 79.0,
+            "away_last5_points_for": 86.0,
+            "away_last5_points_against": 84.0
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": 172.125,
+          "total_distance": 4.125,
+          "total_edge": 4.125,
+          "total_pick": "OVER",
+          "home_line_proj": -8.5,
+          "spread_distance": 5.0,
+          "spread_edge": 5.0,
+          "spread_pick": "Washington Mystics",
+          "parlay_edge_score": 9.125,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_MarketPressure_v1 compares point projection to current spread/total; largest model-market gap=5.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "baseline_total": 173.5,
+            "market_total": 168.0,
+            "pull_weight": 0.25
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": 170.805,
+          "total_distance": 2.805,
+          "total_edge": 2.805,
+          "total_pick": "OVER",
+          "home_line_proj": -10.95,
+          "spread_distance": 2.55,
+          "spread_edge": 2.55,
+          "spread_pick": "Washington Mystics",
+          "parlay_edge_score": 5.355,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=2.805.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "baseline_home": 91.0,
+            "baseline_away": 82.5,
+            "market_home": 90.75,
+            "market_away": 77.25,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
         }
       },
       "agent_overrides": {
@@ -153,21 +246,21 @@
         "home_3pt_pct": null,
         "away_3pt_pct": null,
         "three_pt_diff": null,
-        "wnba_model_status": "market_value_model_no_backtest",
-        "wnba_spread_value_book": "LowVig.ag",
-        "wnba_spread_value_line": 14,
-        "wnba_total_value_book": "DraftKings",
-        "wnba_total_value_line": 168.5
+        "wnba_model_status": "multi_model_points_seed",
+        "wnba_spread_value_book": "",
+        "wnba_spread_value_line": null,
+        "wnba_total_value_book": "",
+        "wnba_total_value_line": null
       },
       "execution_overlay": {},
       "pocket_score": null,
       "pocket": null,
       "calibration_tags": {
-        "edge_bucket": "0-1",
+        "edge_bucket": "2+",
         "historical_bucket_win_rate": null,
         "over_under_bias_flag": null,
         "favorite_dog_bias_flag": null,
-        "model_regime_normal": "WNBA_MARKET_VALUE_NO_BACKTEST"
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
       },
       "temporal_integrity": {
         "schedule_date_utc": "2026-06-21",
@@ -203,30 +296,30 @@
         "odds_snapshot_last_utc": "2026-06-20T20:00:43.523901+00:00"
       },
       "model_output": {
-        "projected_home_score": "",
-        "projected_away_score": "",
-        "projected_margin_home": -3.5,
-        "projected_total": 167.5,
+        "projected_home_score": 84.9895,
+        "projected_away_score": 83.4025,
+        "projected_margin_home": -1.587,
+        "projected_total": 168.392,
         "spread_pick": "Golden State Valkyries",
-        "total_pick": "UNDER",
-        "confidence_tier": "WATCH",
+        "total_pick": "OVER",
+        "confidence_tier": "LEAN",
         "cluster_alignment": "MARKET_VALUE",
         "arbitration_cluster": "MARKET_VALUE",
-        "confidence_reason": "Moderate cross-book line-value gap detected; no ROI backtest attached.",
-        "actionability": "ACTION"
+        "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.913.",
+        "actionability": "NONE"
       },
       "edge_metrics": {
-        "spread_edge": 1.0,
-        "total_edge": 1.0,
-        "parlay_edge_score": 2.0,
-        "spread_edge_percentile": 0.3333333333333333,
-        "total_edge_percentile": 0.25
+        "spread_edge": 1.913,
+        "total_edge": 0.892,
+        "parlay_edge_score": 2.805,
+        "spread_edge_percentile": 0.6376666666666667,
+        "total_edge_percentile": 0.223
       },
       "arbitration": {
         "spread": "Golden State Valkyries",
-        "total": "UNDER",
-        "selection_authority": "WNBA_MarketValueBlend_v1",
-        "reason": "Moderate cross-book line-value gap detected; no ROI backtest attached."
+        "total": "OVER",
+        "selection_authority": "WNBA_MarketBlend_v1",
+        "reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.913."
       },
       "models": {
         "WNBA_MarketConsensus_v1": {
@@ -247,38 +340,38 @@
         },
         "WNBA_SpreadValue_v1": {
           "model_name": "WNBA_SpreadValue_v1",
-          "total_projection": 167.5,
+          "total_projection": 168.392,
           "total_distance": 0,
           "total_edge": 0,
           "total_pick": "",
-          "home_line_proj": -3.5,
-          "spread_distance": 1.0,
-          "spread_edge": 1.0,
+          "home_line_proj": -1.587,
+          "spread_distance": 1.913,
+          "spread_edge": 1.913,
           "spread_pick": "Golden State Valkyries",
-          "parlay_edge_score": 1.0,
+          "parlay_edge_score": 1.913,
           "context_flags": {
             "source": "spread_line_value_vs_consensus",
-            "value_book": "BetRivers",
-            "value_line": 4.5,
-            "reason": "Golden State Valkyries has 1.0 points of spread value vs consensus at BetRivers."
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
           }
         },
         "WNBA_TotalValue_v1": {
           "model_name": "WNBA_TotalValue_v1",
-          "total_projection": 167.5,
-          "total_distance": 1.0,
-          "total_edge": 1.0,
-          "total_pick": "UNDER",
-          "home_line_proj": -3.5,
+          "total_projection": 168.392,
+          "total_distance": 0.892,
+          "total_edge": 0.892,
+          "total_pick": "OVER",
+          "home_line_proj": -1.587,
           "spread_distance": 0,
           "spread_edge": 0,
           "spread_pick": "",
-          "parlay_edge_score": 1.0,
+          "parlay_edge_score": 0.892,
           "context_flags": {
             "source": "total_line_value_vs_consensus",
-            "value_book": "FanDuel",
-            "value_line": 168.5,
-            "reason": "UNDER has 1.0 points of total value vs consensus at FanDuel."
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
           }
         },
         "WNBA_MarketValueBlend_v1": {
@@ -305,6 +398,99 @@
             "total_value_reason": "UNDER has 1.0 points of total value vs consensus at FanDuel.",
             "warning": "WNBA market-value model only; no historical ROI/backtest attached."
           }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": 169.25,
+          "total_distance": 1.75,
+          "total_edge": 1.75,
+          "total_pick": "OVER",
+          "home_line_proj": 0.25,
+          "spread_distance": 3.75,
+          "spread_edge": 3.75,
+          "spread_pick": "Golden State Valkyries",
+          "parlay_edge_score": 5.5,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_PointsBaseline_v1 compares point projection to current spread/total; largest model-market gap=3.750.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 4,
+            "away_games": 4,
+            "home_avg_points_for": 93.0,
+            "home_avg_points_against": 92.5,
+            "away_avg_points_for": 77.0,
+            "away_avg_points_against": 76.0
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": 169.25,
+          "total_distance": 1.75,
+          "total_edge": 1.75,
+          "total_pick": "OVER",
+          "home_line_proj": 0.25,
+          "spread_distance": 3.75,
+          "spread_edge": 3.75,
+          "spread_pick": "Golden State Valkyries",
+          "parlay_edge_score": 5.5,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_Last5Points_v1 compares point projection to current spread/total; largest model-market gap=3.750.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 4,
+            "away_last5_games": 4,
+            "home_last5_points_for": 93.0,
+            "home_last5_points_against": 92.5,
+            "away_last5_points_for": 77.0,
+            "away_last5_points_against": 76.0
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": 168.812,
+          "total_distance": 1.312,
+          "total_edge": 1.312,
+          "total_pick": "OVER",
+          "home_line_proj": 0.25,
+          "spread_distance": 3.75,
+          "spread_edge": 3.75,
+          "spread_pick": "Golden State Valkyries",
+          "parlay_edge_score": 5.062,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_MarketPressure_v1 compares point projection to current spread/total; largest model-market gap=3.750.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "baseline_total": 169.25,
+            "market_total": 167.5,
+            "pull_weight": 0.25
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": 168.392,
+          "total_distance": 0.892,
+          "total_edge": 0.892,
+          "total_pick": "OVER",
+          "home_line_proj": -1.587,
+          "spread_distance": 1.913,
+          "spread_edge": 1.913,
+          "spread_pick": "Golden State Valkyries",
+          "parlay_edge_score": 2.805,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.913.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "baseline_home": 84.5,
+            "baseline_away": 84.75,
+            "market_home": 85.5,
+            "market_away": 82.0,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
         }
       },
       "agent_overrides": {
@@ -324,11 +510,11 @@
         "home_3pt_pct": null,
         "away_3pt_pct": null,
         "three_pt_diff": null,
-        "wnba_model_status": "market_value_model_no_backtest",
-        "wnba_spread_value_book": "BetRivers",
-        "wnba_spread_value_line": 4.5,
-        "wnba_total_value_book": "FanDuel",
-        "wnba_total_value_line": 168.5
+        "wnba_model_status": "multi_model_points_seed",
+        "wnba_spread_value_book": "",
+        "wnba_spread_value_line": null,
+        "wnba_total_value_book": "",
+        "wnba_total_value_line": null
       },
       "execution_overlay": {},
       "pocket_score": null,
@@ -338,7 +524,7 @@
         "historical_bucket_win_rate": null,
         "over_under_bias_flag": null,
         "favorite_dog_bias_flag": null,
-        "model_regime_normal": "WNBA_MARKET_VALUE_NO_BACKTEST"
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
       },
       "temporal_integrity": {
         "schedule_date_utc": "2026-06-21",
@@ -374,35 +560,35 @@
         "odds_snapshot_last_utc": "2026-06-20T20:00:43.523901+00:00"
       },
       "model_output": {
-        "projected_home_score": "",
-        "projected_away_score": "",
-        "projected_margin_home": 5.5,
-        "projected_total": 178.0,
-        "spread_pick": "",
-        "total_pick": "",
-        "confidence_tier": "IGNORE",
-        "cluster_alignment": "NONE",
-        "arbitration_cluster": "NONE",
-        "confidence_reason": "No WNBA line-value pick cleared the configured thresholds.",
-        "actionability": "NONE"
+        "projected_home_score": 85.8675,
+        "projected_away_score": 93.4075,
+        "projected_margin_home": 7.54,
+        "projected_total": 179.275,
+        "spread_pick": "New York Liberty",
+        "total_pick": "OVER",
+        "confidence_tier": "WATCH",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=2.040.",
+        "actionability": "ACTION"
       },
       "edge_metrics": {
-        "spread_edge": 0.0,
-        "total_edge": 0.5,
-        "parlay_edge_score": 0.5,
-        "spread_edge_percentile": 0.1,
-        "total_edge_percentile": 0.125
+        "spread_edge": 2.04,
+        "total_edge": 1.275,
+        "parlay_edge_score": 3.315,
+        "spread_edge_percentile": 0.68,
+        "total_edge_percentile": 0.31875
       },
       "arbitration": {
-        "spread": null,
-        "total": null,
-        "selection_authority": "WNBA_MarketValueBlend_v1",
-        "reason": "No WNBA line-value pick cleared the configured thresholds."
+        "spread": "New York Liberty",
+        "total": "OVER",
+        "selection_authority": "WNBA_MarketBlend_v1",
+        "reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=2.040."
       },
       "models": {
         "WNBA_MarketConsensus_v1": {
           "model_name": "WNBA_MarketConsensus_v1",
-          "total_projection": 178.0,
+          "total_projection": 178,
           "total_distance": 0,
           "total_edge": 0,
           "total_pick": "",
@@ -418,38 +604,38 @@
         },
         "WNBA_SpreadValue_v1": {
           "model_name": "WNBA_SpreadValue_v1",
-          "total_projection": 178.0,
+          "total_projection": 179.275,
           "total_distance": 0,
           "total_edge": 0,
           "total_pick": "",
-          "home_line_proj": 5.5,
-          "spread_distance": 0.0,
-          "spread_edge": 0.0,
-          "spread_pick": "",
-          "parlay_edge_score": 0.0,
+          "home_line_proj": 7.54,
+          "spread_distance": 2.04,
+          "spread_edge": 2.04,
+          "spread_pick": "New York Liberty",
+          "parlay_edge_score": 2.04,
           "context_flags": {
             "source": "spread_line_value_vs_consensus",
-            "value_book": "LowVig.ag",
-            "value_line": 5.5,
-            "reason": "Best spread value is below 0.5 point threshold."
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
           }
         },
         "WNBA_TotalValue_v1": {
           "model_name": "WNBA_TotalValue_v1",
-          "total_projection": 178.0,
-          "total_distance": 0.5,
-          "total_edge": 0.5,
-          "total_pick": "",
-          "home_line_proj": 5.5,
+          "total_projection": 179.275,
+          "total_distance": 1.275,
+          "total_edge": 1.275,
+          "total_pick": "OVER",
+          "home_line_proj": 7.54,
           "spread_distance": 0,
           "spread_edge": 0,
           "spread_pick": "",
-          "parlay_edge_score": 0.5,
+          "parlay_edge_score": 1.275,
           "context_flags": {
             "source": "total_line_value_vs_consensus",
-            "value_book": "FanDuel",
-            "value_line": 178.5,
-            "reason": "Best total value is below 1.0 point threshold."
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
           }
         },
         "WNBA_MarketValueBlend_v1": {
@@ -476,6 +662,99 @@
             "total_value_reason": "Best total value is below 1.0 point threshold.",
             "warning": "WNBA market-value model only; no historical ROI/backtest attached."
           }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": 180.5,
+          "total_distance": 2.5,
+          "total_edge": 2.5,
+          "total_pick": "OVER",
+          "home_line_proj": 9.5,
+          "spread_distance": 4.0,
+          "spread_edge": 4.0,
+          "spread_pick": "New York Liberty",
+          "parlay_edge_score": 6.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_PointsBaseline_v1 compares point projection to current spread/total; largest model-market gap=4.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 3,
+            "away_games": 4,
+            "home_avg_points_for": 83.0,
+            "home_avg_points_against": 99.0,
+            "away_avg_points_for": 91.0,
+            "away_avg_points_against": 88.0
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": 180.5,
+          "total_distance": 2.5,
+          "total_edge": 2.5,
+          "total_pick": "OVER",
+          "home_line_proj": 9.5,
+          "spread_distance": 4.0,
+          "spread_edge": 4.0,
+          "spread_pick": "New York Liberty",
+          "parlay_edge_score": 6.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_Last5Points_v1 compares point projection to current spread/total; largest model-market gap=4.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 3,
+            "away_last5_games": 4,
+            "home_last5_points_for": 83.0,
+            "home_last5_points_against": 99.0,
+            "away_last5_points_for": 91.0,
+            "away_last5_points_against": 88.0
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": 179.875,
+          "total_distance": 1.875,
+          "total_edge": 1.875,
+          "total_pick": "OVER",
+          "home_line_proj": 9.5,
+          "spread_distance": 4.0,
+          "spread_edge": 4.0,
+          "spread_pick": "New York Liberty",
+          "parlay_edge_score": 5.875,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_MarketPressure_v1 compares point projection to current spread/total; largest model-market gap=4.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "baseline_total": 180.5,
+            "market_total": 178.0,
+            "pull_weight": 0.25
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": 179.275,
+          "total_distance": 1.275,
+          "total_edge": 1.275,
+          "total_pick": "OVER",
+          "home_line_proj": 7.54,
+          "spread_distance": 2.04,
+          "spread_edge": 2.04,
+          "spread_pick": "New York Liberty",
+          "parlay_edge_score": 3.315,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=2.040.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "baseline_home": 85.5,
+            "baseline_away": 95.0,
+            "market_home": 86.25,
+            "market_away": 91.75,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
         }
       },
       "agent_overrides": {
@@ -495,21 +774,21 @@
         "home_3pt_pct": null,
         "away_3pt_pct": null,
         "three_pt_diff": null,
-        "wnba_model_status": "market_value_model_no_backtest",
-        "wnba_spread_value_book": "LowVig.ag",
-        "wnba_spread_value_line": 5.5,
-        "wnba_total_value_book": "FanDuel",
-        "wnba_total_value_line": 178.5
+        "wnba_model_status": "multi_model_points_seed",
+        "wnba_spread_value_book": "",
+        "wnba_spread_value_line": null,
+        "wnba_total_value_book": "",
+        "wnba_total_value_line": null
       },
       "execution_overlay": {},
       "pocket_score": null,
       "pocket": null,
       "calibration_tags": {
-        "edge_bucket": "0-1",
+        "edge_bucket": "2+",
         "historical_bucket_win_rate": null,
         "over_under_bias_flag": null,
         "favorite_dog_bias_flag": null,
-        "model_regime_normal": "WNBA_MARKET_VALUE_NO_BACKTEST"
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
       },
       "temporal_integrity": {
         "schedule_date_utc": "2026-06-22",

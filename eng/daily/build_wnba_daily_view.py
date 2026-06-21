@@ -14,6 +14,7 @@ import argparse
 import csv
 import hashlib
 import json
+import re
 import statistics
 import sys
 from collections import defaultdict
@@ -34,15 +35,23 @@ from configs.leagues.league_wnba import (
 from utils.io_helpers import get_daily_view_output_dir
 
 SCHEMA_VERSION = "DAILY_VIEW_V1"
-MODEL_VERSION = "WNBA_MARKET_VALUE_V1"
-CALIBRATION_VERSION = "WNBA_MARKET_VALUE_NO_BACKTEST"
-BASELINE_MODEL_NAME = "WNBA_MarketConsensus_v1"
+MODEL_VERSION = "WNBA_MULTI_MODEL_V1"
+CALIBRATION_VERSION = "WNBA_POINTS_MODEL_SEED_V1"
+MARKET_CONSENSUS_MODEL_NAME = "WNBA_MarketConsensus_v1"
 SPREAD_VALUE_MODEL_NAME = "WNBA_SpreadValue_v1"
 TOTAL_VALUE_MODEL_NAME = "WNBA_TotalValue_v1"
-MODEL_NAME = "WNBA_MarketValueBlend_v1"
+MARKET_VALUE_MODEL_NAME = "WNBA_MarketValueBlend_v1"
+POINTS_BASELINE_MODEL_NAME = "WNBA_PointsBaseline_v1"
+LAST5_POINTS_MODEL_NAME = "WNBA_Last5Points_v1"
+MARKET_PRESSURE_MODEL_NAME = "WNBA_MarketPressure_v1"
+MODEL_NAME = "WNBA_MarketBlend_v1"
+RESULT_HISTORY_DIR = PROJECT_ROOT / "data" / "wnba" / "raw"
 MIN_BOOKS_FOR_VALUE_PICK = 3
 SPREAD_EDGE_THRESHOLD = 0.5
 TOTAL_EDGE_THRESHOLD = 1.0
+MARKET_PRESSURE_PULL_WEIGHT = 0.25
+MARKET_BLEND_MODEL_WEIGHT = 0.51
+MARKET_BLEND_MARKET_WEIGHT = 0.49
 
 
 def _utc_now_iso() -> str:
@@ -63,6 +72,10 @@ def _safe_float(value):
         return float(text)
     except ValueError:
         return None
+
+
+def _norm_team(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", _safe_text(value).lower())
 
 
 def _median(values: list[float]):
@@ -113,6 +126,305 @@ def _sha256(path: Path) -> str:
     with path.open("rb") as f:
         hasher.update(f.read())
     return hasher.hexdigest()
+
+
+def _load_result_history() -> list[dict]:
+    rows_by_key: dict[str, dict] = {}
+    for path in sorted(RESULT_HISTORY_DIR.glob("wnba_historical_results_*.json")):
+        try:
+            with path.open("r", encoding="utf-8") as f:
+                payload = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            continue
+        results = payload.get("results") if isinstance(payload, dict) else None
+        if not isinstance(results, list):
+            continue
+        for row in results:
+            if not isinstance(row, dict) or not row.get("completed"):
+                continue
+            key = _safe_text(row.get("espn_game_id")) or (
+                f"{row.get('requested_date')}:{row.get('away_team')}:{row.get('home_team')}"
+            )
+            rows_by_key[key] = row
+    return list(rows_by_key.values())
+
+
+_RESULT_HISTORY_CACHE: list[dict] | None = None
+
+
+def _result_history() -> list[dict]:
+    global _RESULT_HISTORY_CACHE
+    if _RESULT_HISTORY_CACHE is None:
+        _RESULT_HISTORY_CACHE = _load_result_history()
+    return _RESULT_HISTORY_CACHE
+
+
+def _history_before_date(game_date: str) -> list[dict]:
+    date_key = _safe_text(game_date).replace("-", "")
+    rows = []
+    for row in _result_history():
+        requested = _safe_text(row.get("requested_date"))
+        if requested and requested < date_key:
+            rows.append(row)
+    rows.sort(key=lambda r: (_safe_text(r.get("requested_date")), _safe_text(r.get("espn_game_id"))))
+    return rows
+
+
+def _team_point_stats(team: str, history: list[dict]) -> dict:
+    key = _norm_team(team)
+    games = []
+    for row in history:
+        home = _norm_team(row.get("home_team"))
+        away = _norm_team(row.get("away_team"))
+        home_score = _safe_float(row.get("home_score"))
+        away_score = _safe_float(row.get("away_score"))
+        if home_score is None or away_score is None:
+            continue
+        if key == home:
+            games.append({"date": _safe_text(row.get("requested_date")), "points_for": home_score, "points_against": away_score})
+        elif key == away:
+            games.append({"date": _safe_text(row.get("requested_date")), "points_for": away_score, "points_against": home_score})
+    games.sort(key=lambda g: g["date"])
+    last5 = games[-5:]
+    return {
+        "games": len(games),
+        "avg_points_for": _median([g["points_for"] for g in games]),
+        "avg_points_against": _median([g["points_against"] for g in games]),
+        "last5_games": len(last5),
+        "last5_points_for": _median([g["points_for"] for g in last5]),
+        "last5_points_against": _median([g["points_against"] for g in last5]),
+    }
+
+
+def _total_bet(proj_total, market_total):
+    if proj_total is None or market_total is None:
+        return ""
+    if proj_total > market_total:
+        return "OVER"
+    if proj_total < market_total:
+        return "UNDER"
+    return ""
+
+
+def _spread_pick(home_line_proj, spread_home, home: str, away: str) -> str:
+    if home_line_proj is None or spread_home is None:
+        return ""
+    if home_line_proj < spread_home:
+        return home
+    if home_line_proj > spread_home:
+        return away
+    return ""
+
+
+def _null_model(model_name: str, context_flags: dict | None = None) -> dict:
+    return {
+        "model_name": model_name,
+        "total_projection": None,
+        "total_distance": None,
+        "total_edge": None,
+        "total_pick": "",
+        "home_line_proj": None,
+        "spread_distance": None,
+        "spread_edge": None,
+        "spread_pick": "",
+        "parlay_edge_score": None,
+        "confidence_tier": "IGNORE",
+        "confidence_reason": _safe_text((context_flags or {}).get("warning")) or "Model unavailable.",
+        "actionability": "NONE",
+        "context_flags": context_flags or {},
+    }
+
+
+def _score_model(
+    *,
+    model_name: str,
+    proj_home,
+    proj_away,
+    spread_home,
+    market_total,
+    home: str,
+    away: str,
+    context_flags: dict,
+) -> dict:
+    if proj_home is None or proj_away is None:
+        return _null_model(model_name, context_flags)
+    proj_total = round(float(proj_home) + float(proj_away), 3)
+    home_line_proj = round(float(proj_away) - float(proj_home), 3)
+    spread_pick = _spread_pick(home_line_proj, spread_home, home, away)
+    total_pick = _total_bet(proj_total, market_total)
+    spread_distance = abs(home_line_proj - spread_home) if spread_home is not None else None
+    total_distance = abs(proj_total - market_total) if market_total is not None else None
+    best_edge = max(spread_distance or 0, total_distance or 0)
+    if best_edge >= 4:
+        confidence_tier = "STRONG"
+    elif best_edge >= 2:
+        confidence_tier = "WATCH"
+    elif best_edge >= 1:
+        confidence_tier = "LEAN"
+    else:
+        confidence_tier = "IGNORE"
+    if confidence_tier == "IGNORE":
+        spread_pick = ""
+        total_pick = ""
+    return {
+        "model_name": model_name,
+        "total_projection": proj_total,
+        "total_distance": round(total_distance, 3) if total_distance is not None else None,
+        "total_edge": round(total_distance, 3) if total_distance is not None else None,
+        "total_pick": total_pick,
+        "home_line_proj": home_line_proj,
+        "spread_distance": round(spread_distance, 3) if spread_distance is not None else None,
+        "spread_edge": round(spread_distance, 3) if spread_distance is not None else None,
+        "spread_pick": spread_pick,
+        "parlay_edge_score": round((spread_distance or 0) + (total_distance or 0), 3),
+        "confidence_tier": confidence_tier,
+        "confidence_reason": (
+            f"{model_name} compares point projection to current spread/total; "
+            f"largest model-market gap={best_edge:.3f}."
+        ),
+        "actionability": "ACTION" if confidence_tier in ("STRONG", "WATCH") and (spread_pick or total_pick) else "NONE",
+        "context_flags": context_flags,
+    }
+
+
+def _market_implied_scores(spread_home, market_total) -> tuple[float | None, float | None]:
+    spread = _safe_float(spread_home)
+    total = _safe_float(market_total)
+    if spread is None or total is None:
+        return None, None
+    home_score = (total - spread) / 2.0
+    away_score = total - home_score
+    return home_score, away_score
+
+
+def _build_point_models(home: str, away: str, game_date: str, consensus: dict) -> dict[str, dict]:
+    spread_home = _safe_float(consensus.get("spread_home_last"))
+    market_total = _safe_float(consensus.get("total_last"))
+    history = _history_before_date(game_date)
+    home_stats = _team_point_stats(home, history)
+    away_stats = _team_point_stats(away, history)
+
+    if all(home_stats.get(k) is not None for k in ("avg_points_for", "avg_points_against")) and all(
+        away_stats.get(k) is not None for k in ("avg_points_for", "avg_points_against")
+    ):
+        baseline_home = (home_stats["avg_points_for"] + away_stats["avg_points_against"]) / 2.0
+        baseline_away = (away_stats["avg_points_for"] + home_stats["avg_points_against"]) / 2.0
+        baseline = _score_model(
+            model_name=POINTS_BASELINE_MODEL_NAME,
+            proj_home=baseline_home,
+            proj_away=baseline_away,
+            spread_home=spread_home,
+            market_total=market_total,
+            home=home,
+            away=away,
+            context_flags={
+                "source": "espn_completed_results_before_slate",
+                "home_games": home_stats["games"],
+                "away_games": away_stats["games"],
+                "home_avg_points_for": home_stats["avg_points_for"],
+                "home_avg_points_against": home_stats["avg_points_against"],
+                "away_avg_points_for": away_stats["avg_points_for"],
+                "away_avg_points_against": away_stats["avg_points_against"],
+            },
+        )
+    else:
+        baseline = _null_model(
+            POINTS_BASELINE_MODEL_NAME,
+            {"source": "espn_completed_results_before_slate", "warning": "Insufficient season point history."},
+        )
+
+    if all(home_stats.get(k) is not None for k in ("last5_points_for", "last5_points_against")) and all(
+        away_stats.get(k) is not None for k in ("last5_points_for", "last5_points_against")
+    ):
+        last5_home = (home_stats["last5_points_for"] + away_stats["last5_points_against"]) / 2.0
+        last5_away = (away_stats["last5_points_for"] + home_stats["last5_points_against"]) / 2.0
+        last5 = _score_model(
+            model_name=LAST5_POINTS_MODEL_NAME,
+            proj_home=last5_home,
+            proj_away=last5_away,
+            spread_home=spread_home,
+            market_total=market_total,
+            home=home,
+            away=away,
+            context_flags={
+                "source": "espn_completed_results_before_slate",
+                "home_last5_games": home_stats["last5_games"],
+                "away_last5_games": away_stats["last5_games"],
+                "home_last5_points_for": home_stats["last5_points_for"],
+                "home_last5_points_against": home_stats["last5_points_against"],
+                "away_last5_points_for": away_stats["last5_points_for"],
+                "away_last5_points_against": away_stats["last5_points_against"],
+            },
+        )
+    else:
+        last5 = _null_model(
+            LAST5_POINTS_MODEL_NAME,
+            {"source": "espn_completed_results_before_slate", "warning": "Insufficient last-5 point history."},
+        )
+
+    base_total = _safe_float(baseline.get("total_projection"))
+    base_margin = _safe_float(baseline.get("home_line_proj"))
+    if base_total is not None and base_margin is not None and market_total is not None:
+        adjusted_total = base_total + MARKET_PRESSURE_PULL_WEIGHT * (market_total - base_total)
+        pressure_home = (adjusted_total - base_margin) / 2.0
+        pressure_away = adjusted_total - pressure_home
+        pressure = _score_model(
+            model_name=MARKET_PRESSURE_MODEL_NAME,
+            proj_home=pressure_home,
+            proj_away=pressure_away,
+            spread_home=spread_home,
+            market_total=market_total,
+            home=home,
+            away=away,
+            context_flags={
+                "source": "points_baseline_regressed_to_market_total",
+                "baseline_total": base_total,
+                "market_total": market_total,
+                "pull_weight": MARKET_PRESSURE_PULL_WEIGHT,
+            },
+        )
+    else:
+        pressure = _null_model(
+            MARKET_PRESSURE_MODEL_NAME,
+            {"source": "points_baseline_regressed_to_market_total", "warning": "Missing baseline or market total."},
+        )
+
+    market_home, market_away = _market_implied_scores(spread_home, market_total)
+    if base_total is not None and base_margin is not None and market_home is not None and market_away is not None:
+        base_home = (base_total - base_margin) / 2.0
+        base_away = base_total - base_home
+        blend_home = MARKET_BLEND_MODEL_WEIGHT * base_home + MARKET_BLEND_MARKET_WEIGHT * market_home
+        blend_away = MARKET_BLEND_MODEL_WEIGHT * base_away + MARKET_BLEND_MARKET_WEIGHT * market_away
+        blend = _score_model(
+            model_name=MODEL_NAME,
+            proj_home=blend_home,
+            proj_away=blend_away,
+            spread_home=spread_home,
+            market_total=market_total,
+            home=home,
+            away=away,
+            context_flags={
+                "source": "points_baseline_market_blend",
+                "baseline_home": round(base_home, 3),
+                "baseline_away": round(base_away, 3),
+                "market_home": round(market_home, 3),
+                "market_away": round(market_away, 3),
+                "weight_model": MARKET_BLEND_MODEL_WEIGHT,
+                "weight_market": MARKET_BLEND_MARKET_WEIGHT,
+            },
+        )
+    else:
+        blend = _null_model(
+            MODEL_NAME,
+            {"source": "points_baseline_market_blend", "warning": "Missing baseline or market-implied scores."},
+        )
+
+    return {
+        POINTS_BASELINE_MODEL_NAME: baseline,
+        LAST5_POINTS_MODEL_NAME: last5,
+        MARKET_PRESSURE_MODEL_NAME: pressure,
+        MODEL_NAME: blend,
+    }
 
 
 def _load_flattened_rows() -> list[dict]:
@@ -331,7 +643,7 @@ def _model_result(consensus: dict) -> dict:
         total_pick = ""
     actionability = "ACTION" if confidence_tier in ("STRONG", "WATCH") and (spread_pick or total_pick) else "NONE"
     return {
-        "model_name": MODEL_NAME,
+        "model_name": MARKET_VALUE_MODEL_NAME,
         "total_projection": total_projection,
         "total_distance": total_edge,
         "total_edge": total_edge,
@@ -365,7 +677,11 @@ def _structured_game(game_rows: list[dict]) -> dict:
     commence = _safe_text(first.get("commence_time"))
     game_date = _slate_date(commence)
     consensus = _bookmaker_consensus(game_rows)
-    model = _model_result(consensus)
+    market_value_model = _model_result(consensus)
+    point_models = _build_point_models(home, away, game_date, consensus)
+    model = point_models.get(MODEL_NAME) or market_value_model
+    if not model.get("spread_pick") and not model.get("total_pick"):
+        model = market_value_model
     tip_cst = _to_central_iso(commence)
     spread_edge = float(model.get("spread_edge") or 0)
     total_edge = float(model.get("total_edge") or 0)
@@ -375,12 +691,12 @@ def _structured_game(game_rows: list[dict]) -> dict:
     actionability = _safe_text(model.get("actionability")) or "NONE"
     value_flags = model.get("context_flags") or {}
     baseline_model = {
-        "model_name": BASELINE_MODEL_NAME,
-        "total_projection": model.get("total_projection"),
+        "model_name": MARKET_CONSENSUS_MODEL_NAME,
+        "total_projection": consensus.get("total_last"),
         "total_distance": 0,
         "total_edge": 0,
         "total_pick": "",
-        "home_line_proj": model.get("home_line_proj"),
+        "home_line_proj": consensus.get("spread_home_last"),
         "spread_distance": 0,
         "spread_edge": 0,
         "spread_pick": "",
@@ -450,8 +766,8 @@ def _structured_game(game_rows: list[dict]) -> dict:
             "odds_snapshot_last_utc": consensus.get("odds_snapshot_last_utc"),
         },
         "model_output": {
-            "projected_home_score": "",
-            "projected_away_score": "",
+            "projected_home_score": _fmt_num(((model.get("total_projection") or 0) - (model.get("home_line_proj") or 0)) / 2.0) if model.get("total_projection") is not None and model.get("home_line_proj") is not None else "",
+            "projected_away_score": _fmt_num((model.get("total_projection") or 0) - (((model.get("total_projection") or 0) - (model.get("home_line_proj") or 0)) / 2.0)) if model.get("total_projection") is not None and model.get("home_line_proj") is not None else "",
             "projected_margin_home": model.get("home_line_proj"),
             "projected_total": model.get("total_projection"),
             "spread_pick": model.get("spread_pick"),
@@ -476,10 +792,11 @@ def _structured_game(game_rows: list[dict]) -> dict:
             "reason": confidence_reason,
         },
         "models": {
-            BASELINE_MODEL_NAME: baseline_model,
+            MARKET_CONSENSUS_MODEL_NAME: baseline_model,
             SPREAD_VALUE_MODEL_NAME: spread_model,
             TOTAL_VALUE_MODEL_NAME: total_model,
-            MODEL_NAME: model,
+            MARKET_VALUE_MODEL_NAME: market_value_model,
+            **point_models,
         },
         "agent_overrides": {
             "override_pick": None,
@@ -498,7 +815,7 @@ def _structured_game(game_rows: list[dict]) -> dict:
             "home_3pt_pct": None,
             "away_3pt_pct": None,
             "three_pt_diff": None,
-            "wnba_model_status": "market_value_model_no_backtest",
+            "wnba_model_status": "multi_model_points_seed",
             "wnba_spread_value_book": value_flags.get("spread_value_book", ""),
             "wnba_spread_value_line": value_flags.get("spread_value_line"),
             "wnba_total_value_book": value_flags.get("total_value_book", ""),
@@ -512,7 +829,7 @@ def _structured_game(game_rows: list[dict]) -> dict:
             "historical_bucket_win_rate": None,
             "over_under_bias_flag": None,
             "favorite_dog_bias_flag": None,
-            "model_regime_normal": "WNBA_MARKET_VALUE_NO_BACKTEST",
+            "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1",
         },
         "temporal_integrity": {
             "schedule_date_utc": commence[:10],
@@ -607,9 +924,8 @@ def build_wnba_daily_view(date: str | None = None) -> dict:
             "is_model_output": True,
             "is_roi_output": False,
             "model_warning": (
-                "WNBA Daily View uses a cross-book market-value model. Picks mean available line value "
-                "versus consensus, not historical ROI or win-probability confidence. No WNBA ROI, pocket "
-                "score, or backtest has been generated yet."
+                "WNBA Daily View uses seed point-history and market-value models. Picks are limited-sample "
+                "model-market signals, not mature historical ROI or production betting authority."
             ),
             "games": slate_games,
         }

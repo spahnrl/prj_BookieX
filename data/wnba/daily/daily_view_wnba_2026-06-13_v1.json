@@ -1,13 +1,13 @@
 {
   "schema_version": "DAILY_VIEW_V1",
-  "model_version": "WNBA_MARKET_VALUE_V1",
-  "calibration_version": "WNBA_MARKET_VALUE_NO_BACKTEST",
+  "model_version": "WNBA_MULTI_MODEL_V1",
+  "calibration_version": "WNBA_POINTS_MODEL_SEED_V1",
   "generated_from_artifact_hash": "2494db757deab4f2aed089f968143581870b9dedc126941794b06c9467d4ebb5",
   "date": "2026-06-13",
-  "build_timestamp_utc": "2026-06-20T20:32:51Z",
+  "build_timestamp_utc": "2026-06-21T01:46:58Z",
   "is_model_output": true,
   "is_roi_output": false,
-  "model_warning": "WNBA Daily View uses a cross-book market-value model. Picks mean available line value versus consensus, not historical ROI or win-probability confidence. No WNBA ROI, pocket score, or backtest has been generated yet.",
+  "model_warning": "WNBA Daily View uses seed point-history and market-value models. Picks are limited-sample model-market signals, not mature historical ROI or production betting authority.",
   "games": [
     {
       "identity": {
@@ -32,8 +32,8 @@
         "odds_snapshot_last_utc": "2026-06-12T04:02:28.652591+00:00"
       },
       "model_output": {
-        "projected_home_score": "",
-        "projected_away_score": "",
+        "projected_home_score": 89.125,
+        "projected_away_score": 87.625,
         "projected_margin_home": -1.5,
         "projected_total": 176.75,
         "spread_pick": "Phoenix Mercury",
@@ -54,7 +54,7 @@
       "arbitration": {
         "spread": "Phoenix Mercury",
         "total": null,
-        "selection_authority": "WNBA_MarketValueBlend_v1",
+        "selection_authority": "WNBA_MarketBlend_v1",
         "reason": "Small cross-book line-value gap detected; no ROI backtest attached."
       },
       "models": {
@@ -134,6 +134,82 @@
             "total_value_reason": "Best total value is below 1.0 point threshold.",
             "warning": "WNBA market-value model only; no historical ROI/backtest attached."
           }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": null,
+          "total_distance": null,
+          "total_edge": null,
+          "total_pick": "",
+          "home_line_proj": null,
+          "spread_distance": null,
+          "spread_edge": null,
+          "spread_pick": "",
+          "parlay_edge_score": null,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "Insufficient season point history.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "warning": "Insufficient season point history."
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": null,
+          "total_distance": null,
+          "total_edge": null,
+          "total_pick": "",
+          "home_line_proj": null,
+          "spread_distance": null,
+          "spread_edge": null,
+          "spread_pick": "",
+          "parlay_edge_score": null,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "Insufficient last-5 point history.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "warning": "Insufficient last-5 point history."
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": null,
+          "total_distance": null,
+          "total_edge": null,
+          "total_pick": "",
+          "home_line_proj": null,
+          "spread_distance": null,
+          "spread_edge": null,
+          "spread_pick": "",
+          "parlay_edge_score": null,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "Missing baseline or market total.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "warning": "Missing baseline or market total."
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": null,
+          "total_distance": null,
+          "total_edge": null,
+          "total_pick": "",
+          "home_line_proj": null,
+          "spread_distance": null,
+          "spread_edge": null,
+          "spread_pick": "",
+          "parlay_edge_score": null,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "Missing baseline or market-implied scores.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "warning": "Missing baseline or market-implied scores."
+          }
         }
       },
       "agent_overrides": {
@@ -153,7 +229,7 @@
         "home_3pt_pct": null,
         "away_3pt_pct": null,
         "three_pt_diff": null,
-        "wnba_model_status": "market_value_model_no_backtest",
+        "wnba_model_status": "multi_model_points_seed",
         "wnba_spread_value_book": "MyBookie.ag",
         "wnba_spread_value_line": -1,
         "wnba_total_value_book": "FanDuel",
@@ -167,7 +243,7 @@
         "historical_bucket_win_rate": null,
         "over_under_bias_flag": null,
         "favorite_dog_bias_flag": null,
-        "model_regime_normal": "WNBA_MARKET_VALUE_NO_BACKTEST"
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
       },
       "temporal_integrity": {
         "schedule_date_utc": "2026-06-14",
@@ -203,8 +279,8 @@
         "odds_snapshot_last_utc": "2026-06-12T04:02:28.652591+00:00"
       },
       "model_output": {
-        "projected_home_score": "",
-        "projected_away_score": "",
+        "projected_home_score": 80.25,
+        "projected_away_score": 91.25,
         "projected_margin_home": 11.0,
         "projected_total": 171.5,
         "spread_pick": "Connecticut Sun",
@@ -225,7 +301,7 @@
       "arbitration": {
         "spread": "Connecticut Sun",
         "total": null,
-        "selection_authority": "WNBA_MarketValueBlend_v1",
+        "selection_authority": "WNBA_MarketBlend_v1",
         "reason": "Small cross-book line-value gap detected; no ROI backtest attached."
       },
       "models": {
@@ -235,7 +311,7 @@
           "total_distance": 0,
           "total_edge": 0,
           "total_pick": "",
-          "home_line_proj": 11.0,
+          "home_line_proj": 11,
           "spread_distance": 0,
           "spread_edge": 0,
           "spread_pick": "",
@@ -305,6 +381,82 @@
             "total_value_reason": "Best total value is below 1.0 point threshold.",
             "warning": "WNBA market-value model only; no historical ROI/backtest attached."
           }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": null,
+          "total_distance": null,
+          "total_edge": null,
+          "total_pick": "",
+          "home_line_proj": null,
+          "spread_distance": null,
+          "spread_edge": null,
+          "spread_pick": "",
+          "parlay_edge_score": null,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "Insufficient season point history.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "warning": "Insufficient season point history."
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": null,
+          "total_distance": null,
+          "total_edge": null,
+          "total_pick": "",
+          "home_line_proj": null,
+          "spread_distance": null,
+          "spread_edge": null,
+          "spread_pick": "",
+          "parlay_edge_score": null,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "Insufficient last-5 point history.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "warning": "Insufficient last-5 point history."
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": null,
+          "total_distance": null,
+          "total_edge": null,
+          "total_pick": "",
+          "home_line_proj": null,
+          "spread_distance": null,
+          "spread_edge": null,
+          "spread_pick": "",
+          "parlay_edge_score": null,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "Missing baseline or market total.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "warning": "Missing baseline or market total."
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": null,
+          "total_distance": null,
+          "total_edge": null,
+          "total_pick": "",
+          "home_line_proj": null,
+          "spread_distance": null,
+          "spread_edge": null,
+          "spread_pick": "",
+          "parlay_edge_score": null,
+          "confidence_tier": "IGNORE",
+          "confidence_reason": "Missing baseline or market-implied scores.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "warning": "Missing baseline or market-implied scores."
+          }
         }
       },
       "agent_overrides": {
@@ -324,7 +476,7 @@
         "home_3pt_pct": null,
         "away_3pt_pct": null,
         "three_pt_diff": null,
-        "wnba_model_status": "market_value_model_no_backtest",
+        "wnba_model_status": "multi_model_points_seed",
         "wnba_spread_value_book": "FanDuel",
         "wnba_spread_value_line": 11.5,
         "wnba_total_value_book": "FanDuel",
@@ -338,7 +490,7 @@
         "historical_bucket_win_rate": null,
         "over_under_bias_flag": null,
         "favorite_dog_bias_flag": null,
-        "model_regime_normal": "WNBA_MARKET_VALUE_NO_BACKTEST"
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
       },
       "temporal_integrity": {
         "schedule_date_utc": "2026-06-13",
