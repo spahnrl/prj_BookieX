@@ -1,0 +1,805 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "model_version": "WNBA_MULTI_MODEL_V1",
+  "calibration_version": "WNBA_POINTS_MODEL_SEED_V1",
+  "generated_from_artifact_hash": "f05cb8809451e101dec26b60fd5f2088ef730c01776cbe6c9dd5f00b4f91097d",
+  "date": "2026-06-27",
+  "build_timestamp_utc": "2026-07-03T17:53:45Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "WNBA Daily View uses seed point-history and market-value models. Picks are limited-sample model-market signals, not mature historical ROI or production betting authority.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "2976904bb157e89760ef6add768dbb97",
+        "game_date_local": "2026-06-27",
+        "home_team": "Indiana Fever",
+        "away_team": "Los Angeles Sparks",
+        "tip_time_cst": "2026-06-27T19:00:00-05:00",
+        "season_type": "WNBA"
+      },
+      "market_state": {
+        "spread_home_last": -6.5,
+        "total_last": 179.5,
+        "moneyline_home_last": -270,
+        "moneyline_away_last": 219,
+        "spread_home_consensus": -6.5,
+        "total_consensus": 179.5,
+        "spread_home_consensus_all_time": -6.5,
+        "total_consensus_all_time": 179.5,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-06-27T15:55:36Z"
+      },
+      "model_output": {
+        "projected_home_score": 92.6175,
+        "projected_away_score": 87.9025,
+        "projected_margin_home": -4.715,
+        "projected_total": 180.52,
+        "spread_pick": "Los Angeles Sparks",
+        "total_pick": "OVER",
+        "confidence_tier": "LEAN",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.785.",
+        "actionability": "NONE"
+      },
+      "edge_metrics": {
+        "spread_edge": 1.785,
+        "total_edge": 1.02,
+        "parlay_edge_score": 2.805,
+        "spread_edge_percentile": 0.595,
+        "total_edge_percentile": 0.255
+      },
+      "arbitration": {
+        "spread": "Los Angeles Sparks",
+        "total": "OVER",
+        "selection_authority": "WNBA_MarketBlend_v1",
+        "reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.785."
+      },
+      "models": {
+        "WNBA_MarketConsensus_v1": {
+          "model_name": "WNBA_MarketConsensus_v1",
+          "total_projection": 179.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -6.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "WNBA_SpreadValue_v1": {
+          "model_name": "WNBA_SpreadValue_v1",
+          "total_projection": 180.52,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -4.715,
+          "spread_distance": 1.785,
+          "spread_edge": 1.785,
+          "spread_pick": "Los Angeles Sparks",
+          "parlay_edge_score": 1.785,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_TotalValue_v1": {
+          "model_name": "WNBA_TotalValue_v1",
+          "total_projection": 180.52,
+          "total_distance": 1.02,
+          "total_edge": 1.02,
+          "total_pick": "OVER",
+          "home_line_proj": -4.715,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 1.02,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_MarketValueBlend_v1": {
+          "model_name": "WNBA_MarketValueBlend_v1",
+          "total_projection": 179.5,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "",
+          "home_line_proj": -6.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "Los Angeles Sparks",
+          "parlay_edge_score": 1.5,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "Moderate cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "BetMGM",
+            "spread_value_line": 7.5,
+            "spread_value_reason": "Los Angeles Sparks has 1.0 points of spread value vs consensus at BetMGM.",
+            "total_value_book": "LowVig.ag",
+            "total_value_line": 180,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "WNBA market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": 181.5,
+          "total_distance": 2.0,
+          "total_edge": 2.0,
+          "total_pick": "OVER",
+          "home_line_proj": -3.0,
+          "spread_distance": 3.5,
+          "spread_edge": 3.5,
+          "spread_pick": "Los Angeles Sparks",
+          "parlay_edge_score": 5.5,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_PointsBaseline_v1 compares point projection to current spread/total; largest model-market gap=3.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 18,
+            "away_games": 17,
+            "home_avg_points_for": 89.5,
+            "home_avg_points_against": 86.5,
+            "away_avg_points_for": 92.0,
+            "away_avg_points_against": 95.0
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": 202.5,
+          "total_distance": 23.0,
+          "total_edge": 23.0,
+          "total_pick": "OVER",
+          "home_line_proj": 2.5,
+          "spread_distance": 9.0,
+          "spread_edge": 9.0,
+          "spread_pick": "Los Angeles Sparks",
+          "parlay_edge_score": 32.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_Last5Points_v1 compares point projection to current spread/total; largest model-market gap=23.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 5,
+            "away_last5_games": 5,
+            "home_last5_points_for": 101.0,
+            "home_last5_points_against": 108.0,
+            "away_last5_points_for": 97.0,
+            "away_last5_points_against": 99.0
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": 181.0,
+          "total_distance": 1.5,
+          "total_edge": 1.5,
+          "total_pick": "OVER",
+          "home_line_proj": -3.0,
+          "spread_distance": 3.5,
+          "spread_edge": 3.5,
+          "spread_pick": "Los Angeles Sparks",
+          "parlay_edge_score": 5.0,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_MarketPressure_v1 compares point projection to current spread/total; largest model-market gap=3.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "baseline_total": 181.5,
+            "market_total": 179.5,
+            "pull_weight": 0.25
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": 180.52,
+          "total_distance": 1.02,
+          "total_edge": 1.02,
+          "total_pick": "OVER",
+          "home_line_proj": -4.715,
+          "spread_distance": 1.785,
+          "spread_edge": 1.785,
+          "spread_pick": "Los Angeles Sparks",
+          "parlay_edge_score": 2.805,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.785.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "baseline_home": 92.25,
+            "baseline_away": 89.25,
+            "market_home": 93.0,
+            "market_away": 86.5,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "wnba_model_status": "multi_model_points_seed",
+        "wnba_spread_value_book": "",
+        "wnba_spread_value_line": null,
+        "wnba_total_value_book": "",
+        "wnba_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "1-2",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-06-28",
+        "tipoff_time_utc": "2026-06-28T00:00:00Z",
+        "tipoff_time_cst": "2026-06-27T19:00:00-05:00",
+        "tipoff_local_day": "2026-06-27",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": true,
+        "odds_commence_time_utc": "2026-06-28T00:00:00Z",
+        "odds_commence_time_cst": "2026-06-27T19:00:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "a165b90e332745018d845c613a964600",
+        "game_date_local": "2026-06-27",
+        "home_team": "Toronto Tempo",
+        "away_team": "Phoenix Mercury",
+        "tip_time_cst": "2026-06-27T13:00:00-05:00",
+        "season_type": "WNBA"
+      },
+      "market_state": {
+        "spread_home_last": -5.5,
+        "total_last": 177,
+        "moneyline_home_last": -210,
+        "moneyline_away_last": 175,
+        "spread_home_consensus": -5.5,
+        "total_consensus": 177,
+        "spread_home_consensus_all_time": -5.5,
+        "total_consensus_all_time": 177,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-06-27T15:55:36Z"
+      },
+      "model_output": {
+        "projected_home_score": 89.3375,
+        "projected_away_score": 87.1525,
+        "projected_margin_home": -2.185,
+        "projected_total": 176.49,
+        "spread_pick": "Phoenix Mercury",
+        "total_pick": "UNDER",
+        "confidence_tier": "WATCH",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=3.315.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 3.315,
+        "total_edge": 0.51,
+        "parlay_edge_score": 3.825,
+        "spread_edge_percentile": 0.99,
+        "total_edge_percentile": 0.1275
+      },
+      "arbitration": {
+        "spread": "Phoenix Mercury",
+        "total": "UNDER",
+        "selection_authority": "WNBA_MarketBlend_v1",
+        "reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=3.315."
+      },
+      "models": {
+        "WNBA_MarketConsensus_v1": {
+          "model_name": "WNBA_MarketConsensus_v1",
+          "total_projection": 177,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -5.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "WNBA_SpreadValue_v1": {
+          "model_name": "WNBA_SpreadValue_v1",
+          "total_projection": 176.49,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -2.185,
+          "spread_distance": 3.315,
+          "spread_edge": 3.315,
+          "spread_pick": "Phoenix Mercury",
+          "parlay_edge_score": 3.315,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_TotalValue_v1": {
+          "model_name": "WNBA_TotalValue_v1",
+          "total_projection": 176.49,
+          "total_distance": 0.51,
+          "total_edge": 0.51,
+          "total_pick": "UNDER",
+          "home_line_proj": -2.185,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0.51,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_MarketValueBlend_v1": {
+          "model_name": "WNBA_MarketValueBlend_v1",
+          "total_projection": 177.0,
+          "total_distance": 1.5,
+          "total_edge": 1.5,
+          "total_pick": "UNDER",
+          "home_line_proj": -5.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "Phoenix Mercury",
+          "parlay_edge_score": 2.5,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "Moderate cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "BetMGM",
+            "spread_value_line": 6.5,
+            "spread_value_reason": "Phoenix Mercury has 1.0 points of spread value vs consensus at BetMGM.",
+            "total_value_book": "BetRivers",
+            "total_value_line": 178.5,
+            "total_value_reason": "UNDER has 1.5 points of total value vs consensus at BetRivers.",
+            "warning": "WNBA market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": 176.0,
+          "total_distance": 1.0,
+          "total_edge": 1.0,
+          "total_pick": "UNDER",
+          "home_line_proj": 1.0,
+          "spread_distance": 6.5,
+          "spread_edge": 6.5,
+          "spread_pick": "Phoenix Mercury",
+          "parlay_edge_score": 7.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_PointsBaseline_v1 compares point projection to current spread/total; largest model-market gap=6.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 18,
+            "away_games": 19,
+            "home_avg_points_for": 89.0,
+            "home_avg_points_against": 97.0,
+            "away_avg_points_for": 80.0,
+            "away_avg_points_against": 86.0
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": 183.5,
+          "total_distance": 6.5,
+          "total_edge": 6.5,
+          "total_pick": "OVER",
+          "home_line_proj": 6.5,
+          "spread_distance": 12.0,
+          "spread_edge": 12.0,
+          "spread_pick": "Phoenix Mercury",
+          "parlay_edge_score": 18.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_Last5Points_v1 compares point projection to current spread/total; largest model-market gap=12.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 5,
+            "away_last5_games": 5,
+            "home_last5_points_for": 91.0,
+            "home_last5_points_against": 97.0,
+            "away_last5_points_for": 93.0,
+            "away_last5_points_against": 86.0
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": 176.25,
+          "total_distance": 0.75,
+          "total_edge": 0.75,
+          "total_pick": "UNDER",
+          "home_line_proj": 1.0,
+          "spread_distance": 6.5,
+          "spread_edge": 6.5,
+          "spread_pick": "Phoenix Mercury",
+          "parlay_edge_score": 7.25,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_MarketPressure_v1 compares point projection to current spread/total; largest model-market gap=6.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "baseline_total": 176.0,
+            "market_total": 177.0,
+            "pull_weight": 0.25
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": 176.49,
+          "total_distance": 0.51,
+          "total_edge": 0.51,
+          "total_pick": "UNDER",
+          "home_line_proj": -2.185,
+          "spread_distance": 3.315,
+          "spread_edge": 3.315,
+          "spread_pick": "Phoenix Mercury",
+          "parlay_edge_score": 3.825,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=3.315.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "baseline_home": 87.5,
+            "baseline_away": 88.5,
+            "market_home": 91.25,
+            "market_away": 85.75,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "wnba_model_status": "multi_model_points_seed",
+        "wnba_spread_value_book": "",
+        "wnba_spread_value_line": null,
+        "wnba_total_value_book": "",
+        "wnba_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "2+",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-06-27",
+        "tipoff_time_utc": "2026-06-27T18:00:00Z",
+        "tipoff_time_cst": "2026-06-27T13:00:00-05:00",
+        "tipoff_local_day": "2026-06-27",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-06-27T18:00:00Z",
+        "odds_commence_time_cst": "2026-06-27T13:00:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "bf31ba4dcdf9e2a6f47b02b9514b0eb3",
+        "game_date_local": "2026-06-27",
+        "home_team": "Seattle Storm",
+        "away_team": "Atlanta Dream",
+        "tip_time_cst": "2026-06-27T20:00:00-05:00",
+        "season_type": "WNBA"
+      },
+      "market_state": {
+        "spread_home_last": 7,
+        "total_last": 168.5,
+        "moneyline_home_last": 235,
+        "moneyline_away_last": -285,
+        "spread_home_consensus": 7,
+        "total_consensus": 168.5,
+        "spread_home_consensus_all_time": 7,
+        "total_consensus_all_time": 168.5,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-06-27T15:55:36Z"
+      },
+      "model_output": {
+        "projected_home_score": 79.6025,
+        "projected_away_score": 87.3675,
+        "projected_margin_home": 7.765,
+        "projected_total": 166.97,
+        "spread_pick": "Atlanta Dream",
+        "total_pick": "UNDER",
+        "confidence_tier": "LEAN",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.530.",
+        "actionability": "NONE"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.765,
+        "total_edge": 1.53,
+        "parlay_edge_score": 2.295,
+        "spread_edge_percentile": 0.255,
+        "total_edge_percentile": 0.3825
+      },
+      "arbitration": {
+        "spread": "Atlanta Dream",
+        "total": "UNDER",
+        "selection_authority": "WNBA_MarketBlend_v1",
+        "reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.530."
+      },
+      "models": {
+        "WNBA_MarketConsensus_v1": {
+          "model_name": "WNBA_MarketConsensus_v1",
+          "total_projection": 168.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 7,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "WNBA_SpreadValue_v1": {
+          "model_name": "WNBA_SpreadValue_v1",
+          "total_projection": 166.97,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 7.765,
+          "spread_distance": 0.765,
+          "spread_edge": 0.765,
+          "spread_pick": "Atlanta Dream",
+          "parlay_edge_score": 0.765,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_TotalValue_v1": {
+          "model_name": "WNBA_TotalValue_v1",
+          "total_projection": 166.97,
+          "total_distance": 1.53,
+          "total_edge": 1.53,
+          "total_pick": "UNDER",
+          "home_line_proj": 7.765,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 1.53,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_MarketValueBlend_v1": {
+          "model_name": "WNBA_MarketValueBlend_v1",
+          "total_projection": 168.5,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "",
+          "home_line_proj": 7.0,
+          "spread_distance": 11.5,
+          "spread_edge": 11.5,
+          "spread_pick": "Atlanta Dream",
+          "parlay_edge_score": 12.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "Large cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "Fanatics",
+            "spread_value_line": 4.5,
+            "spread_value_reason": "Atlanta Dream has 11.5 points of spread value vs consensus at Fanatics.",
+            "total_value_book": "LowVig.ag",
+            "total_value_line": 169,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "WNBA market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": 165.5,
+          "total_distance": 3.0,
+          "total_edge": 3.0,
+          "total_pick": "UNDER",
+          "home_line_proj": 8.5,
+          "spread_distance": 1.5,
+          "spread_edge": 1.5,
+          "spread_pick": "Atlanta Dream",
+          "parlay_edge_score": 4.5,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_PointsBaseline_v1 compares point projection to current spread/total; largest model-market gap=3.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 19,
+            "away_games": 18,
+            "home_avg_points_for": 78.0,
+            "home_avg_points_against": 88.0,
+            "away_avg_points_for": 86.0,
+            "away_avg_points_against": 79.0
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": 181.5,
+          "total_distance": 13.0,
+          "total_edge": 13.0,
+          "total_pick": "OVER",
+          "home_line_proj": 5.5,
+          "spread_distance": 1.5,
+          "spread_edge": 1.5,
+          "spread_pick": "Seattle Storm",
+          "parlay_edge_score": 14.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_Last5Points_v1 compares point projection to current spread/total; largest model-market gap=13.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 5,
+            "away_last5_games": 5,
+            "home_last5_points_for": 89.0,
+            "home_last5_points_against": 93.0,
+            "away_last5_points_for": 94.0,
+            "away_last5_points_against": 87.0
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": 166.25,
+          "total_distance": 2.25,
+          "total_edge": 2.25,
+          "total_pick": "UNDER",
+          "home_line_proj": 8.5,
+          "spread_distance": 1.5,
+          "spread_edge": 1.5,
+          "spread_pick": "Atlanta Dream",
+          "parlay_edge_score": 3.75,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_MarketPressure_v1 compares point projection to current spread/total; largest model-market gap=2.250.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "baseline_total": 165.5,
+            "market_total": 168.5,
+            "pull_weight": 0.25
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": 166.97,
+          "total_distance": 1.53,
+          "total_edge": 1.53,
+          "total_pick": "UNDER",
+          "home_line_proj": 7.765,
+          "spread_distance": 0.765,
+          "spread_edge": 0.765,
+          "spread_pick": "Atlanta Dream",
+          "parlay_edge_score": 2.295,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.530.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "baseline_home": 78.5,
+            "baseline_away": 87.0,
+            "market_home": 80.75,
+            "market_away": 87.75,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "wnba_model_status": "multi_model_points_seed",
+        "wnba_spread_value_book": "",
+        "wnba_spread_value_line": null,
+        "wnba_total_value_book": "",
+        "wnba_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "1-2",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-06-28",
+        "tipoff_time_utc": "2026-06-28T01:00:00Z",
+        "tipoff_time_cst": "2026-06-27T20:00:00-05:00",
+        "tipoff_local_day": "2026-06-27",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": true,
+        "odds_commence_time_utc": "2026-06-28T01:00:00Z",
+        "odds_commence_time_cst": "2026-06-27T20:00:00-05:00"
+      }
+    }
+  ]
+}

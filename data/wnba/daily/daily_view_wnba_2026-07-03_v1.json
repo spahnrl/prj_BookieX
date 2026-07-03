@@ -1,0 +1,541 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "model_version": "WNBA_MULTI_MODEL_V1",
+  "calibration_version": "WNBA_POINTS_MODEL_SEED_V1",
+  "generated_from_artifact_hash": "2eb741257da52e58f7720a1baaf7c6bcfa5936e5651a10b0f53a54537025e543",
+  "date": "2026-07-03",
+  "build_timestamp_utc": "2026-07-03T17:53:53Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "WNBA Daily View uses seed point-history and market-value models. Picks are limited-sample model-market signals, not mature historical ROI or production betting authority.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "bddb8ab1d4fd2a74fbb6d3770f10eaf5",
+        "game_date_local": "2026-07-03",
+        "home_team": "Las Vegas Aces",
+        "away_team": "Chicago Sky",
+        "tip_time_cst": "2026-07-03T21:00:00-05:00",
+        "season_type": "WNBA"
+      },
+      "market_state": {
+        "spread_home_last": -7.5,
+        "total_last": 181,
+        "moneyline_home_last": -278,
+        "moneyline_away_last": 225,
+        "spread_home_consensus": -7.5,
+        "total_consensus": 181,
+        "spread_home_consensus_all_time": -7.5,
+        "total_consensus_all_time": 181,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-07-03T15:55:37Z"
+      },
+      "model_output": {
+        "projected_home_score": 92.4655,
+        "projected_away_score": 86.8775,
+        "projected_margin_home": -5.588,
+        "projected_total": 179.343,
+        "spread_pick": "Chicago Sky",
+        "total_pick": "UNDER",
+        "confidence_tier": "LEAN",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.912.",
+        "actionability": "NONE"
+      },
+      "edge_metrics": {
+        "spread_edge": 1.912,
+        "total_edge": 1.657,
+        "parlay_edge_score": 3.569,
+        "spread_edge_percentile": 0.6373333333333333,
+        "total_edge_percentile": 0.41425
+      },
+      "arbitration": {
+        "spread": "Chicago Sky",
+        "total": "UNDER",
+        "selection_authority": "WNBA_MarketBlend_v1",
+        "reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.912."
+      },
+      "models": {
+        "WNBA_MarketConsensus_v1": {
+          "model_name": "WNBA_MarketConsensus_v1",
+          "total_projection": 181,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -7.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "WNBA_SpreadValue_v1": {
+          "model_name": "WNBA_SpreadValue_v1",
+          "total_projection": 179.343,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -5.588,
+          "spread_distance": 1.912,
+          "spread_edge": 1.912,
+          "spread_pick": "Chicago Sky",
+          "parlay_edge_score": 1.912,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_TotalValue_v1": {
+          "model_name": "WNBA_TotalValue_v1",
+          "total_projection": 179.343,
+          "total_distance": 1.657,
+          "total_edge": 1.657,
+          "total_pick": "UNDER",
+          "home_line_proj": -5.588,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 1.657,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_MarketValueBlend_v1": {
+          "model_name": "WNBA_MarketValueBlend_v1",
+          "total_projection": 181.0,
+          "total_distance": 1.5,
+          "total_edge": 1.5,
+          "total_pick": "UNDER",
+          "home_line_proj": -7.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "Las Vegas Aces",
+          "parlay_edge_score": 2.5,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "Moderate cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "BetRivers",
+            "spread_value_line": -6.5,
+            "spread_value_reason": "Las Vegas Aces has 1.0 points of spread value vs consensus at BetRivers.",
+            "total_value_book": "BetRivers",
+            "total_value_line": 182.5,
+            "total_value_reason": "UNDER has 1.5 points of total value vs consensus at BetRivers.",
+            "warning": "WNBA market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": 177.75,
+          "total_distance": 3.25,
+          "total_edge": 3.25,
+          "total_pick": "UNDER",
+          "home_line_proj": -3.75,
+          "spread_distance": 3.75,
+          "spread_edge": 3.75,
+          "spread_pick": "Chicago Sky",
+          "parlay_edge_score": 7.0,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_PointsBaseline_v1 compares point projection to current spread/total; largest model-market gap=3.750.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 20,
+            "away_games": 19,
+            "home_avg_points_for": 91.5,
+            "home_avg_points_against": 88.0,
+            "away_avg_points_for": 86.0,
+            "away_avg_points_against": 90.0
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": 185.5,
+          "total_distance": 4.5,
+          "total_edge": 4.5,
+          "total_pick": "OVER",
+          "home_line_proj": 0.5,
+          "spread_distance": 8.0,
+          "spread_edge": 8.0,
+          "spread_pick": "Chicago Sky",
+          "parlay_edge_score": 12.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_Last5Points_v1 compares point projection to current spread/total; largest model-market gap=8.000.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 5,
+            "away_last5_games": 5,
+            "home_last5_points_for": 92.0,
+            "home_last5_points_against": 87.0,
+            "away_last5_points_for": 99.0,
+            "away_last5_points_against": 93.0
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": 178.562,
+          "total_distance": 2.438,
+          "total_edge": 2.438,
+          "total_pick": "UNDER",
+          "home_line_proj": -3.75,
+          "spread_distance": 3.75,
+          "spread_edge": 3.75,
+          "spread_pick": "Chicago Sky",
+          "parlay_edge_score": 6.188,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_MarketPressure_v1 compares point projection to current spread/total; largest model-market gap=3.750.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "baseline_total": 177.75,
+            "market_total": 181.0,
+            "pull_weight": 0.25
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": 179.343,
+          "total_distance": 1.657,
+          "total_edge": 1.657,
+          "total_pick": "UNDER",
+          "home_line_proj": -5.588,
+          "spread_distance": 1.912,
+          "spread_edge": 1.912,
+          "spread_pick": "Chicago Sky",
+          "parlay_edge_score": 3.569,
+          "confidence_tier": "LEAN",
+          "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=1.912.",
+          "actionability": "NONE",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "baseline_home": 90.75,
+            "baseline_away": 87.0,
+            "market_home": 94.25,
+            "market_away": 86.75,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "wnba_model_status": "multi_model_points_seed",
+        "wnba_spread_value_book": "",
+        "wnba_spread_value_line": null,
+        "wnba_total_value_book": "",
+        "wnba_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "1-2",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-07-04",
+        "tipoff_time_utc": "2026-07-04T02:00:00Z",
+        "tipoff_time_cst": "2026-07-03T21:00:00-05:00",
+        "tipoff_local_day": "2026-07-03",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": true,
+        "odds_commence_time_utc": "2026-07-04T02:00:00Z",
+        "odds_commence_time_cst": "2026-07-03T21:00:00-05:00"
+      }
+    },
+    {
+      "identity": {
+        "game_id": "eb6f53f248f70b4841769705a8ef055d",
+        "game_date_local": "2026-07-03",
+        "home_team": "New York Liberty",
+        "away_team": "Minnesota Lynx",
+        "tip_time_cst": "2026-07-03T18:40:00-05:00",
+        "season_type": "WNBA"
+      },
+      "market_state": {
+        "spread_home_last": 1.5,
+        "total_last": 174,
+        "moneyline_home_last": 110,
+        "moneyline_away_last": -130,
+        "spread_home_consensus": 1.5,
+        "total_consensus": 174,
+        "spread_home_consensus_all_time": 1.5,
+        "total_consensus_all_time": 174,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-07-03T15:55:37Z"
+      },
+      "model_output": {
+        "projected_home_score": 84.3375,
+        "projected_away_score": 86.3475,
+        "projected_margin_home": 2.01,
+        "projected_total": 170.685,
+        "spread_pick": "Minnesota Lynx",
+        "total_pick": "UNDER",
+        "confidence_tier": "WATCH",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=3.315.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.51,
+        "total_edge": 3.315,
+        "parlay_edge_score": 3.825,
+        "spread_edge_percentile": 0.17,
+        "total_edge_percentile": 0.82875
+      },
+      "arbitration": {
+        "spread": "Minnesota Lynx",
+        "total": "UNDER",
+        "selection_authority": "WNBA_MarketBlend_v1",
+        "reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=3.315."
+      },
+      "models": {
+        "WNBA_MarketConsensus_v1": {
+          "model_name": "WNBA_MarketConsensus_v1",
+          "total_projection": 174,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "WNBA_SpreadValue_v1": {
+          "model_name": "WNBA_SpreadValue_v1",
+          "total_projection": 170.685,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": 2.01,
+          "spread_distance": 0.51,
+          "spread_edge": 0.51,
+          "spread_pick": "Minnesota Lynx",
+          "parlay_edge_score": 0.51,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_TotalValue_v1": {
+          "model_name": "WNBA_TotalValue_v1",
+          "total_projection": 170.685,
+          "total_distance": 3.315,
+          "total_edge": 3.315,
+          "total_pick": "UNDER",
+          "home_line_proj": 2.01,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 3.315,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_MarketValueBlend_v1": {
+          "model_name": "WNBA_MarketValueBlend_v1",
+          "total_projection": 174.0,
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "",
+          "home_line_proj": 1.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "New York Liberty",
+          "parlay_edge_score": 1.5,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "Moderate cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "FanDuel",
+            "spread_value_line": 2.5,
+            "spread_value_reason": "New York Liberty has 1.0 points of spread value vs consensus at FanDuel.",
+            "total_value_book": "Caesars",
+            "total_value_line": 174.5,
+            "total_value_reason": "Best total value is below 1.0 point threshold.",
+            "warning": "WNBA market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": 167.5,
+          "total_distance": 6.5,
+          "total_edge": 6.5,
+          "total_pick": "UNDER",
+          "home_line_proj": 2.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "Minnesota Lynx",
+          "parlay_edge_score": 7.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_PointsBaseline_v1 compares point projection to current spread/total; largest model-market gap=6.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 21,
+            "away_games": 19,
+            "home_avg_points_for": 88.0,
+            "home_avg_points_against": 82.0,
+            "away_avg_points_for": 88.0,
+            "away_avg_points_against": 77.0
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": 165.5,
+          "total_distance": 8.5,
+          "total_edge": 8.5,
+          "total_pick": "UNDER",
+          "home_line_proj": 0.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "New York Liberty",
+          "parlay_edge_score": 9.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_Last5Points_v1 compares point projection to current spread/total; largest model-market gap=8.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 5,
+            "away_last5_games": 5,
+            "home_last5_points_for": 88.0,
+            "home_last5_points_against": 85.0,
+            "away_last5_points_for": 81.0,
+            "away_last5_points_against": 77.0
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": 169.125,
+          "total_distance": 4.875,
+          "total_edge": 4.875,
+          "total_pick": "UNDER",
+          "home_line_proj": 2.5,
+          "spread_distance": 1.0,
+          "spread_edge": 1.0,
+          "spread_pick": "Minnesota Lynx",
+          "parlay_edge_score": 5.875,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_MarketPressure_v1 compares point projection to current spread/total; largest model-market gap=4.875.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "baseline_total": 167.5,
+            "market_total": 174.0,
+            "pull_weight": 0.25
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": 170.685,
+          "total_distance": 3.315,
+          "total_edge": 3.315,
+          "total_pick": "UNDER",
+          "home_line_proj": 2.01,
+          "spread_distance": 0.51,
+          "spread_edge": 0.51,
+          "spread_pick": "Minnesota Lynx",
+          "parlay_edge_score": 3.825,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=3.315.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "baseline_home": 82.5,
+            "baseline_away": 85.0,
+            "market_home": 86.25,
+            "market_away": 87.75,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "wnba_model_status": "multi_model_points_seed",
+        "wnba_spread_value_book": "",
+        "wnba_spread_value_line": null,
+        "wnba_total_value_book": "",
+        "wnba_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "2+",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-07-03",
+        "tipoff_time_utc": "2026-07-03T23:40:00Z",
+        "tipoff_time_cst": "2026-07-03T18:40:00-05:00",
+        "tipoff_local_day": "2026-07-03",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-07-03T23:40:00Z",
+        "odds_commence_time_cst": "2026-07-03T18:40:00-05:00"
+      }
+    }
+  ]
+}
