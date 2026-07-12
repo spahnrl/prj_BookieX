@@ -18,6 +18,8 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
+st.set_page_config(page_title="BookieX Daily View", layout="wide")
+
 
 # --------------------------------------------------
 # CONFIG (NBA/NCAAM daily dirs: same contract as producer via io_helpers)
@@ -946,7 +948,6 @@ if qr_code_path.exists():
 # --------------------------------------------------
 
 page_title_text = f"BookieX — {league} Daily View"
-st.set_page_config(page_title = page_title_text , layout="wide")
 
 st.markdown("""
 <style>
@@ -2252,21 +2253,6 @@ def _kalshi_signal_path_for_slate(league_code: str, slate_date: str) -> Path:
 def _load_kalshi_signal_for_slate(league_code: str, slate_date: str) -> dict | None:
     path = _kalshi_signal_path_for_slate(league_code, slate_date)
     if not path.exists():
-        try:
-            from eng.kalshi.kalshi_market_signal import build_artifacts
-
-            build_artifacts(
-                league=league_code.lower(),
-                date=slate_date,
-                fetch=True,
-                status="open",
-                limit=1000,
-                max_pages=1,
-                timeout=20,
-            )
-        except Exception:
-            return None
-    if not path.exists():
         return None
     try:
         with open(path, "r", encoding="utf-8") as f:
@@ -2274,6 +2260,24 @@ def _load_kalshi_signal_for_slate(league_code: str, slate_date: str) -> dict | N
         return payload if isinstance(payload, dict) else None
     except Exception:
         return None
+
+
+def _build_kalshi_signal_for_slate(league_code: str, slate_date: str) -> tuple[bool, str]:
+    try:
+        from eng.kalshi.kalshi_market_signal import build_artifacts
+
+        build_artifacts(
+            league=league_code.lower(),
+            date=slate_date,
+            fetch=True,
+            status="open",
+            limit=1000,
+            max_pages=1,
+            timeout=20,
+        )
+        return True, "Kalshi signal refreshed."
+    except Exception as exc:
+        return False, str(exc)
 
 
 def _pct_cell(value) -> str:
@@ -2301,8 +2305,15 @@ def _render_kalshi_signal_section(league_code: str, slate_date: str) -> None:
         if payload is None:
             st.info(
                 "No Kalshi signal artifact found for this slate. "
-                f"Run `python -m eng.kalshi.kalshi_market_signal --league {league_code.lower()} --date {slate_date}`."
+                "Use the refresh button to fetch public Kalshi market data for this selected date."
             )
+            if st.button("Refresh Kalshi signal", key=f"kalshi_refresh_{league_code.lower()}_{slate_date}"):
+                ok, message = _build_kalshi_signal_for_slate(league_code, slate_date)
+                if ok:
+                    st.success(message)
+                    st.rerun()
+                else:
+                    st.error(f"Kalshi refresh failed: {message}")
             st.caption(f"Expected artifact: `{path}`")
             return
 
