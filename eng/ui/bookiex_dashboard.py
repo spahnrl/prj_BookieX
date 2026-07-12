@@ -2239,6 +2239,109 @@ with open(file_path, "r", encoding="utf-8") as f:
 games = data.get("games", [])
 
 
+def _kalshi_signal_path_for_slate(league_code: str, slate_date: str) -> Path:
+    return (
+        PROJECT_ROOT
+        / "data"
+        / "kalshi"
+        / "view"
+        / f"kalshi_bookiex_signal_{league_code.lower()}_{slate_date}.json"
+    )
+
+
+def _load_kalshi_signal_for_slate(league_code: str, slate_date: str) -> dict | None:
+    path = _kalshi_signal_path_for_slate(league_code, slate_date)
+    if not path.exists():
+        try:
+            from eng.kalshi.kalshi_market_signal import build_artifacts
+
+            build_artifacts(
+                league=league_code.lower(),
+                date=slate_date,
+                fetch=True,
+                status="open",
+                limit=1000,
+                max_pages=1,
+                timeout=20,
+            )
+        except Exception:
+            return None
+    if not path.exists():
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+        return payload if isinstance(payload, dict) else None
+    except Exception:
+        return None
+
+
+def _pct_cell(value) -> str:
+    try:
+        if value in (None, ""):
+            return "-"
+        return f"{float(value) * 100:.1f}%"
+    except Exception:
+        return "-"
+
+
+def _money_cell(value) -> str:
+    try:
+        if value in (None, ""):
+            return "-"
+        return f"${float(value):,.0f}"
+    except Exception:
+        return "-"
+
+
+def _render_kalshi_signal_section(league_code: str, slate_date: str) -> None:
+    payload = _load_kalshi_signal_for_slate(league_code, slate_date)
+    path = _kalshi_signal_path_for_slate(league_code, slate_date)
+    with st.expander("Kalshi Market Signal", expanded=False):
+        if payload is None:
+            st.info(
+                "No Kalshi signal artifact found for this slate. "
+                f"Run `python -m eng.kalshi.kalshi_market_signal --league {league_code.lower()} --date {slate_date}`."
+            )
+            st.caption(f"Expected artifact: `{path}`")
+            return
+
+        rows = payload.get("signals") or []
+        st.caption(
+            f"Read-only public Kalshi market comparison. "
+            f"Matched {payload.get('matched_game_count', 0)} of {payload.get('game_count', len(rows))} games."
+        )
+        if not rows:
+            st.write("No games in this slate.")
+            return
+
+        display_rows = []
+        for row in rows:
+            gap = row.get("probability_gap")
+            try:
+                gap_text = f"{float(gap) * 100:+.1f} pts" if gap not in (None, "") else "-"
+            except Exception:
+                gap_text = "-"
+            display_rows.append(
+                {
+                    "Game": row.get("matchup") or row.get("bookiex_game_id"),
+                    "BookieX Pick": row.get("bookiex_pick") or "-",
+                    "Confidence": row.get("bookiex_confidence") or "-",
+                    "Kalshi Market": row.get("kalshi_title") or "-",
+                    "Kalshi Prob": _pct_cell(row.get("kalshi_implied_probability")),
+                    "BookieX Fair": _pct_cell(row.get("bookiex_projected_probability")),
+                    "Gap": gap_text,
+                    "Liquidity": _money_cell(row.get("kalshi_liquidity")),
+                    "Signal": row.get("signal_label") or "-",
+                }
+            )
+        st.dataframe(pd.DataFrame(display_rows), width="stretch", hide_index=True)
+        st.caption(
+            "This is a market-signal sidecar. It does not change BookieX picks, confidence tiers, "
+            "Kelly sizing, Pocket ROI, or arbitration authority."
+        )
+
+
 def _resolve_nba_pocket_slate_rows(
     full_current_doc: dict | None,
     live_doc: dict | None,
@@ -4069,6 +4172,8 @@ elif _overlay_status == "mismatch":
     st.caption(f"Agent overlay: built for **{_overlay_slate_date}**; selected slate is **{selected_date}** — may be stale")
 else:
     st.caption("Agent overlay: loaded; slate date unknown — may not match selected slate")
+
+_render_kalshi_signal_section(league_key, selected_date)
 
 if league in ("NBA", "NCAAM", "WNBA", "MLB"):
     slate_dashboard_view = st.radio(
