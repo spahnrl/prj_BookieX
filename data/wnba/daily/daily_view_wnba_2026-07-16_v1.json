@@ -1,0 +1,277 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "model_version": "WNBA_MULTI_MODEL_V1",
+  "calibration_version": "WNBA_POINTS_MODEL_SEED_V1",
+  "generated_from_artifact_hash": "62180cc3202a3e377ba93b3903e4a61b773c1726ef9a268b7619b1f7dd11be49",
+  "date": "2026-07-16",
+  "build_timestamp_utc": "2026-07-20T14:36:34Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "WNBA Daily View uses seed point-history and market-value models. Picks are limited-sample model-market signals, not mature historical ROI or production betting authority.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "00a997433337939ebda3beb882a1e2db",
+        "game_date_local": "2026-07-16",
+        "home_team": "Washington Mystics",
+        "away_team": "Portland Fire",
+        "tip_time_cst": "2026-07-16T18:10:00-05:00",
+        "season_type": "WNBA"
+      },
+      "market_state": {
+        "spread_home_last": -6.5,
+        "total_last": 162.5,
+        "moneyline_home_last": -260,
+        "moneyline_away_last": 210,
+        "spread_home_consensus": -6.5,
+        "total_consensus": 162.5,
+        "spread_home_consensus_all_time": -6.5,
+        "total_consensus_all_time": 162.5,
+        "consensus_book_count": 11,
+        "all_time_snapshot_count": 66,
+        "odds_snapshot_last_utc": "2026-07-16T15:55:37Z"
+      },
+      "model_output": {
+        "projected_home_score": 85.2655,
+        "projected_away_score": 79.6575,
+        "projected_margin_home": -5.608,
+        "projected_total": 164.923,
+        "spread_pick": "Portland Fire",
+        "total_pick": "OVER",
+        "confidence_tier": "WATCH",
+        "cluster_alignment": "MARKET_VALUE",
+        "arbitration_cluster": "MARKET_VALUE",
+        "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=2.423.",
+        "actionability": "ACTION"
+      },
+      "edge_metrics": {
+        "spread_edge": 0.892,
+        "total_edge": 2.423,
+        "parlay_edge_score": 3.315,
+        "spread_edge_percentile": 0.29733333333333334,
+        "total_edge_percentile": 0.60575
+      },
+      "arbitration": {
+        "spread": "Portland Fire",
+        "total": "OVER",
+        "selection_authority": "WNBA_MarketBlend_v1",
+        "reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=2.423."
+      },
+      "models": {
+        "WNBA_MarketConsensus_v1": {
+          "model_name": "WNBA_MarketConsensus_v1",
+          "total_projection": 162.5,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -6.5,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 0,
+          "context_flags": {
+            "source": "latest_cross_book_consensus",
+            "book_count": 11
+          }
+        },
+        "WNBA_SpreadValue_v1": {
+          "model_name": "WNBA_SpreadValue_v1",
+          "total_projection": 164.923,
+          "total_distance": 0,
+          "total_edge": 0,
+          "total_pick": "",
+          "home_line_proj": -5.608,
+          "spread_distance": 0.892,
+          "spread_edge": 0.892,
+          "spread_pick": "Portland Fire",
+          "parlay_edge_score": 0.892,
+          "context_flags": {
+            "source": "spread_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_TotalValue_v1": {
+          "model_name": "WNBA_TotalValue_v1",
+          "total_projection": 164.923,
+          "total_distance": 2.423,
+          "total_edge": 2.423,
+          "total_pick": "OVER",
+          "home_line_proj": -5.608,
+          "spread_distance": 0,
+          "spread_edge": 0,
+          "spread_pick": "",
+          "parlay_edge_score": 2.423,
+          "context_flags": {
+            "source": "total_line_value_vs_consensus",
+            "value_book": "",
+            "value_line": null,
+            "reason": ""
+          }
+        },
+        "WNBA_MarketValueBlend_v1": {
+          "model_name": "WNBA_MarketValueBlend_v1",
+          "total_projection": 162.5,
+          "total_distance": 1.0,
+          "total_edge": 1.0,
+          "total_pick": "UNDER",
+          "home_line_proj": -6.5,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "parlay_edge_score": 1.0,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "Moderate cross-book line-value gap detected; no ROI backtest attached.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "bookmaker_consensus_value",
+            "spread_value_book": "Bovada",
+            "spread_value_line": -6.5,
+            "spread_value_reason": "Best spread value is below 0.5 point threshold.",
+            "total_value_book": "BetRivers",
+            "total_value_line": 163.5,
+            "total_value_reason": "UNDER has 1.0 points of total value vs consensus at BetRivers.",
+            "warning": "WNBA market-value model only; no historical ROI/backtest attached."
+          }
+        },
+        "WNBA_PointsBaseline_v1": {
+          "model_name": "WNBA_PointsBaseline_v1",
+          "total_projection": 167.25,
+          "total_distance": 4.75,
+          "total_edge": 4.75,
+          "total_pick": "OVER",
+          "home_line_proj": -4.75,
+          "spread_distance": 1.75,
+          "spread_edge": 1.75,
+          "spread_pick": "Portland Fire",
+          "parlay_edge_score": 6.5,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_PointsBaseline_v1 compares point projection to current spread/total; largest model-market gap=4.750.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_games": 22,
+            "away_games": 24,
+            "home_avg_points_for": 82.5,
+            "home_avg_points_against": 80.0,
+            "away_avg_points_for": 82.5,
+            "away_avg_points_against": 89.5
+          }
+        },
+        "WNBA_Last5Points_v1": {
+          "model_name": "WNBA_Last5Points_v1",
+          "total_projection": 167.0,
+          "total_distance": 4.5,
+          "total_edge": 4.5,
+          "total_pick": "OVER",
+          "home_line_proj": -4.0,
+          "spread_distance": 2.5,
+          "spread_edge": 2.5,
+          "spread_pick": "Portland Fire",
+          "parlay_edge_score": 7.0,
+          "confidence_tier": "STRONG",
+          "confidence_reason": "WNBA_Last5Points_v1 compares point projection to current spread/total; largest model-market gap=4.500.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "espn_completed_results_before_slate",
+            "home_last5_games": 5,
+            "away_last5_games": 5,
+            "home_last5_points_for": 81.0,
+            "home_last5_points_against": 76.0,
+            "away_last5_points_for": 87.0,
+            "away_last5_points_against": 90.0
+          }
+        },
+        "WNBA_MarketPressure_v1": {
+          "model_name": "WNBA_MarketPressure_v1",
+          "total_projection": 166.062,
+          "total_distance": 3.562,
+          "total_edge": 3.562,
+          "total_pick": "OVER",
+          "home_line_proj": -4.75,
+          "spread_distance": 1.75,
+          "spread_edge": 1.75,
+          "spread_pick": "Portland Fire",
+          "parlay_edge_score": 5.312,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_MarketPressure_v1 compares point projection to current spread/total; largest model-market gap=3.562.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_regressed_to_market_total",
+            "baseline_total": 167.25,
+            "market_total": 162.5,
+            "pull_weight": 0.25
+          }
+        },
+        "WNBA_MarketBlend_v1": {
+          "model_name": "WNBA_MarketBlend_v1",
+          "total_projection": 164.923,
+          "total_distance": 2.423,
+          "total_edge": 2.423,
+          "total_pick": "OVER",
+          "home_line_proj": -5.608,
+          "spread_distance": 0.892,
+          "spread_edge": 0.892,
+          "spread_pick": "Portland Fire",
+          "parlay_edge_score": 3.315,
+          "confidence_tier": "WATCH",
+          "confidence_reason": "WNBA_MarketBlend_v1 compares point projection to current spread/total; largest model-market gap=2.423.",
+          "actionability": "ACTION",
+          "context_flags": {
+            "source": "points_baseline_market_blend",
+            "baseline_home": 86.0,
+            "baseline_away": 81.25,
+            "market_home": 84.5,
+            "market_away": 78.0,
+            "weight_model": 0.51,
+            "weight_market": 0.49
+          }
+        }
+      },
+      "agent_overrides": {
+        "override_pick": null,
+        "override_reason": null,
+        "override_confidence_delta": null
+      },
+      "context_flags": {
+        "home_rest_days": null,
+        "away_rest_days": null,
+        "home_b2b_flag": null,
+        "away_b2b_flag": null,
+        "home_fatigue_flag": null,
+        "away_fatigue_flag": null,
+        "home_went_ot_last_game": null,
+        "away_went_ot_last_game": null,
+        "home_3pt_pct": null,
+        "away_3pt_pct": null,
+        "three_pt_diff": null,
+        "wnba_model_status": "multi_model_points_seed",
+        "wnba_spread_value_book": "",
+        "wnba_spread_value_line": null,
+        "wnba_total_value_book": "",
+        "wnba_total_value_line": null
+      },
+      "execution_overlay": {},
+      "pocket_score": null,
+      "pocket": null,
+      "calibration_tags": {
+        "edge_bucket": "2+",
+        "historical_bucket_win_rate": null,
+        "over_under_bias_flag": null,
+        "favorite_dog_bias_flag": null,
+        "model_regime_normal": "WNBA_POINTS_MODEL_SEED_V1"
+      },
+      "temporal_integrity": {
+        "schedule_date_utc": "2026-07-16",
+        "tipoff_time_utc": "2026-07-16T23:10:00Z",
+        "tipoff_time_cst": "2026-07-16T18:10:00-05:00",
+        "tipoff_local_day": "2026-07-16",
+        "schedule_matches_local_day": true,
+        "utc_rollover_flag": false,
+        "odds_commence_time_utc": "2026-07-16T23:10:00Z",
+        "odds_commence_time_cst": "2026-07-16T18:10:00-05:00"
+      }
+    }
+  ]
+}
