@@ -13,7 +13,7 @@ Design:
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-SUPPORTED_LEAGUES = ("nba", "ncaam", "wnba", "nhl", "mlb")
+SUPPORTED_LEAGUES = ("nba", "ncaam", "wnba", "nhl", "mlb", "nfl")
 
 
 def _normalize_league(league: str) -> str:
@@ -93,8 +93,10 @@ def _league_paths(league: str) -> dict[str, Path | None]:
         from configs.leagues import league_wnba as cfg
     elif league == "nhl":
         from configs.leagues import league_nhl as cfg
-    else:
+    elif league == "mlb":
         from configs.leagues import league_mlb as cfg
+    else:
+        from configs.leagues import league_nfl as cfg
     return {
         "game_state": cfg.GAME_STATE_PATH,
         "boxscore": cfg.BOXSCORES_RAW_PATH,
@@ -437,5 +439,8 @@ def get_timestamped_odds_raw_path(league: str, ts_label: str) -> Path | None:
     if league == "nhl":
         from configs.leagues.league_nhl import timestamped_odds_raw_path
         return timestamped_odds_raw_path(ts_label)
-    from configs.leagues.league_mlb import timestamped_odds_raw_path
+    if league == "mlb":
+        from configs.leagues.league_mlb import timestamped_odds_raw_path
+        return timestamped_odds_raw_path(ts_label)
+    from configs.leagues.league_nfl import timestamped_odds_raw_path
     return timestamped_odds_raw_path(ts_label)

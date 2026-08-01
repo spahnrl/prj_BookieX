@@ -111,6 +111,13 @@ NEW_LEAGUE_MODEL_STATUS = {
         ],
         "notes": "MLB is presented with the same market-value daily contract as WNBA: consensus, run-line value, total value, and blended market-value lanes.",
     },
+    "NFL": {
+        "template": "Bridge",
+        "lanes": [
+            "NFL_SlateBridge_v1",
+        ],
+        "notes": "NFL is configured as a schedule-and-odds bridge first. It shows real slates and market availability without inventing predictive picks, ROI, or backtest claims.",
+    },
 }
 
 # --------------------------------------------------
@@ -125,6 +132,7 @@ def _load_dashboard_league_options() -> list[dict]:
         "ncaam": "Basketball - NCAAM",
         "wnba": "Basketball - WNBA",
         "nhl": "Hockey - NHL",
+        "nfl": "Football - NFL",
     }
     display_by_key = {
         "mlb": "MLB",
@@ -132,10 +140,11 @@ def _load_dashboard_league_options() -> list[dict]:
         "ncaam": "NCAAM",
         "wnba": "WNBA",
         "nhl": "NHL",
+        "nfl": "NFL",
     }
     fallback = [
         {"label": label_by_key[key], "league_key": key, "display_name": display_by_key[key]}
-        for key in ("mlb", "nba", "ncaam", "wnba", "nhl")
+        for key in ("mlb", "nba", "ncaam", "wnba", "nhl", "nfl")
     ]
     if not NORMALIZATION_CONFIG_DIR.exists():
         return fallback
@@ -213,6 +222,7 @@ LIVE_ODDS_REGISTRY = {
     "WNBA": {"sport_key": "basketball_wnba", "enabled": True},
     "NHL": {"sport_key": "icehockey_nhl", "enabled": True},
     "MLB": {"sport_key": "baseball_mlb", "enabled": True},
+    "NFL": {"sport_key": "americanfootball_nfl", "enabled": True},
 }
 LIVE_ODDS_MARKETS = "h2h,spreads,totals"
 LIVE_ODDS_REGION = "us"
@@ -915,7 +925,7 @@ def _resolve_pocket_recommended_bet_daily_games(
     return games_selected, "mismatch_no_file"
 
 
-if not date_map and league == "NHL":
+if not date_map and league in ("NHL", "NFL"):
     _render_bridge_slate_page()
     st.stop()
 
@@ -4186,7 +4196,7 @@ else:
 
 _render_kalshi_signal_section(league_key, selected_date)
 
-if league in ("NBA", "NCAAM", "WNBA", "MLB"):
+if league in ("NBA", "NCAAM", "WNBA", "MLB", "NFL"):
     slate_dashboard_view = st.radio(
         "Dashboard view",
         ("Standard Slate View", "Pocket ROI View"),
