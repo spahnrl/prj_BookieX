@@ -1,7 +1,7 @@
 """
 d_gen_020_build_odds_only_canonical.py
 
-Build minimal WNBA/NHL/MLB canonical game artifacts from flattened Odds API rows.
+Build minimal WNBA/NHL/MLB/NFL/NCAAF canonical game artifacts from flattened Odds API rows.
 Schedule rows are used only as an optional match signal; odds-only games are kept.
 """
 
@@ -15,6 +15,7 @@ import sys
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
+from statistics import median
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 if str(_PROJECT_ROOT) not in sys.path:
@@ -24,7 +25,7 @@ from utils.io_helpers import get_schedule_raw_path
 from utils.run_log import set_silent, log_info
 
 
-SUPPORTED = ("wnba", "nhl", "mlb")
+SUPPORTED = ("wnba", "nhl", "mlb", "nfl", "ncaaf")
 
 
 def _league_config(league: str):
@@ -34,6 +35,10 @@ def _league_config(league: str):
         from configs.leagues import league_nhl as cfg
     elif league == "mlb":
         from configs.leagues import league_mlb as cfg
+    elif league == "nfl":
+        from configs.leagues import league_nfl as cfg
+    elif league == "ncaaf":
+        from configs.leagues import league_ncaaf as cfg
     else:
         raise ValueError(f"Unsupported league: {league!r}")
     return cfg
@@ -44,6 +49,8 @@ def _normalization_config_path(league: str) -> Path:
         "wnba": "basketball_wnba.json",
         "nhl": "icehockey_nhl.json",
         "mlb": "baseball_mlb.json",
+        "nfl": "americanfootball_nfl.json",
+        "ncaaf": "americanfootball_ncaaf.json",
     }
     name = names[league]
     return _PROJECT_ROOT / "configs" / "normalization" / "leagues" / name
@@ -226,19 +233,27 @@ def _build_canonical_rows(league: str, odds_rows: list[dict], schedule_rows: lis
         books = {r.get("bookmaker_key") for r in rows if r.get("bookmaker_key")}
         home = (sample.get("home_team") or "").strip()
         away = (sample.get("away_team") or "").strip()
+        schedule_row = _schedule_match_row(rows, schedule_rows, league)
+        schedule_id = _schedule_game_id_from_row(schedule_row, league)
         out.append({
             "league": league,
-            "game_id": game_id,
+            "game_id": schedule_id or game_id,
+            "odds_event_id": game_id,
             "game_date": commence[:10],
             "commence_time": commence,
             "home_team": home,
             "away_team": away,
             "home_team_key": name_to_key.get(_normalize_name(home), ""),
             "away_team_key": name_to_key.get(_normalize_name(away), ""),
-            "status": "",
-            "completed": "0",
+            "status": (schedule_row or {}).get("status", ""),
+            "status_state": (schedule_row or {}).get("status_state", ""),
+            "completed": (schedule_row or {}).get("completed", "0"),
+            "home_score": (schedule_row or {}).get("home_score", ""),
+            "away_score": (schedule_row or {}).get("away_score", ""),
+            "espn_game_id": (schedule_row or {}).get("espn_game_id", ""),
+            "venue": (schedule_row or {}).get("venue", ""),
             "source_system": "odds_api_flattened",
-            "has_schedule_match": str(_schedule_match(rows, schedule_rows)).lower(),
+            "has_schedule_match": str(bool(schedule_id) or _schedule_match(rows, schedule_rows)).lower(),
             "odds_event_count": str(len(rows)),
             "bookmaker_count": str(len(books)),
             "market_count": str(len(markets)),
@@ -246,6 +261,87 @@ def _build_canonical_rows(league: str, odds_rows: list[dict], schedule_rows: lis
             "has_spreads": str("spreads" in markets).lower(),
             "has_totals": str("totals" in markets).lower(),
         })
+    return out
+
+
+def _safe_float(value) -> float | None:
+    if value in (None, ""):
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _median(values: list[float]) -> float | None:
+    nums = [v for v in values if v is not None]
+    if not nums:
+        return None
+    return float(median(nums))
+
+
+def _latest_capture(rows: list[dict]) -> str:
+    return max((r.get("captured_at_utc") or "" for r in rows), default="")
+
+
+def _price_for(rows: list[dict], market: str, outcome_names: set[str]) -> float | None:
+    candidates = [
+        _safe_float(r.get("price"))
+        for r in rows
+        if (r.get("market_key") or "") == market
+        and _normalize_name(r.get("outcome_name") or "") in outcome_names
+    ]
+    return _median(candidates)
+
+
+def _point_for(rows: list[dict], market: str, outcome_names: set[str]) -> float | None:
+    candidates = [
+        _safe_float(r.get("point"))
+        for r in rows
+        if (r.get("market_key") or "") == market
+        and _normalize_name(r.get("outcome_name") or "") in outcome_names
+    ]
+    return _median(candidates)
+
+
+def _build_game_state_rows(canonical_rows: list[dict], odds_rows: list[dict]) -> list[dict]:
+    odds_by_event: dict[str, list[dict]] = defaultdict(list)
+    for row in odds_rows:
+        gid = (row.get("game_id") or "").strip()
+        if gid:
+            odds_by_event[gid].append(row)
+
+    out = []
+    for game in canonical_rows:
+        rows = odds_by_event.get((game.get("odds_event_id") or "").strip(), [])
+        home = game.get("home_team") or ""
+        away = game.get("away_team") or ""
+        home_names = {_normalize_name(home)}
+        away_names = {_normalize_name(away)}
+        over_names = {"over"}
+        under_names = {"under"}
+        spread_home = _point_for(rows, "spreads", home_names)
+        spread_away = _point_for(rows, "spreads", away_names)
+        total = _point_for(rows, "totals", over_names) or _point_for(rows, "totals", under_names)
+        row = dict(game)
+        row.update(
+            {
+                "spread_home": spread_home,
+                "spread_away": spread_away,
+                "total": total,
+                "spread_home_last": spread_home,
+                "spread_away_last": spread_away,
+                "total_last": total,
+                "moneyline_home": _price_for(rows, "h2h", home_names),
+                "moneyline_away": _price_for(rows, "h2h", away_names),
+                "moneyline_home_last": _price_for(rows, "h2h", home_names),
+                "moneyline_away_last": _price_for(rows, "h2h", away_names),
+                "odds_snapshot_last_utc": _latest_capture(rows),
+                "consensus_book_count": len({r.get("bookmaker_key") for r in rows if r.get("bookmaker_key")}),
+                "line_source": "odds_api_flattened_consensus",
+            }
+        )
+        out.append(row)
     return out
 
 
@@ -263,6 +359,48 @@ def _write_join_audit(league: str, canonical_rows: list[dict]) -> None:
         for r in canonical_rows
     ]
     _write_csv(path, rows, ["game_id", "commence_time", "away_team", "home_team", "has_schedule_match"])
+
+
+def _schedule_match_row(odds_group: list[dict], schedule_rows: list[dict], league: str) -> dict | None:
+    if not schedule_rows or not odds_group:
+        return None
+    sample = odds_group[0]
+    home = _normalize_name(sample.get("home_team") or "")
+    away = _normalize_name(sample.get("away_team") or "")
+    comm = _parse_dt(sample.get("commence_time") or "")
+    if not home or not away or comm is None:
+        return None
+    low = comm - timedelta(hours=24)
+    high = comm + timedelta(hours=24)
+    matches = []
+    for row in schedule_rows:
+        if _normalize_name(row.get("home_team_raw") or "") != home:
+            continue
+        if _normalize_name(row.get("away_team_raw") or "") != away:
+            continue
+        sched_dt = _parse_dt(row.get("game_time_utc") or "")
+        if sched_dt is None:
+            continue
+        if low <= sched_dt <= high:
+            matches.append(row)
+    ids = {_schedule_game_id_from_row(row, league) for row in matches}
+    ids = {gid for gid in ids if gid}
+    if len(ids) != 1:
+        return None
+    target = next(iter(ids))
+    for row in matches:
+        if _schedule_game_id_from_row(row, league) == target:
+            return row
+    return None
+
+
+def _schedule_game_id_from_row(row: dict | None, league: str) -> str:
+    if not row:
+        return ""
+    gid = (row.get("game_id") or row.get("espn_game_id") or "").strip()
+    if gid and not gid.startswith(f"{league}_"):
+        gid = f"{league}_{gid}"
+    return gid
 
 
 def run(league: str) -> None:
@@ -304,16 +442,22 @@ def run(league: str) -> None:
 
     _write_join_audit(league, canonical_rows)
 
+    game_state_rows = _build_game_state_rows(canonical_rows, odds_rows)
+    cfg.GAME_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(cfg.GAME_STATE_PATH, "w", encoding="utf-8") as f:
+        json.dump(game_state_rows, f, indent=2)
+
     schedule_matched = sum(1 for r in canonical_rows if r.get("has_schedule_match") == "true")
     log_info(f"{league.upper()} team map -> {team_map_path} ({len(team_rows)} teams)")
     log_info(f"{league.upper()} unmatched team audit -> {unmatched_path} ({len(unmatched)} generated keys)")
     log_info(f"{league.upper()} canonical CSV -> {cfg.CANONICAL_GAMES_PATH}")
     log_info(f"{league.upper()} canonical JSON -> {cfg.CANONICAL_JSON_PATH}")
+    log_info(f"{league.upper()} game state JSON -> {cfg.GAME_STATE_PATH}")
     log_info(f"{league.upper()} canonical rows: {len(canonical_rows)}; schedule matched: {schedule_matched}")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build odds-only canonical games for WNBA/NHL/MLB")
+    parser = argparse.ArgumentParser(description="Build odds-only canonical games for WNBA/NHL/MLB/NFL")
     parser.add_argument("--league", required=True, choices=list(SUPPORTED))
     parser.add_argument("--silent", action="store_true", help="Only print critical errors")
     args = parser.parse_args()

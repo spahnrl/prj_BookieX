@@ -21,7 +21,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from utils.io_helpers import get_canonical_games_csv_path, get_daily_view_output_dir
 
-SUPPORTED_BRIDGE_LEAGUES = ("wnba", "nhl", "mlb")
+SUPPORTED_BRIDGE_LEAGUES = ("wnba", "nhl", "mlb", "nfl", "ncaaf")
 ARTIFACT_TYPE = "daily_slate_bridge"
 SOURCE = "canonical_bridge"
 BRIDGE_WARNING = "Bridge artifact only. Not a predictive model output. No ROI or pick generated."
@@ -187,7 +187,7 @@ def build_daily_slate_bridge(league: str) -> dict:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build non-model daily slate bridge artifacts for WNBA/NHL/MLB.")
+    parser = argparse.ArgumentParser(description="Build non-model daily slate bridge artifacts for WNBA/NHL/MLB/NFL/NCAAF.")
     parser.add_argument("--league", required=True, choices=SUPPORTED_BRIDGE_LEAGUES)
     args = parser.parse_args()
 

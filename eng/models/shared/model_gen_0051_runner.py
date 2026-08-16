@@ -11,10 +11,14 @@ Uses utils.io_helpers:
 Usage:
   python eng/models/model_gen_0051_runner.py --league nba
   python eng/models/model_gen_0051_runner.py --league ncaam
+  python eng/models/model_gen_0051_runner.py --league nfl
+  python eng/models/model_gen_0051_runner.py --league ncaaf
 
 Output schema: { "version": "...", "generated_at": "...", "games": [...] }
-Matches Streamlit UI expectation for both leagues. Forward-only: reads only
-game state; writes only runner output. Does not modify model math.
+Matches Streamlit UI expectation for both leagues. NCAAM: each game shell gets
+NBA-parallel keys (game_id, home_team/away_team, spread_*_last, total_last,
+moneyline_*_last) via utils.ncaam_multimodel_nba_aliases before models run.
+Forward-only: reads only game state; writes only runner output. Does not modify model math.
 """
 
 from __future__ import annotations
@@ -109,14 +113,29 @@ def write_output(league: str, games_output: list[dict], version: str) -> None:
         json.dump(payload, f, indent=2, sort_keys=True)
 
 
-def write_csv(league: str, games_output: list[dict], game_id_key: str, csv_extra_keys: list[str]) -> None:
+def write_csv(
+    league: str,
+    games_output: list[dict],
+    game_id_key: str,
+    csv_extra_keys: list[str],
+    *,
+    extra_base_keys: list[str] | None = None,
+) -> None:
+    """
+    Flatten multi-model games to CSV rows. ``extra_base_keys``: additional game keys
+    copied into each row (e.g. ``canonical_game_id`` alongside ``game_id`` for NCAAM parity
+    with spreadsheets that expect the legacy column name).
+    """
     from utils.io_helpers import get_model_runner_output_csv_path
 
     path = get_model_runner_output_csv_path(league)
     path.parent.mkdir(parents=True, exist_ok=True)
+    extra_base_keys = extra_base_keys or []
     rows = []
     for game in games_output:
         row_base = {game_id_key: game.get(game_id_key, "")}
+        for ek in extra_base_keys:
+            row_base[ek] = game.get(ek, "")
         if "game_date" in csv_extra_keys:
             row_base["game_date"] = game.get("game_date", "")
         for model_name, model in game["models"].items():
@@ -148,13 +167,13 @@ def write_csv(league: str, games_output: list[dict], game_id_key: str, csv_extra
 def run_nba() -> None:
     from utils.io_helpers import load_game_state, get_model_runner_output_json_path, get_model_runner_output_csv_path
 
-    from eng.models.shared.joel_baseline_model import JoelBaselineModel
-    from eng.models.shared.fatigue_plus_model import FatiguePlusModel
+    from eng.models.nba.joel_baseline_model import JoelBaselineModel
+    from eng.models.nba.fatigue_plus_model import FatiguePlusModel
     from eng.models.shared.monkey_darts_model import MonkeyDartsModel
-    from eng.models.shared.market_pressure_model import MarketPressureModel
-    from eng.models.shared.injury_model import InjuryModel
-    from eng.models.shared.market_blend_model import MarketBlendModel
-    from eng.models.shared.momentum_5game_model import Momentum5GameModel
+    from eng.models.nba.market_pressure_model import MarketPressureModel
+    from eng.models.nba.injury_model import InjuryModel
+    from eng.models.nba.market_blend_model import MarketBlendModel
+    from eng.models.nba.momentum_5game_model import Momentum5GameModel
 
     MODEL_REGISTRY = [
         JoelBaselineModel,
@@ -186,6 +205,7 @@ def run_nba() -> None:
 def run_ncaam() -> None:
     from utils.io_helpers import load_game_state, get_model_runner_output_json_path, get_model_runner_output_csv_path
 
+    from configs.leagues.league_ncaam import MODEL_DIR
     from eng.models.ncaam.ncaam_avg_score_model import NCAAMAvgScoreModel
     from eng.models.ncaam.ncaam_momentum5_model import NCAAMMomentum5Model
     from eng.models.ncaam.ncaam_market_pressure_model import NCAAMMarketPressureModel
@@ -197,13 +217,118 @@ def run_ncaam() -> None:
     ]
 
     games = load_game_state("ncaam")
-    sort_key = lambda g: (g.get("game_date", ""), g.get("canonical_game_id", ""))
+    total_games = len(games)
+    ncaam_dates = [(g.get("game_date") or "").strip()[:10] for g in games if (g.get("game_date") or "").strip()[:10]]
+    log_info(f"NCAAM 0051 diagnostic: loaded games={len(games)}, game_date range={min(ncaam_dates) if ncaam_dates else 'N/A'} .. {max(ncaam_dates) if ncaam_dates else 'N/A'}")
+
+    # Merge avg_score features from ncaam_model_input_v1.csv (001/099 output) when present.
+    FEATURE_CSV = MODEL_DIR / "ncaam_model_input_v1.csv"
+    AVG_KEYS = (
+        "home_avg_points_for",
+        "home_avg_points_against",
+        "away_avg_points_for",
+        "away_avg_points_against",
+    )
+    OPTIONAL_KEYS = ("home_games_in_history", "away_games_in_history")
+    LAST5_KEYS = (
+        "home_last5_points_for",
+        "home_last5_points_against",
+        "home_last5_avg_margin",
+        "home_last5_win_pct",
+        "home_last5_games_in_history",
+        "away_last5_points_for",
+        "away_last5_points_against",
+        "away_last5_avg_margin",
+        "away_last5_win_pct",
+        "away_last5_games_in_history",
+    )
+    if FEATURE_CSV.exists():
+        with open(FEATURE_CSV, "r", encoding="utf-8", newline="") as f:
+            feature_rows = list(csv.DictReader(f))
+        feature_by_cid = {}
+        for row in feature_rows:
+            cid = (row.get("canonical_game_id") or "").strip()
+            if cid:
+                feature_by_cid[cid] = row
+        enriched = 0
+        for g in games:
+            cid = (g.get("canonical_game_id") or "").strip()
+            feat = feature_by_cid.get(cid) if cid else None
+            if not feat:
+                continue
+            for key in AVG_KEYS + OPTIONAL_KEYS + LAST5_KEYS:
+                if key not in feat:
+                    continue
+                val = feat.get(key)
+                if val is None or (isinstance(val, str) and (val or "").strip() == ""):
+                    continue
+                existing = g.get(key)
+                if existing is not None and (not isinstance(existing, str) or (existing or "").strip() != ""):
+                    continue
+                g[key] = val
+            if all((g.get(k) or "").strip() != "" for k in AVG_KEYS):
+                enriched += 1
+        still_missing = total_games - enriched
+        log_info(f"NCAAM avg features:   merged from {FEATURE_CSV.name}; enriched={enriched}, still_missing_avg={still_missing}")
+    else:
+        log_info(f"NCAAM avg features:   no feature table at {FEATURE_CSV.name}; games unchanged")
+
+    from utils.ncaam_multimodel_nba_aliases import apply_nba_parallel_keys_ncaam_games
+
+    apply_nba_parallel_keys_ncaam_games(games)
+    log_info("NCAAM NBA-shell aliases: applied (game_id, home_team/away_team, spread_*_last, total_last, moneyline_*_last)")
+
+    sort_key = lambda g: (g.get("game_date", ""), g.get("game_id") or g.get("canonical_game_id", ""))
     results = run_models(games, MODEL_REGISTRY, sort_key=sort_key)
     write_output("ncaam", results, "NCAAM_MULTI_MODEL_V1")
-    write_csv("ncaam", results, game_id_key="canonical_game_id", csv_extra_keys=["game_date"])
+    write_csv(
+        "ncaam",
+        results,
+        game_id_key="game_id",
+        csv_extra_keys=["game_date"],
+        extra_base_keys=["canonical_game_id"],
+    )
 
     json_path = get_model_runner_output_json_path("ncaam")
     csv_path = get_model_runner_output_csv_path("ncaam")
+    log_info(f"Loaded games:        {len(games)}")
+    log_info(f"JSON output:        {json_path}")
+    log_info(f"CSV output:         {csv_path}")
+    log_info(f"Model registry:     {len(MODEL_REGISTRY)}")
+
+
+def run_football(league: str) -> None:
+    from utils.io_helpers import load_game_state, get_model_runner_output_json_path, get_model_runner_output_csv_path
+
+    from eng.models.football.market_models import (
+        FootballKeyNumberGuardModel,
+        FootballLineMovementModel,
+        FootballMarketBlendModel,
+        FootballMarketConsensusModel,
+        FootballSpreadValueModel,
+        FootballTotalValueModel,
+    )
+
+    league = (league or "").strip().lower()
+    if league not in ("nfl", "ncaaf"):
+        raise ValueError(f"Football runner supports nfl/ncaaf only, got {league!r}")
+
+    MODEL_REGISTRY = [
+        FootballMarketConsensusModel,
+        FootballSpreadValueModel,
+        FootballTotalValueModel,
+        FootballLineMovementModel,
+        FootballKeyNumberGuardModel,
+        FootballMarketBlendModel,
+    ]
+
+    games = load_game_state(league)
+    results = run_models(games, MODEL_REGISTRY, sort_key=lambda g: (g.get("game_date", ""), g.get("game_id", "")))
+    write_output(league, results, f"{league.upper()}_FOOTBALL_MULTI_MODEL_V1")
+    write_csv(league, results, game_id_key="game_id", csv_extra_keys=["game_date"])
+
+    json_path = get_model_runner_output_json_path(league)
+    csv_path = get_model_runner_output_csv_path(league)
     log_info(f"Loaded games:        {len(games)}")
     log_info(f"JSON output:        {json_path}")
     log_info(f"CSV output:         {csv_path}")
@@ -215,15 +340,17 @@ def run_ncaam() -> None:
 # =============================================================================
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run multi-model projections (NBA or NCAAM)")
-    parser.add_argument("--league", required=True, choices=["nba", "ncaam"])
+    parser = argparse.ArgumentParser(description="Run multi-model projections")
+    parser.add_argument("--league", required=True, choices=["nba", "ncaam", "nfl", "ncaaf"])
     parser.add_argument("--silent", action="store_true", help="Only print critical errors")
     args = parser.parse_args()
     set_silent(args.silent)
     if args.league == "nba":
         run_nba()
-    else:
+    elif args.league == "ncaam":
         run_ncaam()
+    else:
+        run_football(args.league)
 
 
 if __name__ == "__main__":

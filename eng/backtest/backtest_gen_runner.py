@@ -1,10 +1,10 @@
 """
 eng/backtest/backtest_gen_runner.py
 
-Unified, league-agnostic backtest runner. Single entry point for NBA and NCAAM:
-- Argument-driven: --league (nba | ncaam), default nba.
-- Domain isolation: input from league config (NBA: data/nba/view, NCAAM: data/ncaam/model),
-  output data/{league}/backtests/backtest_{timestamp}/.
+Unified, league-agnostic backtest runner. Single entry point for NBA/NCAAM/NFL/NCAAF:
+- Argument-driven: --league (nba | ncaam | nfl | ncaaf), default nba.
+- Domain isolation: input is final game view JSON (0052) via io_helpers.get_final_view_json_path
+  (same contract as daily view upstream); output data/{league}/backtests/backtest_{timestamp}/.
 - Uses robust grading from eng.backtest.backtest_grader (NBA); output structure follows
   NCAAM-style metadata wrapper + detail list.
 - Preserves @agent_reasoning (and other agent metadata) in backtest output.
@@ -40,25 +40,27 @@ from eng.backtest.backtest_grader import (
 SELECTION_AUTHORITY_BY_LEAGUE = {
     "nba": "Joel_Baseline_v1",
     "ncaam": "ncaam_avg_score_model",
+    "nfl": "Football_MarketBlend_v1",
+    "ncaaf": "Football_MarketBlend_v1",
 }
 
 KELLY_PAYOUT_RATIO = 100 / 110
 
 
 def get_input_path(league: str) -> Path:
-    """Multi-model JSON path from league config (NBA: view/; NCAAM: model/)."""
-    from utils.io_helpers import get_model_runner_output_json_path
+    """Final game view JSON (0052) — same source as daily view builders."""
+    from utils.io_helpers import get_final_view_json_path
     league = (league or "").strip().lower()
-    if league not in ("nba", "ncaam"):
-        raise ValueError("league must be 'nba' or 'ncaam'")
-    return get_model_runner_output_json_path(league)
+    if league not in SELECTION_AUTHORITY_BY_LEAGUE:
+        raise ValueError(f"league must be one of: {', '.join(sorted(SELECTION_AUTHORITY_BY_LEAGUE))}")
+    return get_final_view_json_path(league)
 
 
 def get_output_root(league: str) -> Path:
     """Output root: data/{league}/backtests/."""
     league = (league or "").strip().lower()
-    if league not in ("nba", "ncaam"):
-        raise ValueError("league must be 'nba' or 'ncaam'")
+    if league not in SELECTION_AUTHORITY_BY_LEAGUE:
+        raise ValueError(f"league must be one of: {', '.join(sorted(SELECTION_AUTHORITY_BY_LEAGUE))}")
     return PROJECT_ROOT / "data" / league / "backtests"
 
 
@@ -69,12 +71,12 @@ def get_output_root(league: str) -> Path:
 
 def load_games(league: str) -> list[dict]:
     """
-    Load games from league multi-model JSON (source: io_helpers.get_model_runner_output_json_path).
-    Payload must be a dict with "games" key (multi-model schema).
+    Load games from league final game view JSON (0052: get_final_view_json_path).
+    Payload must be a dict with "games" key or a list of game rows.
     """
     path = get_input_path(league)
     if not path.exists():
-        raise FileNotFoundError(f"Multi-model input not found: {path}")
+        raise FileNotFoundError(f"Final view JSON not found (run 0052 first): {path}")
 
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -172,8 +174,8 @@ class BacktestEngine:
 
     def __init__(self, league: str):
         self.league = (league or "").strip().lower()
-        if self.league not in ("nba", "ncaam"):
-            raise ValueError("league must be 'nba' or 'ncaam'")
+        if self.league not in SELECTION_AUTHORITY_BY_LEAGUE:
+            raise ValueError(f"league must be one of: {', '.join(sorted(SELECTION_AUTHORITY_BY_LEAGUE))}")
         self.selection_authority = SELECTION_AUTHORITY_BY_LEAGUE[self.league]
 
     def grade_game(
@@ -476,12 +478,12 @@ def write_outputs(
 
 def run(league: str) -> Path:
     """
-    Load multi-model JSON, grade with BacktestEngine, write to
+    Load final game view JSON (0052), grade with BacktestEngine, write to
     data/{league}/backtests/backtest_{timestamp}/. Returns output directory.
     """
     league = (league or "nba").strip().lower()
-    if league not in ("nba", "ncaam"):
-        raise ValueError("--league must be nba or ncaam")
+    if league not in SELECTION_AUTHORITY_BY_LEAGUE:
+        raise ValueError(f"--league must be one of: {', '.join(sorted(SELECTION_AUTHORITY_BY_LEAGUE))}")
 
     engine = BacktestEngine(league)
     games = load_games(league)
@@ -516,11 +518,11 @@ def run(league: str) -> Path:
 
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Unified backtest runner (NBA / NCAAM). Input: data/{league}/model multi-model JSON; output: data/{league}/backtests/backtest_{timestamp}/.",
+        description="Unified backtest runner. Input: data/{league}/view final game view JSON (0052); output: data/{league}/backtests/backtest_{timestamp}/.",
     )
     p.add_argument(
         "--league",
-        choices=["nba", "ncaam"],
+        choices=sorted(SELECTION_AUTHORITY_BY_LEAGUE),
         default="nba",
         help="League to backtest (default: nba)",
     )

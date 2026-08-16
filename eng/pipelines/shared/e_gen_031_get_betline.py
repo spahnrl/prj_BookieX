@@ -17,9 +17,12 @@ Usage:
   python e_gen_031_get_betline.py --league wnba
   python e_gen_031_get_betline.py --league nhl
   python e_gen_031_get_betline.py --league mlb
+  python e_gen_031_get_betline.py --league nfl
+  python e_gen_031_get_betline.py --league ncaaf
   python e_gen_031_get_betline.py --league ncaam --skip-if-recent 60
   python e_gen_031_get_betline.py --league ncaam --backfill-ncaam
   python e_gen_031_get_betline.py --league ncaam --gap-fill-ncaam
+  python e_gen_031_get_betline.py --league nfl --historical-start 20250904 --historical-end 20260208
 
 Environment: ODDS_API_KEY required.
 """
@@ -32,7 +35,7 @@ import os
 import re
 import sys
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -66,6 +69,8 @@ SPORT_KEY_BY_LEAGUE = {
     "wnba": "basketball_wnba",
     "nhl": "icehockey_nhl",
     "mlb": "baseball_mlb",
+    "nfl": "americanfootball_nfl",
+    "ncaaf": "americanfootball_ncaaf",
 }
 
 API_KEY = os.getenv("ODDS_API_KEY")
@@ -535,8 +540,8 @@ def run_ncaam(skip_if_recent_minutes: int | None = None) -> None:
 
 def run_configured_league(league: str, skip_if_recent_minutes: int | None = None) -> None:
     league = (league or "").strip().lower()
-    if league not in ("wnba", "nhl", "mlb"):
-        raise ValueError(f"run_configured_league is only wired for WNBA/NHL in Phase 2A, got {league!r}")
+    if league not in ("wnba", "nhl", "mlb", "nfl", "ncaaf"):
+        raise ValueError(f"run_configured_league is only wired for configured bridge leagues, got {league!r}")
 
     sport_key = SPORT_KEY_BY_LEAGUE[league]
     accum_path = get_odds_raw_accum_path(league)
@@ -600,6 +605,136 @@ def run_configured_league(league: str, skip_if_recent_minutes: int | None = None
     log_info(f"Latest JSON -> {latest_path}")
     if ts_path is not None:
         log_info(f"Timestamped  -> {ts_path}")
+
+
+def _parse_yyyymmdd(value: str) -> datetime:
+    text = (value or "").strip()
+    if len(text) != 8 or not text.isdigit():
+        raise ValueError(f"Expected YYYYMMDD date, got {value!r}")
+    return datetime.strptime(text, "%Y%m%d")
+
+
+def _configured_historical_covered_dates(league: str) -> set[str]:
+    pattern = re.compile(rf"^{re.escape(league)}_odds_raw_(\d{{8}})\.json$")
+    covered: set[str] = set()
+    cfg_path = get_odds_raw_latest_path(league)
+    raw_dir = cfg_path.parent if cfg_path is not None else PROJECT_ROOT / "data" / league / "raw"
+    if not raw_dir.exists():
+        return covered
+    for path in raw_dir.glob(f"{league}_odds_raw_*.json"):
+        match = pattern.match(path.name)
+        if match:
+            covered.add(match.group(1))
+    return covered
+
+
+def _configured_historical_dated_snapshots(
+    league: str,
+    start_dt: datetime,
+    end_dt: datetime,
+) -> list[dict]:
+    latest_path = get_odds_raw_latest_path(league)
+    raw_dir = latest_path.parent if latest_path is not None else PROJECT_ROOT / "data" / league / "raw"
+    snapshots: list[dict] = []
+    current = start_dt
+    while current <= end_dt:
+        label = current.strftime("%Y%m%d")
+        path = get_timestamped_odds_raw_path(league, label)
+        if path is not None and path.exists():
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    snapshot = json.load(f)
+                if isinstance(snapshot, dict):
+                    snapshots.append(snapshot)
+            except (json.JSONDecodeError, OSError):
+                pass
+        current += timedelta(days=1)
+    if snapshots:
+        return snapshots
+
+    # Fallback for unexpected path conventions.
+    for path in sorted(raw_dir.glob(f"{league}_odds_raw_*.json")):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                snapshot = json.load(f)
+            if isinstance(snapshot, dict):
+                snapshots.append(snapshot)
+        except (json.JSONDecodeError, OSError):
+            continue
+    return snapshots
+
+
+def run_historical_gap_fill_configured(league: str, start_yyyymmdd: str, end_yyyymmdd: str) -> None:
+    """
+    Fetch historical Odds API snapshots by date for a configured bridge league.
+    Writes date-stamped raw snapshots plus accum/latest so 032 can flatten them.
+    """
+    league = (league or "").strip().lower()
+    if league not in ("wnba", "nhl", "mlb", "nfl", "ncaaf"):
+        raise ValueError(f"Historical gap-fill supports configured bridge leagues only, got {league!r}")
+
+    start_dt = _parse_yyyymmdd(start_yyyymmdd)
+    end_dt = _parse_yyyymmdd(end_yyyymmdd)
+    if start_dt > end_dt:
+        raise ValueError("--historical-start must be on or before --historical-end")
+
+    sport_key = SPORT_KEY_BY_LEAGUE[league]
+    accum_path = get_odds_raw_accum_path(league)
+    latest_path = get_odds_raw_latest_path(league)
+    if latest_path is None:
+        raise ValueError(f"No latest raw odds path configured for {league!r}")
+
+    covered = _configured_historical_covered_dates(league)
+    current = start_dt
+    written = 0
+    skipped = 0
+
+    while current <= end_dt:
+        label = current.strftime("%Y%m%d")
+        if label in covered:
+            skipped += 1
+            current += timedelta(days=1)
+            continue
+
+        date_iso = f"{current.strftime('%Y-%m-%d')}T16:00:00Z"
+        resp = fetch_historical_odds(sport_key, date_iso)
+        if not resp or not isinstance(resp.get("data"), list):
+            log_info(f"  {label}: no historical data (skip)")
+            current += timedelta(days=1)
+            continue
+
+        snapshot_ts = (resp.get("timestamp") or date_iso).strip()
+        snapshot = {
+            "captured_at_utc": snapshot_ts,
+            "sport": sport_key,
+            "source": "the_odds_api_historical",
+            "data": resp["data"],
+        }
+        out_path = get_timestamped_odds_raw_path(league, label)
+        if out_path is None:
+            raise ValueError(f"No timestamped raw odds path configured for {league!r}")
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(snapshot, f, indent=2)
+        written += 1
+        log_info(f"  {label}: wrote {len(resp['data'])} events -> {out_path}")
+        current += timedelta(days=1)
+
+    accum_list = _configured_historical_dated_snapshots(league, start_dt, end_dt)
+    latest_snapshot = accum_list[-1] if accum_list else None
+    if latest_snapshot is not None:
+        accum_path.parent.mkdir(parents=True, exist_ok=True)
+        latest_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(accum_path, "w", encoding="utf-8") as f:
+            json.dump(accum_list, f, indent=2)
+        with open(latest_path, "w", encoding="utf-8") as f:
+            json.dump(latest_snapshot, f, indent=2)
+
+    log_info(
+        f"{league.upper()} historical gap-fill complete: "
+        f"range={start_yyyymmdd}..{end_yyyymmdd}, written={written}, skipped_existing={skipped}, "
+        f"accum_snapshots={len(accum_list)}"
+    )
 
 
 # =====================================================
@@ -899,6 +1034,8 @@ def main() -> None:
         action="store_true",
         help="Gap-fill missing NCAAM odds by date (historical API); skips dates already in raw",
     )
+    parser.add_argument("--historical-start", help="Configured leagues only: historical odds start date YYYYMMDD")
+    parser.add_argument("--historical-end", help="Configured leagues only: historical odds end date YYYYMMDD")
     parser.add_argument("--silent", action="store_true", help="Only print critical errors")
     args = parser.parse_args()
     set_silent(args.silent)
@@ -913,6 +1050,14 @@ def main() -> None:
         if args.league != "ncaam":
             raise SystemExit("--backfill-ncaam requires --league ncaam")
         run_backfill_ncaam()
+        return
+
+    if args.historical_start or args.historical_end:
+        if not (args.historical_start and args.historical_end):
+            raise SystemExit("--historical-start and --historical-end must be provided together")
+        if args.league == "ncaam":
+            raise SystemExit("Use --gap-fill-ncaam for NCAAM historical odds")
+        run_historical_gap_fill_configured(args.league, args.historical_start, args.historical_end)
         return
 
     if args.league == "nba":

@@ -16,6 +16,8 @@ Usage:
   python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league wnba --start-date YYYYMMDD --end-date YYYYMMDD
   python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league nhl --start-date YYYYMMDD --end-date YYYYMMDD
   python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league mlb --start-date YYYYMMDD --end-date YYYYMMDD
+  python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league nfl --start-date YYYYMMDD --end-date YYYYMMDD
+  python eng/pipelines/shared/b_gen_001_ingest_schedule.py --league ncaaf --start-date YYYYMMDD --end-date YYYYMMDD
 
 Forward-only: reads only external APIs; writes only schedule raw JSON + legacy CSV audit.
 """
@@ -60,7 +62,18 @@ def _requests_get(url: str, **kwargs):
 # =============================================================================
 
 NBA_SCHEDULE_URL = "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
-NBA_HEADERS = {"User-Agent": "Mozilla/5.0", "Accept": "application/json", "Referer": "https://www.nba.com/"}
+NBA_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/126.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json,text/plain,*/*",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Origin": "https://www.nba.com",
+    "Referer": "https://www.nba.com/",
+    "Connection": "keep-alive",
+}
 NBA_SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 NBA_SCOREBOARD_LOOKBACK_DAYS = 3
 NBA_SCOREBOARD_LOOKAHEAD_DAYS = 14
@@ -267,15 +280,37 @@ def _nba_write_legacy_csv(rows: list[dict]) -> None:
 
 
 def run_nba() -> None:
-    resp = _requests_get(NBA_SCHEDULE_URL, headers=NBA_HEADERS, timeout=30)
-    resp.raise_for_status()
-    raw = resp.json()
-    normalized = _nba_normalize(raw)
+    cdn_error = None
+    normalized = []
+    try:
+        resp = _requests_get(NBA_SCHEDULE_URL, headers=NBA_HEADERS, timeout=30)
+        resp.raise_for_status()
+        raw = resp.json()
+        normalized = _nba_normalize(raw)
+    except requests.exceptions.RequestException as exc:
+        cdn_error = exc
+        log_error(f"NBA static schedule fetch failed from NBA CDN; trying ESPN scoreboard fallback: {exc}")
+
+    scoreboard_rows = []
     try:
         scoreboard_rows = _nba_fetch_scoreboard_window()
-        normalized = _nba_merge_scoreboard_rows(normalized, scoreboard_rows)
     except Exception as exc:
-        log_error(f"NBA scoreboard repair feed failed; continuing with static schedule only: {exc}")
+        log_error(f"NBA scoreboard repair feed failed: {exc}")
+
+    if normalized:
+        normalized = _nba_merge_scoreboard_rows(normalized, scoreboard_rows)
+    elif scoreboard_rows:
+        normalized = scoreboard_rows
+        log_info(f"NBA schedule using ESPN scoreboard fallback only: {len(normalized)} games")
+    elif cdn_error and get_schedule_raw_path("nba").exists():
+        log_error(
+            "NBA schedule fetch failed and ESPN fallback returned zero rows; "
+            f"keeping existing schedule artifact: {get_schedule_raw_path('nba')}"
+        )
+        return
+    elif cdn_error:
+        raise RuntimeError("NBA schedule unavailable: NBA CDN failed and ESPN fallback returned zero rows") from cdn_error
+
     save_schedule_raw("nba", normalized)
     _nba_write_legacy_csv(normalized)
     log_info(f"Schedule JSON: {get_schedule_raw_path('nba')}")
@@ -553,13 +588,15 @@ def run_ncaam(start_date: str, end_date: str) -> None:
 
 
 # =============================================================================
-# WNBA/NHL/MLB: ESPN SCOREBOARD PROBE, NORMALIZE, WRITE
+# WNBA/NHL/MLB/NFL: ESPN SCOREBOARD PROBE, NORMALIZE, WRITE
 # =============================================================================
 
 SCOREBOARD_URL_BY_LEAGUE = {
     "wnba": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard",
     "nhl": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard",
     "mlb": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard",
+    "nfl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard",
+    "ncaaf": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard",
 }
 
 
@@ -596,7 +633,8 @@ def _normalize_scoreboard_payload_minimal(league: str, payload: dict, requested_
         venue = comp0.get("venue") or {}
         completed = bool(status_type.get("completed"))
         rows.append({
-            "game_id": str(event.get("id") or "").strip(),
+            "game_id": f"{league}_{str(event.get('id') or '').strip()}",
+            "espn_game_id": str(event.get("id") or "").strip(),
             "game_date": event_date[:10] if event_date else datetime.strptime(requested_date, "%Y%m%d").date().isoformat(),
             "game_time_utc": event_date,
             "status": status_type.get("name") or status_type.get("description") or "",
@@ -663,7 +701,7 @@ def run_scoreboard_league(league: str, start_date: str, end_date: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Ingest schedule")
-    parser.add_argument("--league", required=True, choices=["nba", "ncaam", "wnba", "nhl", "mlb"])
+    parser.add_argument("--league", required=True, choices=["nba", "ncaam", "wnba", "nhl", "mlb", "nfl", "ncaaf"])
     parser.add_argument("--start-date", dest="start_date", help="YYYYMMDD")
     parser.add_argument("--end-date", dest="end_date", help="YYYYMMDD")
     parser.add_argument("--silent", action="store_true", help="Only print critical errors")

@@ -16,6 +16,8 @@ Usage:
   python e_gen_032_get_betline_flatten.py --league wnba
   python e_gen_032_get_betline_flatten.py --league nhl
   python e_gen_032_get_betline_flatten.py --league mlb
+  python e_gen_032_get_betline_flatten.py --league nfl
+  python e_gen_032_get_betline_flatten.py --league ncaaf
 """
 
 import argparse
@@ -369,7 +371,7 @@ def run_ncaam() -> None:
 
 
 # =====================================================
-# CONFIGURED LEAGUES: WNBA/NHL/MLB raw snapshot -> flat rows
+# CONFIGURED LEAGUES: WNBA/NHL/MLB/NFL/NCAAF raw snapshot -> flat rows
 # =====================================================
 
 def _configured_league_paths(league: str) -> dict:
@@ -379,8 +381,12 @@ def _configured_league_paths(league: str) -> dict:
         from configs.leagues import league_nhl as cfg
     elif league == "mlb":
         from configs.leagues import league_mlb as cfg
+    elif league == "nfl":
+        from configs.leagues import league_nfl as cfg
+    elif league == "ncaaf":
+        from configs.leagues import league_ncaaf as cfg
     else:
-        raise ValueError(f"Configured flattening only supports wnba/nhl/mlb, got {league!r}")
+        raise ValueError(f"Configured flattening only supports wnba/nhl/mlb/nfl/ncaaf, got {league!r}")
     ensure_dirs = getattr(cfg, f"ensure_{league}_dirs")
     return {
         "ensure_dirs": ensure_dirs,
@@ -479,7 +485,7 @@ def run_configured_league(league: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Flatten raw odds")
-    parser.add_argument("--league", required=True, choices=["nba", "ncaam", "wnba", "nhl", "mlb"])
+    parser.add_argument("--league", required=True, choices=["nba", "ncaam", "wnba", "nhl", "mlb", "nfl", "ncaaf"])
     parser.add_argument("--silent", action="store_true", help="Only print critical errors")
     args = parser.parse_args()
     set_silent(args.silent)

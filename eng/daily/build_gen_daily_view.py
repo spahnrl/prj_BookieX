@@ -10,6 +10,8 @@ Usage:
   python eng/daily/build_gen_daily_view.py --league ncaam
   python eng/daily/build_gen_daily_view.py --league ncaam 2026-03-08
   python eng/daily/build_gen_daily_view.py --league ncaam --start-date 20250316 --end-date 20250321
+  python eng/daily/build_gen_daily_view.py --league nfl 2025-09-07
+  python eng/daily/build_gen_daily_view.py --league ncaaf 2025-09-06
 
 Default (no date, no start/end window): builds **today** and **tomorrow** (CST),
 and **yesterday** only before **noon Central** — see ``default_pipeline_daily_dates_cst``.
@@ -84,6 +86,12 @@ def run_ncaam(date_arg: str | None) -> None:
     ncaam_daily.run()
 
 
+def run_football(league: str, date_arg: str | None) -> None:
+    import eng.daily.build_football_daily_view as football_daily
+
+    football_daily.build_daily_view(league, date_arg)
+
+
 def _parse_yyyymmdd(s: str) -> date | None:
     """Parse YYYYMMDD to date. Returns None if invalid."""
     if not s or len(s) != 8:
@@ -107,8 +115,8 @@ def _date_range_inclusive(start_d: date, end_d: date) -> list[date]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build daily view for dashboard (NBA or NCAAM)")
-    parser.add_argument("--league", required=True, choices=["nba", "ncaam"])
+    parser = argparse.ArgumentParser(description="Build daily view for dashboard")
+    parser.add_argument("--league", required=True, choices=["nba", "ncaam", "nfl", "ncaaf"])
     parser.add_argument("date", nargs="?", help="Optional date (e.g. 2026-03-08); else earliest upcoming")
     parser.add_argument("--start-date", dest="start_date", type=str, help="Start date YYYYMMDD (use with --end-date for multi-date build)")
     parser.add_argument("--end-date", dest="end_date", type=str, help="End date YYYYMMDD (use with --start-date for multi-date build)")
@@ -130,8 +138,10 @@ def main() -> None:
             date_str = d.isoformat()
             if args.league == "nba":
                 run_nba(date_str)
-            else:
+            elif args.league == "ncaam":
                 run_ncaam(date_str)
+            else:
+                run_football(args.league, date_str)
         return
 
     # Default pipeline: CST slate window (yesterday before noon, always today + tomorrow).
@@ -142,14 +152,18 @@ def main() -> None:
         for d in daily_dates:
             if args.league == "nba":
                 run_nba(d)
-            else:
+            elif args.league == "ncaam":
                 run_ncaam(d)
+            else:
+                run_football(args.league, d)
         return
 
     if args.league == "nba":
         run_nba(args.date)
-    else:
+    elif args.league == "ncaam":
         run_ncaam(args.date)
+    else:
+        run_football(args.league, args.date)
 
 
 if __name__ == "__main__":

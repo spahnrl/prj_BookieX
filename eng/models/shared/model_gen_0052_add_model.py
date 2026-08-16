@@ -12,6 +12,8 @@ overlays. Final-view CSV for both leagues uses the same column strategy
 Usage:
   python eng/models/model_gen_0052_add_model.py --league nba
   python eng/models/model_gen_0052_add_model.py --league ncaam
+  python eng/models/model_gen_0052_add_model.py --league nfl
+  python eng/models/model_gen_0052_add_model.py --league ncaaf
 """
 
 from __future__ import annotations
@@ -408,20 +410,137 @@ def run_ncaam() -> None:
     log_info(f"Active rows:                 {len(active_rows)}")
 
 
+def run_football(league: str) -> None:
+    from utils.io_helpers import (
+        get_model_runner_output_json_path,
+        get_final_view_json_path,
+        get_final_view_csv_path,
+        get_final_view_active_json_path,
+    )
+
+    league = (league or "").strip().lower()
+    if league not in ("nfl", "ncaaf"):
+        raise ValueError(f"Football finalizer supports nfl/ncaaf only, got {league!r}")
+
+    input_path = get_model_runner_output_json_path(league)
+    output_json = get_final_view_json_path(league)
+    output_csv = get_final_view_csv_path(league)
+    output_active = get_final_view_active_json_path(league)
+    authority = "Football_MarketBlend_v1"
+
+    if not input_path.exists():
+        raise FileNotFoundError(f"Missing multi-model JSON: {input_path}")
+    with open(input_path, "r", encoding="utf-8") as f:
+        payload = json.load(f)
+    games = payload.get("games", []) if isinstance(payload, dict) else []
+    if not isinstance(games, list):
+        raise ValueError(f"Expected payload with games list: {input_path}")
+
+    def confidence(model: dict) -> str:
+        spread = safe_float(model.get("spread_distance"))
+        total = safe_float(model.get("total_distance"))
+        best = max((x for x in (spread, total) if x is not None), default=0)
+        if best >= 2.0:
+            return "HIGH"
+        if best >= 1.0:
+            return "MEDIUM"
+        if best >= 0.5:
+            return "LOW"
+        return "IGNORE"
+
+    def actionability(model: dict) -> str:
+        if confidence(model) == "IGNORE":
+            return "NONE"
+        if _s(model.get("spread_pick")) or _s(model.get("total_pick")):
+            return "ACTIVE"
+        return "NONE"
+
+    rows = []
+    for game in games:
+        models = dict(game.get("models") or {})
+        selected = models.get(authority) or {}
+        row = dict(game)
+        row["models"] = models
+        row["game_id"] = _s(game.get("game_id"))
+        row["away_team"] = _s(game.get("away_team") or game.get("away_team_raw"))
+        row["home_team"] = _s(game.get("home_team") or game.get("home_team_raw"))
+        row["away_points"] = _s(game.get("away_score") or game.get("away_points"))
+        row["home_points"] = _s(game.get("home_score") or game.get("home_points"))
+        row["spread_home"] = _s(game.get("spread_home_last") or game.get("spread_home"))
+        row["spread_away"] = _s(game.get("spread_away_last") or game.get("spread_away"))
+        row["total"] = _s(game.get("total_last") or game.get("total"))
+        row["moneyline_home"] = _s(game.get("moneyline_home_last") or game.get("moneyline_home"))
+        row["moneyline_away"] = _s(game.get("moneyline_away_last") or game.get("moneyline_away"))
+        row["selection_authority"] = authority
+        row["primary_model_source"] = authority
+        row["Home Line Projection"] = _s(selected.get("home_line_proj"))
+        row["Total Projection"] = _s(selected.get("total_projection"))
+        row["Spread Edge"] = _s(selected.get("spread_edge"))
+        row["Total Edge"] = _s(selected.get("total_edge"))
+        row["Parlay Edge Score"] = _s(selected.get("parlay_edge_score"))
+        row["Line Bet"] = _s(selected.get("spread_pick"))
+        row["Total Bet"] = _s(selected.get("total_pick"))
+        row["Projected Home Score"] = ""
+        row["Projected Away score"] = ""
+        row["Line Result"] = None
+        row["confidence_tier"] = confidence(selected)
+        row["confidence_reason"] = (
+            "Football market blend edge clears threshold"
+            if actionability(selected) == "ACTIVE"
+            else "No football model edge cleared threshold"
+        )
+        row["actionability"] = actionability(selected)
+        row["Decision Factors"] = selected.get("context_flags") or {}
+        row["Explanation"] = (
+            f"Game: {row['away_team']} @ {row['home_team']}\n"
+            f"Authority: {authority}\n"
+            f"Market: Spread {row['spread_home']}, Total {row['total']}\n"
+            f"Projection: Margin {row['Home Line Projection']}, Total {row['Total Projection']}\n"
+            f"Spread Pick: {row['Line Bet']} (edge {row['Spread Edge']})\n"
+            f"Total Pick: {row['Total Bet']} (edge {row['Total Edge']})"
+        )
+        row["arbitration"] = {"spread": None, "total": None}
+        row["arbitration_cluster"] = "FOOTBALL_MARKET_BLEND"
+        row["cluster_alignment"] = "FOOTBALL_MARKET_BLEND"
+        row["disagreement_flag"] = False
+        row["agent_reasoning"] = ""
+        rows.append(row)
+
+    rows.sort(key=lambda r: (r.get("game_date", ""), r.get("game_id", "")))
+    active = [r for r in rows if _s(r.get("actionability")) != "NONE"]
+    output_json.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_json, "w", encoding="utf-8") as f:
+        json.dump(rows, f, indent=2)
+    if output_active:
+        with open(output_active, "w", encoding="utf-8") as f:
+            json.dump(active, f, indent=2)
+    write_final_view_csv(rows, output_csv)
+
+    log_info(f"Loaded games:                {len(games)}")
+    log_info(f"Selection authority:         {authority}")
+    log_info(f"Final JSON written to:       {output_json}")
+    log_info(f"Active JSON written to:      {output_active}")
+    log_info(f"Final CSV written to:        {output_csv}")
+    log_info(f"Final rows:                  {len(rows)}")
+    log_info(f"Active rows:                 {len(active)}")
+
+
 # =============================================================================
 # ENTRYPOINT
 # =============================================================================
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Finalize multi-model output for UI (NBA or NCAAM)")
-    parser.add_argument("--league", required=True, choices=["nba", "ncaam"])
+    parser = argparse.ArgumentParser(description="Finalize multi-model output for UI")
+    parser.add_argument("--league", required=True, choices=["nba", "ncaam", "nfl", "ncaaf"])
     parser.add_argument("--silent", action="store_true", help="Only print critical errors")
     args = parser.parse_args()
     set_silent(args.silent)
     if args.league == "nba":
         run_nba()
-    else:
+    elif args.league == "ncaam":
         run_ncaam()
+    else:
+        run_football(args.league)
 
 
 if __name__ == "__main__":

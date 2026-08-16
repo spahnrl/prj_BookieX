@@ -112,11 +112,28 @@ NEW_LEAGUE_MODEL_STATUS = {
         "notes": "MLB is presented with the same market-value daily contract as WNBA: consensus, run-line value, total value, and blended market-value lanes.",
     },
     "NFL": {
-        "template": "Bridge",
+        "template": "Football",
         "lanes": [
-            "NFL_SlateBridge_v1",
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1",
+            "Football_MarketBlend_v1",
         ],
-        "notes": "NFL is configured as a schedule-and-odds bridge first. It shows real slates and market availability without inventing predictive picks, ROI, or backtest claims.",
+        "notes": "NFL uses a football market-value seed stack with consensus, spread value, total value, line movement, key-number guard, and blended authority lanes.",
+    },
+    "NCAAF": {
+        "template": "Football",
+        "lanes": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1",
+            "Football_MarketBlend_v1",
+        ],
+        "notes": "NCAAF uses the same football market-value seed stack as NFL, with college-football schedule/result identity and Odds API market inputs.",
     },
 }
 
@@ -133,6 +150,7 @@ def _load_dashboard_league_options() -> list[dict]:
         "wnba": "Basketball - WNBA",
         "nhl": "Hockey - NHL",
         "nfl": "Football - NFL",
+        "ncaaf": "Football - NCAAF",
     }
     display_by_key = {
         "mlb": "MLB",
@@ -141,10 +159,11 @@ def _load_dashboard_league_options() -> list[dict]:
         "wnba": "WNBA",
         "nhl": "NHL",
         "nfl": "NFL",
+        "ncaaf": "NCAAF",
     }
     fallback = [
         {"label": label_by_key[key], "league_key": key, "display_name": display_by_key[key]}
-        for key in ("mlb", "nba", "ncaam", "wnba", "nhl", "nfl")
+        for key in ("mlb", "nba", "ncaam", "wnba", "nhl", "nfl", "ncaaf")
     ]
     if not NORMALIZATION_CONFIG_DIR.exists():
         return fallback
@@ -223,6 +242,7 @@ LIVE_ODDS_REGISTRY = {
     "NHL": {"sport_key": "icehockey_nhl", "enabled": True},
     "MLB": {"sport_key": "baseball_mlb", "enabled": True},
     "NFL": {"sport_key": "americanfootball_nfl", "enabled": True},
+    "NCAAF": {"sport_key": "americanfootball_ncaaf", "enabled": True},
 }
 LIVE_ODDS_MARKETS = "h2h,spreads,totals"
 LIVE_ODDS_REGION = "us"
@@ -4262,6 +4282,13 @@ if league == "MLB" and slate_dashboard_view == "Standard Slate View":
     st.caption(
         "**MLB Daily View:** market-value picks compare available moneyline, run-line, and total lines "
         "against cross-book consensus. Use **Live Odds Slate** for the live bookmaker table."
+    )
+
+if league in ("NFL", "NCAAF") and slate_dashboard_view == "Standard Slate View":
+    st.caption(
+        f"**{league} Daily View:** football market-value seed picks compare model blend projections "
+        "against available spread and total lines. Agent audit artifacts track regimes separately "
+        "before any mature ROI claims are promoted."
     )
 
 # --------------------------------------------------
