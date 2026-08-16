@@ -4050,7 +4050,7 @@ def _render_seed_pocket_roi_view(games: list, selected_date: str, league_code: s
         row_gid = str(row.get("game_id") or "").strip()
         return row_date == selected_date or (row_gid and row_gid in selected_game_ids)
 
-    if league_code in ("wnba", "mlb"):
+    if league_code in ("wnba", "mlb", "nfl", "ncaaf"):
         ranked_rows = [r for r in all_ranked_rows if _matches_selected_slate(r)]
         if all_ranked_rows and not ranked_rows:
             st.info(
@@ -4079,7 +4079,7 @@ def _render_seed_pocket_roi_view(games: list, selected_date: str, league_code: s
         st.dataframe(pd.DataFrame(columns=ranked_columns), width="stretch", hide_index=True)
         st.caption(f"No {league_label} seed opportunities available yet.")
 
-    if league_code in ("wnba", "mlb") and all_ranked_rows and ranked_rows != all_ranked_rows:
+    if league_code in ("wnba", "mlb", "nfl", "ncaaf") and all_ranked_rows and ranked_rows != all_ranked_rows:
         with st.expander(f"Global {league_label} seed board (reference only)", expanded=False):
             st.caption(
                 "These rows are from the full seed ledger and may not belong to the selected slate date."
@@ -4088,7 +4088,7 @@ def _render_seed_pocket_roi_view(games: list, selected_date: str, league_code: s
 
     with st.expander("Best pocket per game (secondary summary)", expanded=False):
         all_best_rows = (best_doc or {}).get("games") or []
-        if league_code in ("wnba", "mlb"):
+        if league_code in ("wnba", "mlb", "nfl", "ncaaf"):
             best_rows = [
                 r for r in all_best_rows
                 if str(r.get("Game") or "").strip() in selected_matchups
@@ -4147,6 +4147,14 @@ def _render_wnba_pocket_roi_view(games: list, selected_date: str) -> None:
 
 def _render_mlb_pocket_roi_view(games: list, selected_date: str) -> None:
     _render_seed_pocket_roi_view(games, selected_date, "mlb", "MLB")
+
+
+def _render_nfl_pocket_roi_view(games: list, selected_date: str) -> None:
+    _render_seed_pocket_roi_view(games, selected_date, "nfl", "NFL")
+
+
+def _render_ncaaf_pocket_roi_view(games: list, selected_date: str) -> None:
+    _render_seed_pocket_roi_view(games, selected_date, "ncaaf", "NCAAF")
 
 
 # --------------------------------------------------
@@ -4229,7 +4237,7 @@ else:
 
 _render_kalshi_signal_section(league_key, selected_date)
 
-if league in ("NBA", "NCAAM", "WNBA", "MLB", "NFL"):
+if league in ("NBA", "NCAAM", "WNBA", "MLB", "NFL", "NCAAF"):
     slate_dashboard_view = st.radio(
         "Dashboard view",
         ("Standard Slate View", "Pocket ROI View"),
@@ -4274,6 +4282,22 @@ if league == "MLB" and slate_dashboard_view == "Pocket ROI View":
     _render_mlb_pocket_roi_view(games, selected_date)
     st.stop()
 
+if league == "NFL" and slate_dashboard_view == "Pocket ROI View":
+    st.caption(
+        "**Pocket ROI lens** - NFL; display contract mirrors WNBA/MLB seed pockets, using 2025 football "
+        "backtest results as read-only historical ROI context for the selected slate."
+    )
+    _render_nfl_pocket_roi_view(games, selected_date)
+    st.stop()
+
+if league == "NCAAF" and slate_dashboard_view == "Pocket ROI View":
+    st.caption(
+        "**Pocket ROI lens** - NCAAF; display contract mirrors WNBA/MLB seed pockets, using 2025 football "
+        "backtest results as read-only historical ROI context for the selected slate."
+    )
+    _render_ncaaf_pocket_roi_view(games, selected_date)
+    st.stop()
+
 if league == "NBA" and slate_dashboard_view == "Standard Slate View":
     st.caption(
         "**NBA pockets:** use **Pocket ROI View** for ranked best-pocket per game and positive-ROI parlay diagnostics."
@@ -4300,8 +4324,8 @@ if league == "MLB" and slate_dashboard_view == "Standard Slate View":
 if league in ("NFL", "NCAAF") and slate_dashboard_view == "Standard Slate View":
     st.caption(
         f"**{league} Daily View:** football market-value seed picks compare model blend projections "
-        "against available spread and total lines. Agent audit artifacts track regimes separately "
-        "before any mature ROI claims are promoted."
+        "against available spread and total lines. Use **Pocket ROI View** for read-only football seed "
+        "pockets from the 2025 backtest history."
     )
 
 # --------------------------------------------------
