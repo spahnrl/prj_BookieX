@@ -20,7 +20,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from utils.io_helpers import get_daily_view_output_dir, get_final_view_json_path
+from utils.io_helpers import get_daily_view_output_dir, get_final_view_json_path, get_schedule_raw_path
 
 
 CENTRAL = ZoneInfo("America/Chicago")
@@ -79,6 +79,18 @@ def _load_final_rows(league: str) -> list[dict]:
     if isinstance(data, list):
         return data
     raise ValueError(f"Final view must be a list or dict with games: {path}")
+
+
+def _load_schedule_rows(league: str) -> list[dict]:
+    path = get_schedule_raw_path(league)
+    if not path.exists():
+        return []
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return []
+    return data if isinstance(data, list) else []
 
 
 def _daily_game(row: dict) -> dict:
@@ -145,6 +157,76 @@ def _daily_game(row: dict) -> dict:
     }
 
 
+def _pending_schedule_game(row: dict) -> dict:
+    game_id = _safe_text(row.get("game_id"))
+    away = _safe_text(row.get("away_team") or row.get("away_team_raw"))
+    home = _safe_text(row.get("home_team") or row.get("home_team_raw"))
+    source_row = {
+        **row,
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1",
+    }
+    return {
+        "identity": {
+            "game_id": game_id,
+            "odds_event_id": "",
+            "game_date": _safe_text(row.get("game_date"))[:10],
+            "slate_date": _slate_date(row),
+            "tip_time_cst": _tip_time_cst(row),
+            "away_team": away,
+            "home_team": home,
+            "away_team_key": "",
+            "home_team_key": "",
+            "status": _safe_text(row.get("status")),
+            "completed": _safe_text(row.get("completed")),
+        },
+        "market_state": {
+            "spread_home_last": None,
+            "spread_away_last": None,
+            "total_last": None,
+            "moneyline_home_last": None,
+            "moneyline_away_last": None,
+            "bookmaker_count": 0,
+            "odds_snapshot_last_utc": "",
+            "line_source": "schedule_only",
+        },
+        "model_output": {
+            "model_name": "Football_ScheduleOnly_v1",
+            "spread_pick": "Pending market",
+            "total_pick": "Pending market",
+            "home_line_proj": None,
+            "total_projection": None,
+            "confidence_tier": "PENDING",
+            "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+            "actionability": "WAIT",
+            "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals.",
+        },
+        "edge_metrics": {
+            "spread_edge": None,
+            "total_edge": None,
+            "parlay_edge_score": None,
+        },
+        "models": {},
+        "execution_overlay": {
+            "dual_sweet_spot": False,
+            "spread_sweet_spot": False,
+            "total_sweet_spot": False,
+            "spread_avoid": False,
+            "total_avoid": False,
+        },
+        "calibration_tags": {
+            "historical_bucket_win_rate": None,
+            "sample_warning": "Schedule-only slate; no market-value signal has been calculated.",
+        },
+        "source_row": source_row,
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals.",
+    }
+
+
 def _write_csv(path: Path, games: list[dict]) -> None:
     rows = []
     for game in games:
@@ -171,6 +253,13 @@ def build_daily_view(league: str, date_str: str | None = None) -> dict:
     games = [_daily_game(row) for row in rows]
     if date_str:
         games = [g for g in games if g["identity"].get("slate_date") == date_str]
+        if not games:
+            schedule_games = [
+                _pending_schedule_game(row)
+                for row in _load_schedule_rows(league)
+                if _slate_date(row) == date_str
+            ]
+            games = schedule_games
     elif games:
         dates = sorted({g["identity"].get("slate_date") for g in games if g["identity"].get("slate_date")})
         today = datetime.now(CENTRAL).date().isoformat()
