@@ -1,0 +1,2078 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "league": "ncaaf",
+  "date": "2025-12-31",
+  "build_timestamp_utc": "2026-08-16T22:02:15Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "Football market-value seed model; use backtest and agent regime artifacts for maturity checks.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "ncaaf_401778328",
+        "odds_event_id": "e4eae563eb44ef3d6809bf83c6f022ed",
+        "game_date": "2025-12-31",
+        "slate_date": "2025-12-31",
+        "tip_time_cst": "2025-12-31 11:00 AM CT",
+        "away_team": "Iowa Hawkeyes",
+        "home_team": "Vanderbilt Commodores",
+        "away_team_key": "IH2",
+        "home_team_key": "VC",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": -3.0,
+        "spread_away_last": 3.0,
+        "total_last": 46.5,
+        "moneyline_home_last": -164.5,
+        "moneyline_away_last": 137.5,
+        "bookmaker_count": 10.0,
+        "odds_snapshot_last_utc": "2025-12-31T15:55:37Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "",
+        "total_pick": "UNDER",
+        "home_line_proj": -2.75,
+        "total_projection": 46.0,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": -0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": true,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 46.5
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 46.5
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": true,
+            "spread_veto": "key_number_guard"
+          },
+          "home_line_proj": -2.75,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": -0.25,
+          "spread_pick": "",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 46.0
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 10,
+            "source": "market_consensus"
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 46.5
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "value_shift": 0.75
+          },
+          "home_line_proj": -2.25,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": -0.75,
+          "spread_pick": "AWAY",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 46.5
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 45.5
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "34",
+        "away_team": "Iowa Hawkeyes",
+        "away_team_key": "IH2",
+        "bookmaker_count": "10",
+        "commence_time": "2025-12-31T17:00:00Z",
+        "completed": 1,
+        "consensus_book_count": 10,
+        "espn_game_id": "401778328",
+        "game_date": "2025-12-31",
+        "game_id": "ncaaf_401778328",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "27",
+        "home_team": "Vanderbilt Commodores",
+        "home_team_key": "VC",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": true,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 46.5
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 46.5
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": true,
+              "spread_veto": "key_number_guard"
+            },
+            "home_line_proj": -2.75,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": -0.25,
+            "spread_pick": "",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 46.0
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 10,
+              "source": "market_consensus"
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 46.5
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "value_shift": 0.75
+            },
+            "home_line_proj": -2.25,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": -0.75,
+            "spread_pick": "AWAY",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 46.5
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 45.5
+          }
+        },
+        "moneyline_away": "137.5",
+        "moneyline_away_last": 137.5,
+        "moneyline_home": "-164.5",
+        "moneyline_home_last": -164.5,
+        "odds_event_count": "54",
+        "odds_event_id": "e4eae563eb44ef3d6809bf83c6f022ed",
+        "odds_snapshot_last_utc": "2025-12-31T15:55:37Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "3.0",
+        "spread_away_last": 3.0,
+        "spread_home": "-3.0",
+        "spread_home_last": -3.0,
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "total": "46.5",
+        "total_last": 46.5,
+        "venue": "Raymond James Stadium",
+        "away_points": "34",
+        "home_points": "27",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "-2.75",
+        "Total Projection": "46.0",
+        "Spread Edge": "-0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": true,
+          "spread_veto": "key_number_guard"
+        },
+        "Explanation": "Game: Iowa Hawkeyes @ Vanderbilt Commodores\nAuthority: Football_MarketBlend_v1\nMarket: Spread -3.0, Total 46.5\nProjection: Margin -2.75, Total 46.0\nSpread Pick:  (edge -0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    },
+    {
+      "identity": {
+        "game_id": "ncaaf_401778329",
+        "odds_event_id": "be58b6906c480e3440f3c4b65a068f3e",
+        "game_date": "2025-12-31",
+        "slate_date": "2025-12-31",
+        "tip_time_cst": "2025-12-31 01:00 PM CT",
+        "away_team": "Arizona State Sun Devils",
+        "home_team": "Duke Blue Devils",
+        "away_team_key": "ASS",
+        "home_team_key": "DBD",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": -3.0,
+        "spread_away_last": 3.0,
+        "total_last": 47.5,
+        "moneyline_home_last": -164.5,
+        "moneyline_away_last": 137.5,
+        "bookmaker_count": 10.0,
+        "odds_snapshot_last_utc": "2025-12-31T15:55:37Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "",
+        "total_pick": "UNDER",
+        "home_line_proj": -2.75,
+        "total_projection": 47.0,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": -0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": true,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 47.5
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 47.5
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": true,
+            "spread_veto": "key_number_guard"
+          },
+          "home_line_proj": -2.75,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": -0.25,
+          "spread_pick": "",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 47.0
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 10,
+            "source": "market_consensus"
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 47.5
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "value_shift": 0.75
+          },
+          "home_line_proj": -2.25,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": -0.75,
+          "spread_pick": "AWAY",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 47.5
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 46.5
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "39",
+        "away_team": "Arizona State Sun Devils",
+        "away_team_key": "ASS",
+        "bookmaker_count": "10",
+        "commence_time": "2025-12-31T19:00:00Z",
+        "completed": 1,
+        "consensus_book_count": 10,
+        "espn_game_id": "401778329",
+        "game_date": "2025-12-31",
+        "game_id": "ncaaf_401778329",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "42",
+        "home_team": "Duke Blue Devils",
+        "home_team_key": "DBD",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": true,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 47.5
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 47.5
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": true,
+              "spread_veto": "key_number_guard"
+            },
+            "home_line_proj": -2.75,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": -0.25,
+            "spread_pick": "",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 47.0
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 10,
+              "source": "market_consensus"
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 47.5
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "value_shift": 0.75
+            },
+            "home_line_proj": -2.25,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": -0.75,
+            "spread_pick": "AWAY",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 47.5
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 46.5
+          }
+        },
+        "moneyline_away": "137.5",
+        "moneyline_away_last": 137.5,
+        "moneyline_home": "-164.5",
+        "moneyline_home_last": -164.5,
+        "odds_event_count": "58",
+        "odds_event_id": "be58b6906c480e3440f3c4b65a068f3e",
+        "odds_snapshot_last_utc": "2025-12-31T15:55:37Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "3.0",
+        "spread_away_last": 3.0,
+        "spread_home": "-3.0",
+        "spread_home_last": -3.0,
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "total": "47.5",
+        "total_last": 47.5,
+        "venue": "Sun Bowl",
+        "away_points": "39",
+        "home_points": "42",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "-2.75",
+        "Total Projection": "47.0",
+        "Spread Edge": "-0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": true,
+          "spread_veto": "key_number_guard"
+        },
+        "Explanation": "Game: Arizona State Sun Devils @ Duke Blue Devils\nAuthority: Football_MarketBlend_v1\nMarket: Spread -3.0, Total 47.5\nProjection: Margin -2.75, Total 47.0\nSpread Pick:  (edge -0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    },
+    {
+      "identity": {
+        "game_id": "ncaaf_401778330",
+        "odds_event_id": "19a577346818332b03e9737e6aadf808",
+        "game_date": "2025-12-31",
+        "slate_date": "2025-12-31",
+        "tip_time_cst": "2025-12-31 02:00 PM CT",
+        "away_team": "Michigan Wolverines",
+        "home_team": "Texas Longhorns",
+        "away_team_key": "MW2",
+        "home_team_key": "TL",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": -7.0,
+        "spread_away_last": 7.0,
+        "total_last": 48.0,
+        "moneyline_home_last": -281.5,
+        "moneyline_away_last": 230.0,
+        "bookmaker_count": 10.0,
+        "odds_snapshot_last_utc": "2025-12-31T15:55:37Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "",
+        "total_pick": "UNDER",
+        "home_line_proj": -6.75,
+        "total_projection": 47.5,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": -0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": true,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": -7.0,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 48.0
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": -7.0,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 48.0
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": true,
+            "spread_veto": "key_number_guard"
+          },
+          "home_line_proj": -6.75,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": -0.25,
+          "spread_pick": "",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 47.5
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 10,
+            "source": "market_consensus"
+          },
+          "home_line_proj": -7.0,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 48.0
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "value_shift": 0.75
+          },
+          "home_line_proj": -6.25,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": -0.75,
+          "spread_pick": "AWAY",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 48.0
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": -7.0,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 47.0
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "27",
+        "away_team": "Michigan Wolverines",
+        "away_team_key": "MW2",
+        "bookmaker_count": "10",
+        "commence_time": "2025-12-31T20:00:00Z",
+        "completed": 1,
+        "consensus_book_count": 10,
+        "espn_game_id": "401778330",
+        "game_date": "2025-12-31",
+        "game_id": "ncaaf_401778330",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "41",
+        "home_team": "Texas Longhorns",
+        "home_team_key": "TL",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": true,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": -7.0,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 48.0
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": -7.0,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 48.0
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": true,
+              "spread_veto": "key_number_guard"
+            },
+            "home_line_proj": -6.75,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": -0.25,
+            "spread_pick": "",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 47.5
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 10,
+              "source": "market_consensus"
+            },
+            "home_line_proj": -7.0,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 48.0
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "value_shift": 0.75
+            },
+            "home_line_proj": -6.25,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": -0.75,
+            "spread_pick": "AWAY",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 48.0
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": -7.0,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 47.0
+          }
+        },
+        "moneyline_away": "230.0",
+        "moneyline_away_last": 230.0,
+        "moneyline_home": "-281.5",
+        "moneyline_home_last": -281.5,
+        "odds_event_count": "58",
+        "odds_event_id": "19a577346818332b03e9737e6aadf808",
+        "odds_snapshot_last_utc": "2025-12-31T15:55:37Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "7.0",
+        "spread_away_last": 7.0,
+        "spread_home": "-7.0",
+        "spread_home_last": -7.0,
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "total": "48.0",
+        "total_last": 48.0,
+        "venue": "Camping World Stadium",
+        "away_points": "27",
+        "home_points": "41",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "-6.75",
+        "Total Projection": "47.5",
+        "Spread Edge": "-0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": true,
+          "spread_veto": "key_number_guard"
+        },
+        "Explanation": "Game: Michigan Wolverines @ Texas Longhorns\nAuthority: Football_MarketBlend_v1\nMarket: Spread -7.0, Total 48.0\nProjection: Margin -6.75, Total 47.5\nSpread Pick:  (edge -0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    },
+    {
+      "identity": {
+        "game_id": "ncaaf_401778331",
+        "odds_event_id": "6f364b2f9038410b7cfedad799afddfb",
+        "game_date": "2025-12-31",
+        "slate_date": "2025-12-31",
+        "tip_time_cst": "2025-12-31 02:30 PM CT",
+        "away_team": "Nebraska Cornhuskers",
+        "home_team": "Utah Utes",
+        "away_team_key": "NC",
+        "home_team_key": "UU",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": -14.0,
+        "spread_away_last": 14.0,
+        "total_last": 50.75,
+        "moneyline_home_last": -600.0,
+        "moneyline_away_last": 428.0,
+        "bookmaker_count": 9.0,
+        "odds_snapshot_last_utc": "2025-12-31T15:55:37Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "AWAY",
+        "total_pick": "UNDER",
+        "home_line_proj": -13.75,
+        "total_projection": 50.25,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": -0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": false,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": -14.0,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 50.75
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": -14.0,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 50.75
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": false
+          },
+          "home_line_proj": -13.75,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": -0.25,
+          "spread_pick": "AWAY",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 50.25
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 9,
+            "source": "market_consensus"
+          },
+          "home_line_proj": -14.0,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 50.75
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 9.0,
+            "value_shift": 0.75
+          },
+          "home_line_proj": -13.25,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": -0.75,
+          "spread_pick": "AWAY",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 50.75
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 9.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": -14.0,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 49.75
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "22",
+        "away_team": "Nebraska Cornhuskers",
+        "away_team_key": "NC",
+        "bookmaker_count": "9",
+        "commence_time": "2025-12-31T20:30:00Z",
+        "completed": 1,
+        "consensus_book_count": 9,
+        "espn_game_id": "401778331",
+        "game_date": "2025-12-31",
+        "game_id": "ncaaf_401778331",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "44",
+        "home_team": "Utah Utes",
+        "home_team_key": "UU",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": false,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": -14.0,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 50.75
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": -14.0,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 50.75
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": false
+            },
+            "home_line_proj": -13.75,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": -0.25,
+            "spread_pick": "AWAY",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 50.25
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 9,
+              "source": "market_consensus"
+            },
+            "home_line_proj": -14.0,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 50.75
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 9.0,
+              "value_shift": 0.75
+            },
+            "home_line_proj": -13.25,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": -0.75,
+            "spread_pick": "AWAY",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 50.75
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 9.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": -14.0,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 49.75
+          }
+        },
+        "moneyline_away": "428.0",
+        "moneyline_away_last": 428.0,
+        "moneyline_home": "-600.0",
+        "moneyline_home_last": -600.0,
+        "odds_event_count": "52",
+        "odds_event_id": "6f364b2f9038410b7cfedad799afddfb",
+        "odds_snapshot_last_utc": "2025-12-31T15:55:37Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "14.0",
+        "spread_away_last": 14.0,
+        "spread_home": "-14.0",
+        "spread_home_last": -14.0,
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "total": "50.75",
+        "total_last": 50.75,
+        "venue": "Allegiant Stadium",
+        "away_points": "22",
+        "home_points": "44",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "-13.75",
+        "Total Projection": "50.25",
+        "Spread Edge": "-0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "AWAY",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": false
+        },
+        "Explanation": "Game: Nebraska Cornhuskers @ Utah Utes\nAuthority: Football_MarketBlend_v1\nMarket: Spread -14.0, Total 50.75\nProjection: Margin -13.75, Total 50.25\nSpread Pick: AWAY (edge -0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    },
+    {
+      "identity": {
+        "game_id": "edbc3683488f9366d907f83f61852079",
+        "odds_event_id": "edbc3683488f9366d907f83f61852079",
+        "game_date": "2026-01-01",
+        "slate_date": "2025-12-31",
+        "tip_time_cst": "2025-12-31 06:30 PM CT",
+        "away_team": "Texas A&M Aggies",
+        "home_team": "Ohio State Buckeyes",
+        "away_team_key": "TAA",
+        "home_team_key": "OSB",
+        "status": "",
+        "completed": "0"
+      },
+      "market_state": {
+        "spread_home_last": -7.25,
+        "spread_away_last": 7.25,
+        "total_last": 48.5,
+        "moneyline_home_last": -310.0,
+        "moneyline_away_last": 245.0,
+        "bookmaker_count": 4.0,
+        "odds_snapshot_last_utc": "2025-12-20T15:55:37Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "",
+        "total_pick": "UNDER",
+        "home_line_proj": -7.0,
+        "total_projection": 48.0,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": -0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": true,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": -7.25,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 48.5
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": -7.25,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 48.5
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": true,
+            "spread_veto": "key_number_guard"
+          },
+          "home_line_proj": -7.0,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": -0.25,
+          "spread_pick": "",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 48.0
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 4,
+            "source": "market_consensus"
+          },
+          "home_line_proj": -7.25,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 48.5
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 4.0,
+            "value_shift": 0.75
+          },
+          "home_line_proj": -6.5,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": -0.75,
+          "spread_pick": "AWAY",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 48.5
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 4.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": -7.25,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 47.5
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "",
+        "away_team": "Texas A&M Aggies",
+        "away_team_key": "TAA",
+        "bookmaker_count": "4",
+        "commence_time": "2026-01-01T00:30:00Z",
+        "completed": "0",
+        "consensus_book_count": 4,
+        "espn_game_id": "",
+        "game_date": "2026-01-01",
+        "game_id": "edbc3683488f9366d907f83f61852079",
+        "has_h2h": "true",
+        "has_schedule_match": "false",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "",
+        "home_team": "Ohio State Buckeyes",
+        "home_team_key": "OSB",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": true,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": -7.25,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 48.5
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": -7.25,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 48.5
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": true,
+              "spread_veto": "key_number_guard"
+            },
+            "home_line_proj": -7.0,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": -0.25,
+            "spread_pick": "",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 48.0
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 4,
+              "source": "market_consensus"
+            },
+            "home_line_proj": -7.25,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 48.5
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 4.0,
+              "value_shift": 0.75
+            },
+            "home_line_proj": -6.5,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": -0.75,
+            "spread_pick": "AWAY",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 48.5
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 4.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": -7.25,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 47.5
+          }
+        },
+        "moneyline_away": "245.0",
+        "moneyline_away_last": 245.0,
+        "moneyline_home": "-310.0",
+        "moneyline_home_last": -310.0,
+        "odds_event_count": "12",
+        "odds_event_id": "edbc3683488f9366d907f83f61852079",
+        "odds_snapshot_last_utc": "2025-12-20T15:55:37Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "7.25",
+        "spread_away_last": 7.25,
+        "spread_home": "-7.25",
+        "spread_home_last": -7.25,
+        "status": "",
+        "status_state": "",
+        "total": "48.5",
+        "total_last": 48.5,
+        "venue": "",
+        "away_points": "",
+        "home_points": "",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "-7.0",
+        "Total Projection": "48.0",
+        "Spread Edge": "-0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": true,
+          "spread_veto": "key_number_guard"
+        },
+        "Explanation": "Game: Texas A&M Aggies @ Ohio State Buckeyes\nAuthority: Football_MarketBlend_v1\nMarket: Spread -7.25, Total 48.5\nProjection: Margin -7.0, Total 48.0\nSpread Pick:  (edge -0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    },
+    {
+      "identity": {
+        "game_id": "ncaaf_401769070",
+        "odds_event_id": "d05ae1f8060582994d6d724ccbb5e21a",
+        "game_date": "2026-01-01",
+        "slate_date": "2025-12-31",
+        "tip_time_cst": "2025-12-31 06:30 PM CT",
+        "away_team": "Miami Hurricanes",
+        "home_team": "Ohio State Buckeyes",
+        "away_team_key": "MH",
+        "home_team_key": "OSB",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": -9.5,
+        "spread_away_last": 9.5,
+        "total_last": 40.5,
+        "moneyline_home_last": -362.5,
+        "moneyline_away_last": 287.5,
+        "bookmaker_count": 10.0,
+        "odds_snapshot_last_utc": "2025-12-31T15:55:37Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "",
+        "total_pick": "OVER",
+        "home_line_proj": -9.25,
+        "total_projection": 41.0,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": -0.25,
+        "total_edge": 0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": true,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": -9.5,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 40.5
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": -9.5,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 40.5
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": true,
+            "spread_veto": "key_number_guard"
+          },
+          "home_line_proj": -9.25,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": -0.25,
+          "spread_pick": "",
+          "total_distance": 0.5,
+          "total_edge": 0.5,
+          "total_pick": "OVER",
+          "total_projection": 41.0
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 10,
+            "source": "market_consensus"
+          },
+          "home_line_proj": -9.5,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 40.5
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "value_shift": 0.75
+          },
+          "home_line_proj": -8.75,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": -0.75,
+          "spread_pick": "AWAY",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 40.5
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": -9.5,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": 1.0,
+          "total_pick": "OVER",
+          "total_projection": 41.5
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "24",
+        "away_team": "Miami Hurricanes",
+        "away_team_key": "MH",
+        "bookmaker_count": "10",
+        "commence_time": "2026-01-01T00:30:00Z",
+        "completed": 1,
+        "consensus_book_count": 10,
+        "espn_game_id": "401769070",
+        "game_date": "2026-01-01",
+        "game_id": "ncaaf_401769070",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "14",
+        "home_team": "Ohio State Buckeyes",
+        "home_team_key": "OSB",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": true,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": -9.5,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 40.5
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": -9.5,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 40.5
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": true,
+              "spread_veto": "key_number_guard"
+            },
+            "home_line_proj": -9.25,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": -0.25,
+            "spread_pick": "",
+            "total_distance": 0.5,
+            "total_edge": 0.5,
+            "total_pick": "OVER",
+            "total_projection": 41.0
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 10,
+              "source": "market_consensus"
+            },
+            "home_line_proj": -9.5,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 40.5
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "value_shift": 0.75
+            },
+            "home_line_proj": -8.75,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": -0.75,
+            "spread_pick": "AWAY",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 40.5
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": -9.5,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": 1.0,
+            "total_pick": "OVER",
+            "total_projection": 41.5
+          }
+        },
+        "moneyline_away": "287.5",
+        "moneyline_away_last": 287.5,
+        "moneyline_home": "-362.5",
+        "moneyline_home_last": -362.5,
+        "odds_event_count": "58",
+        "odds_event_id": "d05ae1f8060582994d6d724ccbb5e21a",
+        "odds_snapshot_last_utc": "2025-12-31T15:55:37Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "9.5",
+        "spread_away_last": 9.5,
+        "spread_home": "-9.5",
+        "spread_home_last": -9.5,
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "total": "40.5",
+        "total_last": 40.5,
+        "venue": "AT&T Stadium",
+        "away_points": "24",
+        "home_points": "14",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "-9.25",
+        "Total Projection": "41.0",
+        "Spread Edge": "-0.25",
+        "Total Edge": "0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "",
+        "Total Bet": "OVER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": true,
+          "spread_veto": "key_number_guard"
+        },
+        "Explanation": "Game: Miami Hurricanes @ Ohio State Buckeyes\nAuthority: Football_MarketBlend_v1\nMarket: Spread -9.5, Total 40.5\nProjection: Margin -9.25, Total 41.0\nSpread Pick:  (edge -0.25)\nTotal Pick: OVER (edge 0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    }
+  ]
+}

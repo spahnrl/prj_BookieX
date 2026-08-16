@@ -1,0 +1,1043 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "league": "ncaaf",
+  "date": "2025-09-26",
+  "build_timestamp_utc": "2026-08-16T22:02:03Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "Football market-value seed model; use backtest and agent regime artifacts for maturity checks.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "ncaaf_401754543",
+        "odds_event_id": "0aa30bdb9295af4b13475b7aabb2cfea",
+        "game_date": "2025-09-26",
+        "slate_date": "2025-09-26",
+        "tip_time_cst": "2025-09-26 06:00 PM CT",
+        "away_team": "Florida State Seminoles",
+        "home_team": "Virginia Cavaliers",
+        "away_team_key": "FSS",
+        "home_team_key": "VC2",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": 7.0,
+        "spread_away_last": -7.0,
+        "total_last": 60.0,
+        "moneyline_home_last": 210.0,
+        "moneyline_away_last": -250.0,
+        "bookmaker_count": 11.0,
+        "odds_snapshot_last_utc": "2025-09-26T15:55:40Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "",
+        "total_pick": "UNDER",
+        "home_line_proj": 6.75,
+        "total_projection": 59.5,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": 0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": true,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": 7.0,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 60.0
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": 7.0,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 60.0
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": true,
+            "spread_veto": "key_number_guard"
+          },
+          "home_line_proj": 6.75,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": 0.25,
+          "spread_pick": "",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 59.5
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 11,
+            "source": "market_consensus"
+          },
+          "home_line_proj": 7.0,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 60.0
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 11.0,
+            "value_shift": -0.75
+          },
+          "home_line_proj": 6.25,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "HOME",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 60.0
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 11.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": 7.0,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 59.0
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "38",
+        "away_team": "Florida State Seminoles",
+        "away_team_key": "FSS",
+        "bookmaker_count": "11",
+        "commence_time": "2025-09-26T23:00:00Z",
+        "completed": 1,
+        "consensus_book_count": 11,
+        "espn_game_id": "401754543",
+        "game_date": "2025-09-26",
+        "game_id": "ncaaf_401754543",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "46",
+        "home_team": "Virginia Cavaliers",
+        "home_team_key": "VC2",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": true,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": 7.0,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 60.0
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": 7.0,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 60.0
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": true,
+              "spread_veto": "key_number_guard"
+            },
+            "home_line_proj": 6.75,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": 0.25,
+            "spread_pick": "",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 59.5
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 11,
+              "source": "market_consensus"
+            },
+            "home_line_proj": 7.0,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 60.0
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 11.0,
+              "value_shift": -0.75
+            },
+            "home_line_proj": 6.25,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": 0.75,
+            "spread_pick": "HOME",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 60.0
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 11.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": 7.0,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 59.0
+          }
+        },
+        "moneyline_away": "-250.0",
+        "moneyline_away_last": -250.0,
+        "moneyline_home": "210.0",
+        "moneyline_home_last": 210.0,
+        "odds_event_count": "66",
+        "odds_event_id": "0aa30bdb9295af4b13475b7aabb2cfea",
+        "odds_snapshot_last_utc": "2025-09-26T15:55:40Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "-7.0",
+        "spread_away_last": -7.0,
+        "spread_home": "7.0",
+        "spread_home_last": 7.0,
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "total": "60.0",
+        "total_last": 60.0,
+        "venue": "Scott Stadium",
+        "away_points": "38",
+        "home_points": "46",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "6.75",
+        "Total Projection": "59.5",
+        "Spread Edge": "0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": true,
+          "spread_veto": "key_number_guard"
+        },
+        "Explanation": "Game: Florida State Seminoles @ Virginia Cavaliers\nAuthority: Football_MarketBlend_v1\nMarket: Spread 7.0, Total 60.0\nProjection: Margin 6.75, Total 59.5\nSpread Pick:  (edge 0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    },
+    {
+      "identity": {
+        "game_id": "ncaaf_401752939",
+        "odds_event_id": "8d2d9d2d52be2c1b040572a949cbeb8d",
+        "game_date": "2025-09-27",
+        "slate_date": "2025-09-26",
+        "tip_time_cst": "2025-09-26 09:30 PM CT",
+        "away_team": "Houston Cougars",
+        "home_team": "Oregon State Beavers",
+        "away_team_key": "HC",
+        "home_team_key": "OSB2",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": 13.5,
+        "spread_away_last": -13.5,
+        "total_last": 47.5,
+        "moneyline_home_last": 400.0,
+        "moneyline_away_last": -550.0,
+        "bookmaker_count": 11.0,
+        "odds_snapshot_last_utc": "2025-09-26T15:55:40Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "HOME",
+        "total_pick": "UNDER",
+        "home_line_proj": 13.25,
+        "total_projection": 47.0,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": 0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": false,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": 13.5,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 47.5
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": 13.5,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 47.5
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": false
+          },
+          "home_line_proj": 13.25,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": 0.25,
+          "spread_pick": "HOME",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 47.0
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 11,
+            "source": "market_consensus"
+          },
+          "home_line_proj": 13.5,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 47.5
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 11.0,
+            "value_shift": -0.75
+          },
+          "home_line_proj": 12.75,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "HOME",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 47.5
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 11.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": 13.5,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 46.5
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "27",
+        "away_team": "Houston Cougars",
+        "away_team_key": "HC",
+        "bookmaker_count": "11",
+        "commence_time": "2025-09-27T02:30:00Z",
+        "completed": 1,
+        "consensus_book_count": 11,
+        "espn_game_id": "401752939",
+        "game_date": "2025-09-27",
+        "game_id": "ncaaf_401752939",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "24",
+        "home_team": "Oregon State Beavers",
+        "home_team_key": "OSB2",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": false,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": 13.5,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 47.5
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": 13.5,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 47.5
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": false
+            },
+            "home_line_proj": 13.25,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": 0.25,
+            "spread_pick": "HOME",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 47.0
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 11,
+              "source": "market_consensus"
+            },
+            "home_line_proj": 13.5,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 47.5
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 11.0,
+              "value_shift": -0.75
+            },
+            "home_line_proj": 12.75,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": 0.75,
+            "spread_pick": "HOME",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 47.5
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 11.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": 13.5,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 46.5
+          }
+        },
+        "moneyline_away": "-550.0",
+        "moneyline_away_last": -550.0,
+        "moneyline_home": "400.0",
+        "moneyline_home_last": 400.0,
+        "odds_event_count": "66",
+        "odds_event_id": "8d2d9d2d52be2c1b040572a949cbeb8d",
+        "odds_snapshot_last_utc": "2025-09-26T15:55:40Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "-13.5",
+        "spread_away_last": -13.5,
+        "spread_home": "13.5",
+        "spread_home_last": 13.5,
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "total": "47.5",
+        "total_last": 47.5,
+        "venue": "Reser Stadium",
+        "away_points": "27",
+        "home_points": "24",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "13.25",
+        "Total Projection": "47.0",
+        "Spread Edge": "0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "HOME",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": false
+        },
+        "Explanation": "Game: Houston Cougars @ Oregon State Beavers\nAuthority: Football_MarketBlend_v1\nMarket: Spread 13.5, Total 47.5\nProjection: Margin 13.25, Total 47.0\nSpread Pick: HOME (edge 0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    },
+    {
+      "identity": {
+        "game_id": "ncaaf_401756902",
+        "odds_event_id": "f921de41ef2918f15fc38af1091d6206",
+        "game_date": "2025-09-27",
+        "slate_date": "2025-09-26",
+        "tip_time_cst": "2025-09-26 08:00 PM CT",
+        "away_team": "TCU Horned Frogs",
+        "home_team": "Arizona State Sun Devils",
+        "away_team_key": "THF",
+        "home_team_key": "ASS",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": -3.0,
+        "spread_away_last": 3.0,
+        "total_last": 54.5,
+        "moneyline_home_last": -154.0,
+        "moneyline_away_last": 130.0,
+        "bookmaker_count": 11.0,
+        "odds_snapshot_last_utc": "2025-09-26T15:55:40Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "",
+        "total_pick": "UNDER",
+        "home_line_proj": -2.75,
+        "total_projection": 54.0,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": -0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": true,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 54.5
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 54.5
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": true,
+            "spread_veto": "key_number_guard"
+          },
+          "home_line_proj": -2.75,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": -0.25,
+          "spread_pick": "",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 54.0
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 11,
+            "source": "market_consensus"
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 54.5
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 11.0,
+            "value_shift": 0.75
+          },
+          "home_line_proj": -2.25,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": -0.75,
+          "spread_pick": "AWAY",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 54.5
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 11.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": -3.0,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 53.5
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "24",
+        "away_team": "TCU Horned Frogs",
+        "away_team_key": "THF",
+        "bookmaker_count": "11",
+        "commence_time": "2025-09-27T01:00:00Z",
+        "completed": 1,
+        "consensus_book_count": 11,
+        "espn_game_id": "401756902",
+        "game_date": "2025-09-27",
+        "game_id": "ncaaf_401756902",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "27",
+        "home_team": "Arizona State Sun Devils",
+        "home_team_key": "ASS",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": true,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 54.5
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 54.5
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": true,
+              "spread_veto": "key_number_guard"
+            },
+            "home_line_proj": -2.75,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": -0.25,
+            "spread_pick": "",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 54.0
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 11,
+              "source": "market_consensus"
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 54.5
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 11.0,
+              "value_shift": 0.75
+            },
+            "home_line_proj": -2.25,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": -0.75,
+            "spread_pick": "AWAY",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 54.5
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 11.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": -3.0,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 53.5
+          }
+        },
+        "moneyline_away": "130.0",
+        "moneyline_away_last": 130.0,
+        "moneyline_home": "-154.0",
+        "moneyline_home_last": -154.0,
+        "odds_event_count": "66",
+        "odds_event_id": "f921de41ef2918f15fc38af1091d6206",
+        "odds_snapshot_last_utc": "2025-09-26T15:55:40Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "3.0",
+        "spread_away_last": 3.0,
+        "spread_home": "-3.0",
+        "spread_home_last": -3.0,
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "total": "54.5",
+        "total_last": 54.5,
+        "venue": "Mountain America Stadium",
+        "away_points": "24",
+        "home_points": "27",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "-2.75",
+        "Total Projection": "54.0",
+        "Spread Edge": "-0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": true,
+          "spread_veto": "key_number_guard"
+        },
+        "Explanation": "Game: TCU Horned Frogs @ Arizona State Sun Devils\nAuthority: Football_MarketBlend_v1\nMarket: Spread -3.0, Total 54.5\nProjection: Margin -2.75, Total 54.0\nSpread Pick:  (edge -0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    }
+  ]
+}

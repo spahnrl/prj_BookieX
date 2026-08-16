@@ -1,0 +1,356 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "league": "ncaaf",
+  "date": "2025-12-29",
+  "build_timestamp_utc": "2026-08-16T22:02:15Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "Football market-value seed model; use backtest and agent regime artifacts for maturity checks.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "5469259159946d4f739f1d867365e199",
+        "odds_event_id": "5469259159946d4f739f1d867365e199",
+        "game_date": "2025-12-29",
+        "slate_date": "2025-12-29",
+        "tip_time_cst": "2025-12-29 01:00 PM CT",
+        "away_team": "Georgia Southern Eagles",
+        "home_team": "Appalachian State Mountaineers",
+        "away_team_key": "GSE",
+        "home_team_key": "ASM2",
+        "status": "",
+        "completed": "0"
+      },
+      "market_state": {
+        "spread_home_last": 10.0,
+        "spread_away_last": -10.0,
+        "total_last": 58.0,
+        "moneyline_home_last": 292.5,
+        "moneyline_away_last": -372.5,
+        "bookmaker_count": 10.0,
+        "odds_snapshot_last_utc": "2025-12-29T15:55:37Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "",
+        "total_pick": "UNDER",
+        "home_line_proj": 9.75,
+        "total_projection": 57.5,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": 0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": true,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": 10.0,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 58.0
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": 10.0,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 58.0
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": true,
+            "spread_veto": "key_number_guard"
+          },
+          "home_line_proj": 9.75,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": 0.25,
+          "spread_pick": "",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 57.5
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 10,
+            "source": "market_consensus"
+          },
+          "home_line_proj": 10.0,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 58.0
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "value_shift": -0.75
+          },
+          "home_line_proj": 9.25,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "HOME",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 58.0
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": 10.0,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 57.0
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "",
+        "away_team": "Georgia Southern Eagles",
+        "away_team_key": "GSE",
+        "bookmaker_count": "10",
+        "commence_time": "2025-12-29T19:00:00Z",
+        "completed": "0",
+        "consensus_book_count": 10,
+        "espn_game_id": "",
+        "game_date": "2025-12-29",
+        "game_id": "5469259159946d4f739f1d867365e199",
+        "has_h2h": "true",
+        "has_schedule_match": "false",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "",
+        "home_team": "Appalachian State Mountaineers",
+        "home_team_key": "ASM2",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": true,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": 10.0,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 58.0
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": 10.0,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 58.0
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": true,
+              "spread_veto": "key_number_guard"
+            },
+            "home_line_proj": 9.75,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": 0.25,
+            "spread_pick": "",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 57.5
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 10,
+              "source": "market_consensus"
+            },
+            "home_line_proj": 10.0,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 58.0
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "value_shift": -0.75
+            },
+            "home_line_proj": 9.25,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": 0.75,
+            "spread_pick": "HOME",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 58.0
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": 10.0,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 57.0
+          }
+        },
+        "moneyline_away": "-372.5",
+        "moneyline_away_last": -372.5,
+        "moneyline_home": "292.5",
+        "moneyline_home_last": 292.5,
+        "odds_event_count": "58",
+        "odds_event_id": "5469259159946d4f739f1d867365e199",
+        "odds_snapshot_last_utc": "2025-12-29T15:55:37Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "-10.0",
+        "spread_away_last": -10.0,
+        "spread_home": "10.0",
+        "spread_home_last": 10.0,
+        "status": "",
+        "status_state": "",
+        "total": "58.0",
+        "total_last": 58.0,
+        "venue": "",
+        "away_points": "",
+        "home_points": "",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "9.75",
+        "Total Projection": "57.5",
+        "Spread Edge": "0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": true,
+          "spread_veto": "key_number_guard"
+        },
+        "Explanation": "Game: Georgia Southern Eagles @ Appalachian State Mountaineers\nAuthority: Football_MarketBlend_v1\nMarket: Spread 10.0, Total 58.0\nProjection: Margin 9.75, Total 57.5\nSpread Pick:  (edge 0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    }
+  ]
+}

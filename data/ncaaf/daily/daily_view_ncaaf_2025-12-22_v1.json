@@ -1,0 +1,353 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "league": "ncaaf",
+  "date": "2025-12-22",
+  "build_timestamp_utc": "2026-08-16T22:02:14Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "Football market-value seed model; use backtest and agent regime artifacts for maturity checks.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "ncaaf_401778308",
+        "odds_event_id": "c036889f6e4e2955d4e6fabe895af2bc",
+        "game_date": "2025-12-22",
+        "slate_date": "2025-12-22",
+        "tip_time_cst": "2025-12-22 01:00 PM CT",
+        "away_team": "Washington State Cougars",
+        "home_team": "Utah State Aggies",
+        "away_team_key": "WSC",
+        "home_team_key": "USA",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": -2.0,
+        "spread_away_last": 2.0,
+        "total_last": 49.0,
+        "moneyline_home_last": -125.0,
+        "moneyline_away_last": 105.0,
+        "bookmaker_count": 10.0,
+        "odds_snapshot_last_utc": "2025-12-22T15:55:37Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "AWAY",
+        "total_pick": "UNDER",
+        "home_line_proj": -1.75,
+        "total_projection": 48.5,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": -0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": false,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": -2.0,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 49.0
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": -2.0,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 49.0
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": false
+          },
+          "home_line_proj": -1.75,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": -0.25,
+          "spread_pick": "AWAY",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 48.5
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 10,
+            "source": "market_consensus"
+          },
+          "home_line_proj": -2.0,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 49.0
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "value_shift": 0.75
+          },
+          "home_line_proj": -1.25,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": -0.75,
+          "spread_pick": "AWAY",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 49.0
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 10.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": -2.0,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 48.0
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "34",
+        "away_team": "Washington State Cougars",
+        "away_team_key": "WSC",
+        "bookmaker_count": "10",
+        "commence_time": "2025-12-22T19:00:00Z",
+        "completed": 1,
+        "consensus_book_count": 10,
+        "espn_game_id": "401778308",
+        "game_date": "2025-12-22",
+        "game_id": "ncaaf_401778308",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "21",
+        "home_team": "Utah State Aggies",
+        "home_team_key": "USA",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": false,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": -2.0,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 49.0
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": -2.0,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 49.0
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": false
+            },
+            "home_line_proj": -1.75,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": -0.25,
+            "spread_pick": "AWAY",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 48.5
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 10,
+              "source": "market_consensus"
+            },
+            "home_line_proj": -2.0,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 49.0
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "value_shift": 0.75
+            },
+            "home_line_proj": -1.25,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": -0.75,
+            "spread_pick": "AWAY",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 49.0
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 10.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": -2.0,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 48.0
+          }
+        },
+        "moneyline_away": "105.0",
+        "moneyline_away_last": 105.0,
+        "moneyline_home": "-125.0",
+        "moneyline_home_last": -125.0,
+        "odds_event_count": "54",
+        "odds_event_id": "c036889f6e4e2955d4e6fabe895af2bc",
+        "odds_snapshot_last_utc": "2025-12-22T15:55:37Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "2.0",
+        "spread_away_last": 2.0,
+        "spread_home": "-2.0",
+        "spread_home_last": -2.0,
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "total": "49.0",
+        "total_last": 49.0,
+        "venue": "Albertsons Stadium",
+        "away_points": "34",
+        "home_points": "21",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "-1.75",
+        "Total Projection": "48.5",
+        "Spread Edge": "-0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "AWAY",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": false
+        },
+        "Explanation": "Game: Washington State Cougars @ Utah State Aggies\nAuthority: Football_MarketBlend_v1\nMarket: Spread -2.0, Total 49.0\nProjection: Margin -1.75, Total 48.5\nSpread Pick: AWAY (edge -0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    }
+  ]
+}

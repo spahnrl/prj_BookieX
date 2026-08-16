@@ -1,0 +1,356 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "league": "ncaaf",
+  "date": "2025-09-11",
+  "build_timestamp_utc": "2026-08-16T22:02:02Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "Football market-value seed model; use backtest and agent regime artifacts for maturity checks.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "ncaaf_401754531",
+        "odds_event_id": "542ba39fc8c6d30999a48dd24a805716",
+        "game_date": "2025-09-11",
+        "slate_date": "2025-09-11",
+        "tip_time_cst": "2025-09-11 06:30 PM CT",
+        "away_team": "NC State Wolfpack",
+        "home_team": "Wake Forest Demon Deacons",
+        "away_team_key": "NSW",
+        "home_team_key": "WFD",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": 7.0,
+        "spread_away_last": -7.0,
+        "total_last": 52.0,
+        "moneyline_home_last": 230.0,
+        "moneyline_away_last": -280.0,
+        "bookmaker_count": 11.0,
+        "odds_snapshot_last_utc": "2025-09-11T15:55:39Z",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "",
+        "total_pick": "UNDER",
+        "home_line_proj": 6.75,
+        "total_projection": 51.5,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": 0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": true,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": 7.0,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 52.0
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": 7.0,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 52.0
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": true,
+            "spread_veto": "key_number_guard"
+          },
+          "home_line_proj": 6.75,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": 0.25,
+          "spread_pick": "",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 51.5
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 11,
+            "source": "market_consensus"
+          },
+          "home_line_proj": 7.0,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 52.0
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 11.0,
+            "value_shift": -0.75
+          },
+          "home_line_proj": 6.25,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "HOME",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 52.0
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 11.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": 7.0,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 51.0
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "34",
+        "away_team": "NC State Wolfpack",
+        "away_team_key": "NSW",
+        "bookmaker_count": "11",
+        "commence_time": "2025-09-11T23:30:00Z",
+        "completed": 1,
+        "consensus_book_count": 11,
+        "espn_game_id": "401754531",
+        "game_date": "2025-09-11",
+        "game_id": "ncaaf_401754531",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "24",
+        "home_team": "Wake Forest Demon Deacons",
+        "home_team_key": "WFD",
+        "league": "ncaaf",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": true,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": 7.0,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 52.0
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": 7.0,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 52.0
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": true,
+              "spread_veto": "key_number_guard"
+            },
+            "home_line_proj": 6.75,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": 0.25,
+            "spread_pick": "",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 51.5
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 11,
+              "source": "market_consensus"
+            },
+            "home_line_proj": 7.0,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 52.0
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 11.0,
+              "value_shift": -0.75
+            },
+            "home_line_proj": 6.25,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": 0.75,
+            "spread_pick": "HOME",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 52.0
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 11.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": 7.0,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 51.0
+          }
+        },
+        "moneyline_away": "-280.0",
+        "moneyline_away_last": -280.0,
+        "moneyline_home": "230.0",
+        "moneyline_home_last": 230.0,
+        "odds_event_count": "66",
+        "odds_event_id": "542ba39fc8c6d30999a48dd24a805716",
+        "odds_snapshot_last_utc": "2025-09-11T15:55:39Z",
+        "source_system": "odds_api_flattened",
+        "spread_away": "-7.0",
+        "spread_away_last": -7.0,
+        "spread_home": "7.0",
+        "spread_home_last": 7.0,
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "total": "52.0",
+        "total_last": 52.0,
+        "venue": "Allegacy Federal Credit Union Stadium",
+        "away_points": "34",
+        "home_points": "24",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "6.75",
+        "Total Projection": "51.5",
+        "Spread Edge": "0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": true,
+          "spread_veto": "key_number_guard"
+        },
+        "Explanation": "Game: NC State Wolfpack @ Wake Forest Demon Deacons\nAuthority: Football_MarketBlend_v1\nMarket: Spread 7.0, Total 52.0\nProjection: Margin 6.75, Total 51.5\nSpread Pick:  (edge 0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    }
+  ]
+}

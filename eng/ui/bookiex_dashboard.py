@@ -892,6 +892,19 @@ for f in files:
     by_date[_date_from_name(f, league == "NCAAM")].append(f)
 date_map = {d: max(flist, key=lambda p: p.stat().st_mtime) for d, flist in by_date.items()}
 
+if league in ("NFL", "NCAAF"):
+    playable_date_map = {}
+    for d, path in date_map.items():
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                doc = json.load(f)
+            games_for_date = doc.get("games")
+        except Exception:
+            games_for_date = None
+        if isinstance(games_for_date, list) and games_for_date:
+            playable_date_map[d] = path
+    date_map = playable_date_map
+
 if league in ("WNBA", "MLB"):
     new_daily_page_view = st.radio(
         f"{league} page",
