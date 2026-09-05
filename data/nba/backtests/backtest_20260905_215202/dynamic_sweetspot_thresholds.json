@@ -1,0 +1,90 @@
+{
+  "league": "nba",
+  "source_backtest_dir": "backtest_20260905_215202",
+  "generated_at_utc": "2026-09-05T21:52:12.513615+00:00",
+  "chosen_thresholds": {
+    "spread_sweet_spot": {
+      "edge_min": 2,
+      "edge_max": 4,
+      "spread_line_max_exclusive": 10
+    },
+    "total_sweet_spot": {
+      "edge_min": 1,
+      "edge_max": 3,
+      "total_min": 222,
+      "total_max": 244,
+      "spread_line_max_exclusive": 10
+    },
+    "dual_sweet_spot": {
+      "spread_edge_min": 2,
+      "spread_edge_max": 4,
+      "total_edge_min": 1,
+      "total_edge_max": 3,
+      "total_min": 222,
+      "total_max": 244,
+      "spread_line_max_exclusive": 10
+    },
+    "avoid": {
+      "spread_edge_above": 6,
+      "spread_line_at_or_above": 12,
+      "total_edge_above": 8,
+      "total_below": 225
+    }
+  },
+  "buckets": {
+    "spread_sweet_spot": {
+      "active": false,
+      "status": "near_miss",
+      "roi": 0.0076,
+      "win_rate": 0.519,
+      "sample_size": 420,
+      "explanation": "Best candidate met min sample but did not meet min ROI, min win rate, or beat baseline."
+    },
+    "total_sweet_spot": {
+      "active": false,
+      "status": "near_miss",
+      "roi": -0.0183,
+      "win_rate": 0.5069,
+      "sample_size": 288,
+      "explanation": "Best candidate met min sample but did not meet min ROI, min win rate, or beat baseline."
+    },
+    "dual_sweet_spot": {
+      "active": true,
+      "status": "active",
+      "roi": 0.0565,
+      "win_rate": 0.5455,
+      "sample_size": 132,
+      "explanation": "Guardrails met; beats baseline (ROI 0.0565, n=132)."
+    },
+    "avoid": {
+      "active": true,
+      "status": "active",
+      "roi": -0.0422,
+      "win_rate": 0.4979,
+      "sample_size": 974,
+      "explanation": "Fixed baseline in v1; avoid thresholds not optimized."
+    }
+  },
+  "baseline_fixed_comparison": {
+    "spread_sweet_spot": {
+      "roi": -0.0567,
+      "win_rate": 0.4877,
+      "sample_size": 568
+    },
+    "total_sweet_spot": {
+      "roi": -0.0534,
+      "win_rate": 0.4912,
+      "sample_size": 342
+    },
+    "dual_sweet_spot": {
+      "roi": 0.0105,
+      "win_rate": 0.5217,
+      "sample_size": 276
+    },
+    "avoid": {
+      "roi": -0.0422,
+      "win_rate": 0.4979,
+      "sample_size": 974
+    }
+  }
+}
