@@ -1,0 +1,5437 @@
+{
+  "generated_at_utc": "2026-11-16T18:12:00.899810+00:00",
+  "league": "ncaam",
+  "source_backtest_dir": "backtest_20261116_181142",
+  "source_live_pocket_artifact": "ncaam_live_game_pocket_view.json",
+  "source_daily_view_path": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\ncaam\\daily\\daily_view_ncaam_2026-11-18_v1.json",
+  "slate_date": "2026-11-18",
+  "game_count": 62,
+  "scoring": {
+    "single_model": "leaderboard_score = 1000 * state_rank + 10*spread_hot + 4*spread_warm - 2*spread_cold + min(abs_edge, 20); state_rank hot=3 warm=2 cold=1 insufficient=0. Uses per_model pocket state and game-level spread_pocket_alignment only (no per-game ROI).",
+    "combo": "leaderboard_score = 10000 * roi + 3 * graded_games + combo_state_weight; combo_state_weight hot=400 warm=150 cold=0 insufficient=0; roi from historical combo pocket.",
+    "cluster": "cluster_score = 3*hot + 1*warm - 0.5*cold - 0.25*insufficient on spread or total alignment counts.",
+    "cold_warnings": "warning_score = 5*cold + 2*insufficient - 3*hot - 1*warm on spread alignment (higher = more caution).",
+    "pass_candidates": "Games with spread cluster_score <= 0 and (no best_pair_spread or best_pair_spread.roi < 0)."
+  },
+  "best_single_model_spread": [
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "market": "spread",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "4-6",
+      "abs_edge": 4.8271,
+      "pocket_state": "hot",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3028.8271,
+      "reason": "ncaam_avg_score_model spread pocket state=hot (bucket 4-6); slate spread alignment H/W/C/I=2/1/0/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "market": "spread",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "4-6",
+      "abs_edge": 4.8271,
+      "pocket_state": "hot",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3028.8271,
+      "reason": "ncaam_market_pressure_model spread pocket state=hot (bucket 4-6); slate spread alignment H/W/C/I=2/1/0/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "market": "spread",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "2-4",
+      "abs_edge": 3.2,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2027.2,
+      "reason": "ncaam_momentum5_model spread pocket state=warm (bucket 2-4); slate spread alignment H/W/C/I=2/1/0/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "market": "spread",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "8+",
+      "abs_edge": 13.9682,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2025.9682,
+      "reason": "ncaam_avg_score_model spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "market": "spread",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "8+",
+      "abs_edge": 13.9682,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2025.9682,
+      "reason": "ncaam_market_pressure_model spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "ncaam_401909742",
+      "matchup": "UConn @ Arizona",
+      "market": "spread",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "8+",
+      "abs_edge": 11.0,
+      "pocket_state": "warm",
+      "spread_pick": "UConn",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2023.0,
+      "reason": "ncaam_momentum5_model spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 6
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "market": "spread",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "8+",
+      "abs_edge": 8.9,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2020.9,
+      "reason": "ncaam_momentum5_model spread pocket state=warm (bucket 8+); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 7
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "market": "spread",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "6-8",
+      "abs_edge": 7.6,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2019.6,
+      "reason": "ncaam_momentum5_model spread pocket state=warm (bucket 6-8); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 8
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "market": "spread",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.9698,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2014.9698,
+      "reason": "ncaam_avg_score_model spread pocket state=warm (bucket 2-4); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 9
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "market": "spread",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.9698,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2014.9698,
+      "reason": "ncaam_market_pressure_model spread pocket state=warm (bucket 2-4); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 10
+    },
+    {
+      "game_id": "ncaam_401909742",
+      "matchup": "UConn @ Arizona",
+      "market": "spread",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.5421,
+      "pocket_state": "warm",
+      "spread_pick": "UConn",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2014.5421,
+      "reason": "ncaam_avg_score_model spread pocket state=warm (bucket 2-4); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 11
+    },
+    {
+      "game_id": "ncaam_401909742",
+      "matchup": "UConn @ Arizona",
+      "market": "spread",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "2-4",
+      "abs_edge": 2.5421,
+      "pocket_state": "warm",
+      "spread_pick": "UConn",
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2014.5421,
+      "reason": "ncaam_market_pressure_model spread pocket state=warm (bucket 2-4); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 12
+    },
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "market": "spread",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "1-2",
+      "abs_edge": 1.2,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2013.2,
+      "reason": "ncaam_momentum5_model spread pocket state=warm (bucket 1-2); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 13
+    },
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "market": "spread",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.4637,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2012.4637,
+      "reason": "ncaam_avg_score_model spread pocket state=warm (bucket 0-1); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 14
+    },
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "market": "spread",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.4637,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2012.4637,
+      "reason": "ncaam_market_pressure_model spread pocket state=warm (bucket 0-1); slate spread alignment H/W/C/I=0/3/0/0.",
+      "rank": 15
+    }
+  ],
+  "best_single_model_total": [
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "market": "total",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "8+",
+      "abs_edge": 15.9246,
+      "pocket_state": "hot",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3033.9246,
+      "reason": "ncaam_market_pressure_model total pocket state=hot (bucket 8+); slate total alignment H/W/C/I=1/2/0/0.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "market": "total",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "8+",
+      "abs_edge": 26.2,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2038.0,
+      "reason": "ncaam_momentum5_model total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=1/2/0/0.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "market": "total",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "8+",
+      "abs_edge": 21.2328,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2038.0,
+      "reason": "ncaam_avg_score_model total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=1/2/0/0.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "market": "total",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "8+",
+      "abs_edge": 48.1,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2026.0,
+      "reason": "ncaam_momentum5_model total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=0/2/1/0.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "market": "total",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "8+",
+      "abs_edge": 10.2516,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2016.2516,
+      "reason": "ncaam_avg_score_model total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=0/2/1/0.",
+      "rank": 5
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "market": "total",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "8+",
+      "abs_edge": 14.4,
+      "pocket_state": "warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2014.4,
+      "reason": "ncaam_momentum5_model total pocket state=warm (bucket 8+); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 6
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "market": "total",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "6-8",
+      "abs_edge": 7.6887,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1013.6887,
+      "reason": "ncaam_market_pressure_model total pocket state=cold (bucket 6-8); slate total alignment H/W/C/I=0/2/1/0.",
+      "rank": 7
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "market": "total",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "4-6",
+      "abs_edge": 5.5339,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1005.5339,
+      "reason": "ncaam_avg_score_model total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 8
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "market": "total",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "4-6",
+      "abs_edge": 4.1504,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1004.1504,
+      "reason": "ncaam_market_pressure_model total pocket state=cold (bucket 4-6); slate total alignment H/W/C/I=0/1/2/0.",
+      "rank": 9
+    },
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "market": "total",
+      "model": "ncaam_avg_score_model",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.9025,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": 994.9025,
+      "reason": "ncaam_avg_score_model total pocket state=cold (bucket 0-1); slate total alignment H/W/C/I=0/0/3/0.",
+      "rank": 10
+    },
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "market": "total",
+      "model": "ncaam_market_pressure_model",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.6769,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": 994.6769,
+      "reason": "ncaam_market_pressure_model total pocket state=cold (bucket 0-1); slate total alignment H/W/C/I=0/0/3/0.",
+      "rank": 11
+    },
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "market": "total",
+      "model": "ncaam_momentum5_model",
+      "edge_bucket": "0-1",
+      "abs_edge": 0.5,
+      "pocket_state": "cold",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": null,
+      "win_rate": null,
+      "graded_games": null,
+      "state_signature": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": 994.5,
+      "reason": "ncaam_momentum5_model total pocket state=cold (bucket 0-1); slate total alignment H/W/C/I=0/0/3/0.",
+      "rank": 12
+    }
+  ],
+  "best_pair_spread": [
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.0026,
+      "win_rate": 0.5204,
+      "graded_games": 2888,
+      "combo_state": "warm",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 8788.0,
+      "reason": "Historical pair spread ROI=-0.0026 over 2888 graded combo legs; pocket state=warm for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.0026,
+      "win_rate": 0.5204,
+      "graded_games": 2888,
+      "combo_state": "warm",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 8788.0,
+      "reason": "Historical pair spread ROI=-0.0026 over 2888 graded combo legs; pocket state=warm for signature match.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.0026,
+      "win_rate": 0.5204,
+      "graded_games": 2888,
+      "combo_state": "warm",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 8788.0,
+      "reason": "Historical pair spread ROI=-0.0026 over 2888 graded combo legs; pocket state=warm for signature match.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401909742",
+      "matchup": "UConn @ Arizona",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+      "spread_pick": "UConn",
+      "total_pick": null,
+      "roi": -0.0026,
+      "win_rate": 0.5204,
+      "graded_games": 2888,
+      "combo_state": "warm",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 8788.0,
+      "reason": "Historical pair spread ROI=-0.0026 over 2888 graded combo legs; pocket state=warm for signature match.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "market": "spread",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:hot|ncaam_market_pressure_model:hot",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": 0.0611,
+      "win_rate": 0.5542,
+      "graded_games": 673,
+      "combo_state": "hot",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": 3030.0,
+      "reason": "Historical pair spread ROI=0.0611 over 673 graded combo legs; pocket state=hot for signature match.",
+      "rank": 5
+    }
+  ],
+  "best_pair_total": [
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.052,
+      "win_rate": 0.4955,
+      "graded_games": 3449,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": 9827.0,
+      "reason": "Historical pair total ROI=-0.052 over 3449 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.052,
+      "win_rate": 0.4955,
+      "graded_games": 3449,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 9827.0,
+      "reason": "Historical pair total ROI=-0.052 over 3449 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.2714,
+      "win_rate": 0.3813,
+      "graded_games": 2948,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 6130.0,
+      "reason": "Historical pair total ROI=-0.2714 over 2948 graded combo legs; pocket state=cold for signature match.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "market": "total",
+      "combo_kind": "pair",
+      "models_key": "ncaam_avg_score_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.0057,
+      "win_rate": 0.52,
+      "graded_games": 650,
+      "combo_state": "warm",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2043.0,
+      "reason": "Historical pair total ROI=-0.0057 over 650 graded combo legs; pocket state=warm for signature match.",
+      "rank": 4
+    }
+  ],
+  "best_triple_spread": [
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.1385,
+      "win_rate": 0.4492,
+      "graded_games": 2876,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 7243.0,
+      "reason": "Historical triple spread ROI=-0.1385 over 2876 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.1385,
+      "win_rate": 0.4492,
+      "graded_games": 2876,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 7243.0,
+      "reason": "Historical triple spread ROI=-0.1385 over 2876 graded combo legs; pocket state=cold for signature match.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.1385,
+      "win_rate": 0.4492,
+      "graded_games": 2876,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 7243.0,
+      "reason": "Historical triple spread ROI=-0.1385 over 2876 graded combo legs; pocket state=cold for signature match.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401909742",
+      "matchup": "UConn @ Arizona",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:warm",
+      "spread_pick": "UConn",
+      "total_pick": null,
+      "roi": -0.1385,
+      "win_rate": 0.4492,
+      "graded_games": 2876,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 7243.0,
+      "reason": "Historical triple spread ROI=-0.1385 over 2876 graded combo legs; pocket state=cold for signature match.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "market": "spread",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:hot|ncaam_market_pressure_model:hot|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.0666,
+      "win_rate": 0.4874,
+      "graded_games": 673,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": 1353.0,
+      "reason": "Historical triple spread ROI=-0.0666 over 673 graded combo legs; pocket state=cold for signature match.",
+      "rank": 5
+    }
+  ],
+  "best_triple_total": [
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.2984,
+      "win_rate": 0.3673,
+      "graded_games": 2592,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "leaderboard_score": 4792.0,
+      "reason": "Historical triple total ROI=-0.2984 over 2592 graded combo legs; pocket state=cold for signature match.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:hot|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": 0.0813,
+      "win_rate": 0.5646,
+      "graded_games": 294,
+      "combo_state": "hot",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": 2095.0,
+      "reason": "Historical triple total ROI=0.0813 over 294 graded combo legs; pocket state=hot for signature match.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.0776,
+      "win_rate": 0.4831,
+      "graded_games": 356,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "leaderboard_score": 292.0,
+      "reason": "Historical triple total ROI=-0.0776 over 356 graded combo legs; pocket state=cold for signature match.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "market": "total",
+      "combo_kind": "triple",
+      "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+      "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:cold",
+      "spread_pick": null,
+      "total_pick": null,
+      "roi": -0.3629,
+      "win_rate": 0.3209,
+      "graded_games": 857,
+      "combo_state": "cold",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1058.0,
+      "reason": "Historical triple total ROI=-0.3629 over 857 graded combo legs; pocket state=cold for signature match.",
+      "rank": 4
+    }
+  ],
+  "strongest_spread_cluster": [
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 7.0,
+      "leaderboard_score": 7.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 3.0,
+      "leaderboard_score": 3.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 3.0,
+      "leaderboard_score": 3.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 3.0,
+      "leaderboard_score": 3.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401909742",
+      "matchup": "UConn @ Arizona",
+      "spread_pick": "UConn",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 3.0,
+      "leaderboard_score": 3.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 5
+    },
+    {
+      "game_id": "ncaam_401921097",
+      "matchup": "A&M-Corpus Christi @ Rice",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 6
+    },
+    {
+      "game_id": "ncaam_401924941",
+      "matchup": "Akron @ Bucknell",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 7
+    },
+    {
+      "game_id": "ncaam_401911521",
+      "matchup": "Alabama St. @ UC Davis",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 8
+    },
+    {
+      "game_id": "ncaam_401916289",
+      "matchup": "Arkansas @ Indiana",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 9
+    },
+    {
+      "game_id": "ncaam_401909697",
+      "matchup": "Ball St. @ Florida St.",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 10
+    },
+    {
+      "game_id": "ncaam_401921106",
+      "matchup": "Bellarmine @ Illinois St.",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 11
+    },
+    {
+      "game_id": "ncaam_401911018",
+      "matchup": "Bowling Green @ William & Mary",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 12
+    },
+    {
+      "game_id": "ncaam_401911020",
+      "matchup": "Bryant @ Massachusetts",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 13
+    },
+    {
+      "game_id": "ncaam_401911019",
+      "matchup": "Central Mich. @ Dayton",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 14
+    },
+    {
+      "game_id": "ncaam_401925775",
+      "matchup": "Charlotte @ Davidson",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 15
+    },
+    {
+      "game_id": "ncaam_401920974",
+      "matchup": "Chattanooga @ Winthrop",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 16
+    },
+    {
+      "game_id": "ncaam_401909544",
+      "matchup": "Cleveland St. @ Xavier",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 17
+    },
+    {
+      "game_id": "ncaam_401920947",
+      "matchup": "Detroit Mercy @ Eastern Mich.",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 18
+    },
+    {
+      "game_id": "ncaam_401921826",
+      "matchup": "Eastern Ill. @ Vanderbilt",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 19
+    },
+    {
+      "game_id": "ncaam_401920720",
+      "matchup": "Eastern Wash. @ Utah",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 20
+    },
+    {
+      "game_id": "ncaam_401919018",
+      "matchup": "Florida @ UAB",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 21
+    },
+    {
+      "game_id": "ncaam_401911198",
+      "matchup": "Fordham @ Manhattan",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 22
+    },
+    {
+      "game_id": "ncaam_401922251",
+      "matchup": "Green Bay @ Florida",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 23
+    },
+    {
+      "game_id": "ncaam_401917181",
+      "matchup": "Indiana @ Penn St.",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 24
+    },
+    {
+      "game_id": "ncaam_401909753",
+      "matchup": "Jackson St. @ Baylor",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 25
+    },
+    {
+      "game_id": "ncaam_401926781",
+      "matchup": "Jacksonville St. @ Louisiana Tech",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 26
+    },
+    {
+      "game_id": "ncaam_401906761",
+      "matchup": "Kennesaw St. @ Alabama",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 27
+    },
+    {
+      "game_id": "ncaam_401920921",
+      "matchup": "Lehigh @ Mount St. Mary's",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 28
+    },
+    {
+      "game_id": "ncaam_401927388",
+      "matchup": "Lindenwood @ Iowa",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 29
+    },
+    {
+      "game_id": "ncaam_401909504",
+      "matchup": "Maryland @ DePaul",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 30
+    },
+    {
+      "game_id": "ncaam_401906851",
+      "matchup": "Michigan St. @ Tennessee",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 31
+    },
+    {
+      "game_id": "ncaam_401921027",
+      "matchup": "Middle Tenn. @ Georgia",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 32
+    },
+    {
+      "game_id": "ncaam_401921756",
+      "matchup": "Mississippi St. @ UCF",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 33
+    },
+    {
+      "game_id": "ncaam_401909729",
+      "matchup": "Monmouth @ Wake Forest",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 34
+    },
+    {
+      "game_id": "ncaam_401925879",
+      "matchup": "Montana St. @ Gonzaga",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 35
+    },
+    {
+      "game_id": "ncaam_401909516",
+      "matchup": "Navy @ Georgetown",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 36
+    },
+    {
+      "game_id": "ncaam_401925064",
+      "matchup": "Nicholls @ Ole Miss",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 37
+    },
+    {
+      "game_id": "ncaam_401920308",
+      "matchup": "Norfolk St. @ Georgia Tech",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 38
+    },
+    {
+      "game_id": "ncaam_401920426",
+      "matchup": "Old Dominion @ Virginia",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 39
+    },
+    {
+      "game_id": "ncaam_401918970",
+      "matchup": "Oral Roberts @ SMU",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 40
+    },
+    {
+      "game_id": "ncaam_401917534",
+      "matchup": "Pacific @ Pacific",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 41
+    },
+    {
+      "game_id": "ncaam_401921722",
+      "matchup": "Rider @ Miami (FL)",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 42
+    },
+    {
+      "game_id": "ncaam_401909535",
+      "matchup": "Sacred Heart @ Providence",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 43
+    },
+    {
+      "game_id": "ncaam_401924922",
+      "matchup": "Sam Houston @ Wyoming",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 44
+    },
+    {
+      "game_id": "ncaam_401922283",
+      "matchup": "Samford @ TBD_HOME",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 45
+    },
+    {
+      "game_id": "ncaam_401917533",
+      "matchup": "Seattle U @ California Baptist",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 46
+    },
+    {
+      "game_id": "ncaam_401927342",
+      "matchup": "TBD_AWAY @ Delaware St.",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 47
+    },
+    {
+      "game_id": "ncaam_401919783",
+      "matchup": "TBD_AWAY @ Evansville",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 48
+    },
+    {
+      "game_id": "ncaam_401921006",
+      "matchup": "TBD_AWAY @ Kansas City",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 49
+    },
+    {
+      "game_id": "ncaam_401922221",
+      "matchup": "TBD_AWAY @ North Florida",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 50
+    },
+    {
+      "game_id": "ncaam_401927867",
+      "matchup": "TBD_AWAY @ Northern Ariz.",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 51
+    },
+    {
+      "game_id": "ncaam_401925012",
+      "matchup": "TBD_AWAY @ Omaha",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 52
+    },
+    {
+      "game_id": "ncaam_401930568",
+      "matchup": "TBD_AWAY @ South Alabama",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 53
+    },
+    {
+      "game_id": "ncaam_401920297",
+      "matchup": "TBD_AWAY @ Troy",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 54
+    },
+    {
+      "game_id": "ncaam_401918994",
+      "matchup": "Tennessee St. @ Florida",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 55
+    },
+    {
+      "game_id": "ncaam_401920857",
+      "matchup": "Tennessee St. @ Marshall",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 56
+    },
+    {
+      "game_id": "ncaam_401922292",
+      "matchup": "Tennessee Tech @ UNC Asheville",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 57
+    },
+    {
+      "game_id": "ncaam_401921729",
+      "matchup": "UC Irvine @ Stanford",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 58
+    },
+    {
+      "game_id": "ncaam_401917952",
+      "matchup": "UNI @ Austin Peay",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 59
+    },
+    {
+      "game_id": "ncaam_401929358",
+      "matchup": "UT Arlington @ Southern Miss.",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 60
+    },
+    {
+      "game_id": "ncaam_401920194",
+      "matchup": "Wagner @ Saint Joseph's",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 61
+    },
+    {
+      "game_id": "ncaam_401902279",
+      "matchup": "Western Caro. @ Butler",
+      "spread_pick": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate spread pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 62
+    }
+  ],
+  "strongest_total_cluster": [
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 5.0,
+      "leaderboard_score": 5.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "cluster_score": 1.5,
+      "leaderboard_score": 1.5,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401921097",
+      "matchup": "A&M-Corpus Christi @ Rice",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401924941",
+      "matchup": "Akron @ Bucknell",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401911521",
+      "matchup": "Alabama St. @ UC Davis",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 5
+    },
+    {
+      "game_id": "ncaam_401916289",
+      "matchup": "Arkansas @ Indiana",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 6
+    },
+    {
+      "game_id": "ncaam_401909697",
+      "matchup": "Ball St. @ Florida St.",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 7
+    },
+    {
+      "game_id": "ncaam_401921106",
+      "matchup": "Bellarmine @ Illinois St.",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 8
+    },
+    {
+      "game_id": "ncaam_401911018",
+      "matchup": "Bowling Green @ William & Mary",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 9
+    },
+    {
+      "game_id": "ncaam_401911020",
+      "matchup": "Bryant @ Massachusetts",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 10
+    },
+    {
+      "game_id": "ncaam_401911019",
+      "matchup": "Central Mich. @ Dayton",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 11
+    },
+    {
+      "game_id": "ncaam_401925775",
+      "matchup": "Charlotte @ Davidson",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 12
+    },
+    {
+      "game_id": "ncaam_401920974",
+      "matchup": "Chattanooga @ Winthrop",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 13
+    },
+    {
+      "game_id": "ncaam_401909544",
+      "matchup": "Cleveland St. @ Xavier",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 14
+    },
+    {
+      "game_id": "ncaam_401920947",
+      "matchup": "Detroit Mercy @ Eastern Mich.",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 15
+    },
+    {
+      "game_id": "ncaam_401921826",
+      "matchup": "Eastern Ill. @ Vanderbilt",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 16
+    },
+    {
+      "game_id": "ncaam_401920720",
+      "matchup": "Eastern Wash. @ Utah",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 17
+    },
+    {
+      "game_id": "ncaam_401919018",
+      "matchup": "Florida @ UAB",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 18
+    },
+    {
+      "game_id": "ncaam_401911198",
+      "matchup": "Fordham @ Manhattan",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 19
+    },
+    {
+      "game_id": "ncaam_401922251",
+      "matchup": "Green Bay @ Florida",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 20
+    },
+    {
+      "game_id": "ncaam_401917181",
+      "matchup": "Indiana @ Penn St.",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 21
+    },
+    {
+      "game_id": "ncaam_401909753",
+      "matchup": "Jackson St. @ Baylor",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 22
+    },
+    {
+      "game_id": "ncaam_401926781",
+      "matchup": "Jacksonville St. @ Louisiana Tech",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 23
+    },
+    {
+      "game_id": "ncaam_401906761",
+      "matchup": "Kennesaw St. @ Alabama",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 24
+    },
+    {
+      "game_id": "ncaam_401920921",
+      "matchup": "Lehigh @ Mount St. Mary's",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 25
+    },
+    {
+      "game_id": "ncaam_401927388",
+      "matchup": "Lindenwood @ Iowa",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 26
+    },
+    {
+      "game_id": "ncaam_401909504",
+      "matchup": "Maryland @ DePaul",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 27
+    },
+    {
+      "game_id": "ncaam_401906851",
+      "matchup": "Michigan St. @ Tennessee",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 28
+    },
+    {
+      "game_id": "ncaam_401921027",
+      "matchup": "Middle Tenn. @ Georgia",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 29
+    },
+    {
+      "game_id": "ncaam_401921756",
+      "matchup": "Mississippi St. @ UCF",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 30
+    },
+    {
+      "game_id": "ncaam_401909729",
+      "matchup": "Monmouth @ Wake Forest",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 31
+    },
+    {
+      "game_id": "ncaam_401925879",
+      "matchup": "Montana St. @ Gonzaga",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 32
+    },
+    {
+      "game_id": "ncaam_401909516",
+      "matchup": "Navy @ Georgetown",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 33
+    },
+    {
+      "game_id": "ncaam_401925064",
+      "matchup": "Nicholls @ Ole Miss",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 34
+    },
+    {
+      "game_id": "ncaam_401920308",
+      "matchup": "Norfolk St. @ Georgia Tech",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 35
+    },
+    {
+      "game_id": "ncaam_401920426",
+      "matchup": "Old Dominion @ Virginia",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 36
+    },
+    {
+      "game_id": "ncaam_401918970",
+      "matchup": "Oral Roberts @ SMU",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 37
+    },
+    {
+      "game_id": "ncaam_401917534",
+      "matchup": "Pacific @ Pacific",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 38
+    },
+    {
+      "game_id": "ncaam_401921722",
+      "matchup": "Rider @ Miami (FL)",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 39
+    },
+    {
+      "game_id": "ncaam_401909535",
+      "matchup": "Sacred Heart @ Providence",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 40
+    },
+    {
+      "game_id": "ncaam_401924922",
+      "matchup": "Sam Houston @ Wyoming",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 41
+    },
+    {
+      "game_id": "ncaam_401922283",
+      "matchup": "Samford @ TBD_HOME",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 42
+    },
+    {
+      "game_id": "ncaam_401917533",
+      "matchup": "Seattle U @ California Baptist",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 43
+    },
+    {
+      "game_id": "ncaam_401927342",
+      "matchup": "TBD_AWAY @ Delaware St.",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 44
+    },
+    {
+      "game_id": "ncaam_401919783",
+      "matchup": "TBD_AWAY @ Evansville",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 45
+    },
+    {
+      "game_id": "ncaam_401921006",
+      "matchup": "TBD_AWAY @ Kansas City",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 46
+    },
+    {
+      "game_id": "ncaam_401922221",
+      "matchup": "TBD_AWAY @ North Florida",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 47
+    },
+    {
+      "game_id": "ncaam_401927867",
+      "matchup": "TBD_AWAY @ Northern Ariz.",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 48
+    },
+    {
+      "game_id": "ncaam_401925012",
+      "matchup": "TBD_AWAY @ Omaha",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 49
+    },
+    {
+      "game_id": "ncaam_401930568",
+      "matchup": "TBD_AWAY @ South Alabama",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 50
+    },
+    {
+      "game_id": "ncaam_401920297",
+      "matchup": "TBD_AWAY @ Troy",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 51
+    },
+    {
+      "game_id": "ncaam_401918994",
+      "matchup": "Tennessee St. @ Florida",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 52
+    },
+    {
+      "game_id": "ncaam_401920857",
+      "matchup": "Tennessee St. @ Marshall",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 53
+    },
+    {
+      "game_id": "ncaam_401922292",
+      "matchup": "Tennessee Tech @ UNC Asheville",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 54
+    },
+    {
+      "game_id": "ncaam_401921729",
+      "matchup": "UC Irvine @ Stanford",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 55
+    },
+    {
+      "game_id": "ncaam_401917952",
+      "matchup": "UNI @ Austin Peay",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 56
+    },
+    {
+      "game_id": "ncaam_401929358",
+      "matchup": "UT Arlington @ Southern Miss.",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 57
+    },
+    {
+      "game_id": "ncaam_401920194",
+      "matchup": "Wagner @ Saint Joseph's",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 58
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 59
+    },
+    {
+      "game_id": "ncaam_401902279",
+      "matchup": "Western Caro. @ Butler",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 60
+    },
+    {
+      "game_id": "ncaam_401909742",
+      "matchup": "UConn @ Arizona",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "cluster_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 61
+    },
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "total_pick": null,
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "cluster_score": -1.5,
+      "leaderboard_score": -1.5,
+      "reason": "Slate total pocket state mix (hot/warm/cold/insufficient) for this game.",
+      "rank": 62
+    }
+  ],
+  "cold_cluster_warnings": [
+    {
+      "game_id": "ncaam_401921097",
+      "matchup": "A&M-Corpus Christi @ Rice",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401924941",
+      "matchup": "Akron @ Bucknell",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401911521",
+      "matchup": "Alabama St. @ UC Davis",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401916289",
+      "matchup": "Arkansas @ Indiana",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401909697",
+      "matchup": "Ball St. @ Florida St.",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 5
+    },
+    {
+      "game_id": "ncaam_401921106",
+      "matchup": "Bellarmine @ Illinois St.",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 6
+    },
+    {
+      "game_id": "ncaam_401911018",
+      "matchup": "Bowling Green @ William & Mary",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 7
+    },
+    {
+      "game_id": "ncaam_401911020",
+      "matchup": "Bryant @ Massachusetts",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 8
+    },
+    {
+      "game_id": "ncaam_401911019",
+      "matchup": "Central Mich. @ Dayton",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 9
+    },
+    {
+      "game_id": "ncaam_401925775",
+      "matchup": "Charlotte @ Davidson",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 10
+    },
+    {
+      "game_id": "ncaam_401920974",
+      "matchup": "Chattanooga @ Winthrop",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 11
+    },
+    {
+      "game_id": "ncaam_401909544",
+      "matchup": "Cleveland St. @ Xavier",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 12
+    },
+    {
+      "game_id": "ncaam_401920947",
+      "matchup": "Detroit Mercy @ Eastern Mich.",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 13
+    },
+    {
+      "game_id": "ncaam_401921826",
+      "matchup": "Eastern Ill. @ Vanderbilt",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 14
+    },
+    {
+      "game_id": "ncaam_401920720",
+      "matchup": "Eastern Wash. @ Utah",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 15
+    },
+    {
+      "game_id": "ncaam_401919018",
+      "matchup": "Florida @ UAB",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 16
+    },
+    {
+      "game_id": "ncaam_401911198",
+      "matchup": "Fordham @ Manhattan",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 17
+    },
+    {
+      "game_id": "ncaam_401922251",
+      "matchup": "Green Bay @ Florida",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 18
+    },
+    {
+      "game_id": "ncaam_401917181",
+      "matchup": "Indiana @ Penn St.",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 19
+    },
+    {
+      "game_id": "ncaam_401909753",
+      "matchup": "Jackson St. @ Baylor",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 20
+    },
+    {
+      "game_id": "ncaam_401926781",
+      "matchup": "Jacksonville St. @ Louisiana Tech",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 21
+    },
+    {
+      "game_id": "ncaam_401906761",
+      "matchup": "Kennesaw St. @ Alabama",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 22
+    },
+    {
+      "game_id": "ncaam_401920921",
+      "matchup": "Lehigh @ Mount St. Mary's",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 23
+    },
+    {
+      "game_id": "ncaam_401927388",
+      "matchup": "Lindenwood @ Iowa",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 24
+    },
+    {
+      "game_id": "ncaam_401909504",
+      "matchup": "Maryland @ DePaul",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 25
+    },
+    {
+      "game_id": "ncaam_401906851",
+      "matchup": "Michigan St. @ Tennessee",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 26
+    },
+    {
+      "game_id": "ncaam_401921027",
+      "matchup": "Middle Tenn. @ Georgia",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 27
+    },
+    {
+      "game_id": "ncaam_401921756",
+      "matchup": "Mississippi St. @ UCF",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 28
+    },
+    {
+      "game_id": "ncaam_401909729",
+      "matchup": "Monmouth @ Wake Forest",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 29
+    },
+    {
+      "game_id": "ncaam_401925879",
+      "matchup": "Montana St. @ Gonzaga",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 30
+    },
+    {
+      "game_id": "ncaam_401909516",
+      "matchup": "Navy @ Georgetown",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 31
+    },
+    {
+      "game_id": "ncaam_401925064",
+      "matchup": "Nicholls @ Ole Miss",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 32
+    },
+    {
+      "game_id": "ncaam_401920308",
+      "matchup": "Norfolk St. @ Georgia Tech",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 33
+    },
+    {
+      "game_id": "ncaam_401920426",
+      "matchup": "Old Dominion @ Virginia",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 34
+    },
+    {
+      "game_id": "ncaam_401918970",
+      "matchup": "Oral Roberts @ SMU",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 35
+    },
+    {
+      "game_id": "ncaam_401917534",
+      "matchup": "Pacific @ Pacific",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 36
+    },
+    {
+      "game_id": "ncaam_401921722",
+      "matchup": "Rider @ Miami (FL)",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 37
+    },
+    {
+      "game_id": "ncaam_401909535",
+      "matchup": "Sacred Heart @ Providence",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 38
+    },
+    {
+      "game_id": "ncaam_401924922",
+      "matchup": "Sam Houston @ Wyoming",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 39
+    },
+    {
+      "game_id": "ncaam_401922283",
+      "matchup": "Samford @ TBD_HOME",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 40
+    },
+    {
+      "game_id": "ncaam_401917533",
+      "matchup": "Seattle U @ California Baptist",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 41
+    },
+    {
+      "game_id": "ncaam_401927342",
+      "matchup": "TBD_AWAY @ Delaware St.",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 42
+    },
+    {
+      "game_id": "ncaam_401919783",
+      "matchup": "TBD_AWAY @ Evansville",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 43
+    },
+    {
+      "game_id": "ncaam_401921006",
+      "matchup": "TBD_AWAY @ Kansas City",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 44
+    },
+    {
+      "game_id": "ncaam_401922221",
+      "matchup": "TBD_AWAY @ North Florida",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 45
+    },
+    {
+      "game_id": "ncaam_401927867",
+      "matchup": "TBD_AWAY @ Northern Ariz.",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 46
+    },
+    {
+      "game_id": "ncaam_401925012",
+      "matchup": "TBD_AWAY @ Omaha",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 47
+    },
+    {
+      "game_id": "ncaam_401930568",
+      "matchup": "TBD_AWAY @ South Alabama",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 48
+    },
+    {
+      "game_id": "ncaam_401920297",
+      "matchup": "TBD_AWAY @ Troy",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 49
+    },
+    {
+      "game_id": "ncaam_401918994",
+      "matchup": "Tennessee St. @ Florida",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 50
+    },
+    {
+      "game_id": "ncaam_401920857",
+      "matchup": "Tennessee St. @ Marshall",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 51
+    },
+    {
+      "game_id": "ncaam_401922292",
+      "matchup": "Tennessee Tech @ UNC Asheville",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 52
+    },
+    {
+      "game_id": "ncaam_401921729",
+      "matchup": "UC Irvine @ Stanford",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 53
+    },
+    {
+      "game_id": "ncaam_401917952",
+      "matchup": "UNI @ Austin Peay",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 54
+    },
+    {
+      "game_id": "ncaam_401929358",
+      "matchup": "UT Arlington @ Southern Miss.",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 55
+    },
+    {
+      "game_id": "ncaam_401920194",
+      "matchup": "Wagner @ Saint Joseph's",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 56
+    },
+    {
+      "game_id": "ncaam_401902279",
+      "matchup": "Western Caro. @ Butler",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": 0.0,
+      "leaderboard_score": 0.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 57
+    },
+    {
+      "game_id": "ncaam_401909566",
+      "matchup": "Illinois @ Duke",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 58
+    },
+    {
+      "game_id": "ncaam_401909787",
+      "matchup": "UNLV @ Kansas",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "warning_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 59
+    },
+    {
+      "game_id": "ncaam_401920512",
+      "matchup": "West Virginia @ Auburn",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "warning_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 60
+    },
+    {
+      "game_id": "ncaam_401909742",
+      "matchup": "UConn @ Arizona",
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "warning_score": -3.0,
+      "leaderboard_score": -3.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 61
+    },
+    {
+      "game_id": "ncaam_401909708",
+      "matchup": "Villanova @ Pittsburgh",
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 3,
+        "insufficient": 0
+      },
+      "warning_score": -7.0,
+      "leaderboard_score": -7.0,
+      "reason": "Higher warning_score = more spread-side cold/insufficient vs hot/warm on this slate.",
+      "rank": 62
+    }
+  ],
+  "pass_candidates": [
+    {
+      "game_id": "ncaam_401921097",
+      "matchup": "A&M-Corpus Christi @ Rice",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 1
+    },
+    {
+      "game_id": "ncaam_401924941",
+      "matchup": "Akron @ Bucknell",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 2
+    },
+    {
+      "game_id": "ncaam_401911521",
+      "matchup": "Alabama St. @ UC Davis",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 3
+    },
+    {
+      "game_id": "ncaam_401916289",
+      "matchup": "Arkansas @ Indiana",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 4
+    },
+    {
+      "game_id": "ncaam_401909697",
+      "matchup": "Ball St. @ Florida St.",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 5
+    },
+    {
+      "game_id": "ncaam_401921106",
+      "matchup": "Bellarmine @ Illinois St.",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 6
+    },
+    {
+      "game_id": "ncaam_401911018",
+      "matchup": "Bowling Green @ William & Mary",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 7
+    },
+    {
+      "game_id": "ncaam_401911020",
+      "matchup": "Bryant @ Massachusetts",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 8
+    },
+    {
+      "game_id": "ncaam_401911019",
+      "matchup": "Central Mich. @ Dayton",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 9
+    },
+    {
+      "game_id": "ncaam_401925775",
+      "matchup": "Charlotte @ Davidson",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 10
+    },
+    {
+      "game_id": "ncaam_401920974",
+      "matchup": "Chattanooga @ Winthrop",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 11
+    },
+    {
+      "game_id": "ncaam_401909544",
+      "matchup": "Cleveland St. @ Xavier",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 12
+    },
+    {
+      "game_id": "ncaam_401920947",
+      "matchup": "Detroit Mercy @ Eastern Mich.",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 13
+    },
+    {
+      "game_id": "ncaam_401921826",
+      "matchup": "Eastern Ill. @ Vanderbilt",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 14
+    },
+    {
+      "game_id": "ncaam_401920720",
+      "matchup": "Eastern Wash. @ Utah",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 15
+    },
+    {
+      "game_id": "ncaam_401919018",
+      "matchup": "Florida @ UAB",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 16
+    },
+    {
+      "game_id": "ncaam_401911198",
+      "matchup": "Fordham @ Manhattan",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 17
+    },
+    {
+      "game_id": "ncaam_401922251",
+      "matchup": "Green Bay @ Florida",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 18
+    },
+    {
+      "game_id": "ncaam_401917181",
+      "matchup": "Indiana @ Penn St.",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 19
+    },
+    {
+      "game_id": "ncaam_401909753",
+      "matchup": "Jackson St. @ Baylor",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 20
+    },
+    {
+      "game_id": "ncaam_401926781",
+      "matchup": "Jacksonville St. @ Louisiana Tech",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 21
+    },
+    {
+      "game_id": "ncaam_401906761",
+      "matchup": "Kennesaw St. @ Alabama",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 22
+    },
+    {
+      "game_id": "ncaam_401920921",
+      "matchup": "Lehigh @ Mount St. Mary's",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 23
+    },
+    {
+      "game_id": "ncaam_401927388",
+      "matchup": "Lindenwood @ Iowa",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 24
+    },
+    {
+      "game_id": "ncaam_401909504",
+      "matchup": "Maryland @ DePaul",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 25
+    },
+    {
+      "game_id": "ncaam_401906851",
+      "matchup": "Michigan St. @ Tennessee",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 26
+    },
+    {
+      "game_id": "ncaam_401921027",
+      "matchup": "Middle Tenn. @ Georgia",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 27
+    },
+    {
+      "game_id": "ncaam_401921756",
+      "matchup": "Mississippi St. @ UCF",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 28
+    },
+    {
+      "game_id": "ncaam_401909729",
+      "matchup": "Monmouth @ Wake Forest",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 29
+    },
+    {
+      "game_id": "ncaam_401925879",
+      "matchup": "Montana St. @ Gonzaga",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 30
+    },
+    {
+      "game_id": "ncaam_401909516",
+      "matchup": "Navy @ Georgetown",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 31
+    },
+    {
+      "game_id": "ncaam_401925064",
+      "matchup": "Nicholls @ Ole Miss",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 32
+    },
+    {
+      "game_id": "ncaam_401920308",
+      "matchup": "Norfolk St. @ Georgia Tech",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 33
+    },
+    {
+      "game_id": "ncaam_401920426",
+      "matchup": "Old Dominion @ Virginia",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 34
+    },
+    {
+      "game_id": "ncaam_401918970",
+      "matchup": "Oral Roberts @ SMU",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 35
+    },
+    {
+      "game_id": "ncaam_401917534",
+      "matchup": "Pacific @ Pacific",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 36
+    },
+    {
+      "game_id": "ncaam_401921722",
+      "matchup": "Rider @ Miami (FL)",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 37
+    },
+    {
+      "game_id": "ncaam_401909535",
+      "matchup": "Sacred Heart @ Providence",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 38
+    },
+    {
+      "game_id": "ncaam_401924922",
+      "matchup": "Sam Houston @ Wyoming",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 39
+    },
+    {
+      "game_id": "ncaam_401922283",
+      "matchup": "Samford @ TBD_HOME",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 40
+    },
+    {
+      "game_id": "ncaam_401917533",
+      "matchup": "Seattle U @ California Baptist",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 41
+    },
+    {
+      "game_id": "ncaam_401927342",
+      "matchup": "TBD_AWAY @ Delaware St.",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 42
+    },
+    {
+      "game_id": "ncaam_401919783",
+      "matchup": "TBD_AWAY @ Evansville",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 43
+    },
+    {
+      "game_id": "ncaam_401921006",
+      "matchup": "TBD_AWAY @ Kansas City",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 44
+    },
+    {
+      "game_id": "ncaam_401922221",
+      "matchup": "TBD_AWAY @ North Florida",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 45
+    },
+    {
+      "game_id": "ncaam_401927867",
+      "matchup": "TBD_AWAY @ Northern Ariz.",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 46
+    },
+    {
+      "game_id": "ncaam_401925012",
+      "matchup": "TBD_AWAY @ Omaha",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 47
+    },
+    {
+      "game_id": "ncaam_401930568",
+      "matchup": "TBD_AWAY @ South Alabama",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 48
+    },
+    {
+      "game_id": "ncaam_401920297",
+      "matchup": "TBD_AWAY @ Troy",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 49
+    },
+    {
+      "game_id": "ncaam_401918994",
+      "matchup": "Tennessee St. @ Florida",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 50
+    },
+    {
+      "game_id": "ncaam_401920857",
+      "matchup": "Tennessee St. @ Marshall",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 51
+    },
+    {
+      "game_id": "ncaam_401922292",
+      "matchup": "Tennessee Tech @ UNC Asheville",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 52
+    },
+    {
+      "game_id": "ncaam_401921729",
+      "matchup": "UC Irvine @ Stanford",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 53
+    },
+    {
+      "game_id": "ncaam_401917952",
+      "matchup": "UNI @ Austin Peay",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 54
+    },
+    {
+      "game_id": "ncaam_401929358",
+      "matchup": "UT Arlington @ Southern Miss.",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 55
+    },
+    {
+      "game_id": "ncaam_401920194",
+      "matchup": "Wagner @ Saint Joseph's",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 56
+    },
+    {
+      "game_id": "ncaam_401902279",
+      "matchup": "Western Caro. @ Butler",
+      "spread_pick": null,
+      "total_pick": null,
+      "spread_cluster_score": 0.0,
+      "best_pair_spread_roi": null,
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "leaderboard_score": -1.0,
+      "reason": "Weak spread cluster and no positive historical best-pair spread pocket (or missing pair).",
+      "rank": 57
+    }
+  ]
+}
