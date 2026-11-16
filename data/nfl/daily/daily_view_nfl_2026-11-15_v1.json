@@ -1,0 +1,1470 @@
+{
+  "schema_version": "DAILY_VIEW_V1",
+  "league": "nfl",
+  "date": "2026-11-15",
+  "build_timestamp_utc": "2026-11-16T00:33:04Z",
+  "is_model_output": true,
+  "is_roi_output": false,
+  "model_warning": "Football market-value seed model; use backtest and agent regime artifacts for maturity checks.",
+  "games": [
+    {
+      "identity": {
+        "game_id": "nfl_401873063",
+        "odds_event_id": "7627192fd89b05120ab6c712aa23fd81",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 03:25 PM CT",
+        "away_team": "San Francisco 49ers",
+        "home_team": "Dallas Cowboys",
+        "away_team_key": "SF",
+        "home_team_key": "DAL",
+        "status": "STATUS_IN_PROGRESS",
+        "completed": "0"
+      },
+      "market_state": {
+        "spread_home_last": 13.5,
+        "spread_away_last": -13.5,
+        "total_last": 78.5,
+        "moneyline_home_last": 2500.0,
+        "moneyline_away_last": -50000.0,
+        "bookmaker_count": 8.0,
+        "odds_snapshot_last_utc": "2026-11-16T00:31:17.777728+00:00",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "HOME",
+        "total_pick": "UNDER",
+        "home_line_proj": 13.25,
+        "total_projection": 78.0,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": 0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": false,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": 13.5,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 78.5
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": 13.5,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 78.5
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": false
+          },
+          "home_line_proj": 13.25,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": 0.25,
+          "spread_pick": "HOME",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 78.0
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 8,
+            "source": "market_consensus"
+          },
+          "home_line_proj": 13.5,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 78.5
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 8.0,
+            "value_shift": -0.75
+          },
+          "home_line_proj": 12.75,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": 0.75,
+          "spread_pick": "HOME",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 78.5
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 8.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": 13.5,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 77.5
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "46",
+        "away_team": "San Francisco 49ers",
+        "away_team_key": "SF",
+        "bookmaker_count": "8",
+        "commence_time": "2026-11-15T21:25:51Z",
+        "completed": 0,
+        "consensus_book_count": 8,
+        "espn_game_id": "401873063",
+        "game_date": "2026-11-15",
+        "game_id": "nfl_401873063",
+        "game_time_utc": "2026-11-15T21:25Z",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "32",
+        "home_team": "Dallas Cowboys",
+        "home_team_key": "DAL",
+        "league": "nfl",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": false,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": 13.5,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 78.5
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": 13.5,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 78.5
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": false
+            },
+            "home_line_proj": 13.25,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": 0.25,
+            "spread_pick": "HOME",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 78.0
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 8,
+              "source": "market_consensus"
+            },
+            "home_line_proj": 13.5,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 78.5
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 8.0,
+              "value_shift": -0.75
+            },
+            "home_line_proj": 12.75,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": 0.75,
+            "spread_pick": "HOME",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 78.5
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 8.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": 13.5,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 77.5
+          }
+        },
+        "moneyline_away": "-50000.0",
+        "moneyline_away_last": -50000.0,
+        "moneyline_home": "2500.0",
+        "moneyline_home_last": 2500.0,
+        "odds_event_count": "34",
+        "odds_event_id": "7627192fd89b05120ab6c712aa23fd81",
+        "odds_snapshot_last_utc": "2026-11-16T00:31:17.777728+00:00",
+        "source_system": "odds_api_flattened",
+        "spread_away": "-13.5",
+        "spread_away_last": -13.5,
+        "spread_home": "13.5",
+        "spread_home_last": 13.5,
+        "status": "STATUS_IN_PROGRESS",
+        "status_state": "in",
+        "total": "78.5",
+        "total_last": 78.5,
+        "venue": "AT&T Stadium",
+        "away_points": "46",
+        "home_points": "32",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "13.25",
+        "Total Projection": "78.0",
+        "Spread Edge": "0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "HOME",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": false
+        },
+        "Explanation": "Game: San Francisco 49ers @ Dallas Cowboys\nAuthority: Football_MarketBlend_v1\nMarket: Spread 13.5, Total 78.5\nProjection: Margin 13.25, Total 78.0\nSpread Pick: HOME (edge 0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873064",
+        "odds_event_id": "48e497c230e6c9afcb3b600091d28e17",
+        "game_date": "2026-11-16",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 07:20 PM CT",
+        "away_team": "Pittsburgh Steelers",
+        "home_team": "Cincinnati Bengals",
+        "away_team_key": "PIT",
+        "home_team_key": "CIN",
+        "status": "STATUS_SCHEDULED",
+        "completed": "0"
+      },
+      "market_state": {
+        "spread_home_last": -3.5,
+        "spread_away_last": 3.5,
+        "total_last": 49.5,
+        "moneyline_home_last": -210.0,
+        "moneyline_away_last": 175.0,
+        "bookmaker_count": 11.0,
+        "odds_snapshot_last_utc": "2026-11-16T00:31:17.777728+00:00",
+        "line_source": "odds_api_flattened_consensus"
+      },
+      "model_output": {
+        "model_name": "Football_MarketBlend_v1",
+        "spread_pick": "",
+        "total_pick": "UNDER",
+        "home_line_proj": -3.25,
+        "total_projection": 49.0,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "agent_reasoning": ""
+      },
+      "edge_metrics": {
+        "spread_edge": -0.25,
+        "total_edge": -0.5,
+        "parlay_edge_score": 0.75
+      },
+      "models": {
+        "Football_KeyNumberGuard_v1": {
+          "context_flags": {
+            "key_number_risk": true,
+            "key_numbers": [
+              3,
+              7,
+              10
+            ]
+          },
+          "home_line_proj": -3.5,
+          "model_name": "Football_KeyNumberGuard_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 49.5
+        },
+        "Football_LineMovement_v1": {
+          "context_flags": {
+            "movement_available": false
+          },
+          "home_line_proj": -3.5,
+          "model_name": "Football_LineMovement_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 49.5
+        },
+        "Football_MarketBlend_v1": {
+          "context_flags": {
+            "blend_inputs": [
+              "Football_MarketConsensus_v1",
+              "Football_SpreadValue_v1",
+              "Football_TotalValue_v1",
+              "Football_LineMovement_v1",
+              "Football_KeyNumberGuard_v1"
+            ],
+            "key_number_risk": true,
+            "spread_veto": "key_number_guard"
+          },
+          "home_line_proj": -3.25,
+          "model_name": "Football_MarketBlend_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.25,
+          "spread_edge": -0.25,
+          "spread_pick": "",
+          "total_distance": 0.5,
+          "total_edge": -0.5,
+          "total_pick": "UNDER",
+          "total_projection": 49.0
+        },
+        "Football_MarketConsensus_v1": {
+          "context_flags": {
+            "book_count": 11,
+            "source": "market_consensus"
+          },
+          "home_line_proj": -3.5,
+          "model_name": "Football_MarketConsensus_v1",
+          "parlay_edge_score": 0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 49.5
+        },
+        "Football_SpreadValue_v1": {
+          "context_flags": {
+            "book_count": 11.0,
+            "value_shift": 0.75
+          },
+          "home_line_proj": -2.75,
+          "model_name": "Football_SpreadValue_v1",
+          "parlay_edge_score": 0.75,
+          "spread_distance": 0.75,
+          "spread_edge": -0.75,
+          "spread_pick": "AWAY",
+          "total_distance": 0.0,
+          "total_edge": 0.0,
+          "total_pick": "",
+          "total_projection": 49.5
+        },
+        "Football_TotalValue_v1": {
+          "context_flags": {
+            "book_count": 11.0,
+            "total_value_rule": "low_total_over_high_total_under"
+          },
+          "home_line_proj": -3.5,
+          "model_name": "Football_TotalValue_v1",
+          "parlay_edge_score": 1.0,
+          "spread_distance": 0.0,
+          "spread_edge": 0.0,
+          "spread_pick": "",
+          "total_distance": 1.0,
+          "total_edge": -1.0,
+          "total_pick": "UNDER",
+          "total_projection": 48.5
+        }
+      },
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Football seed model; backtest-regime calibration required before mature ROI claims."
+      },
+      "source_row": {
+        "away_score": "0",
+        "away_team": "Pittsburgh Steelers",
+        "away_team_key": "PIT",
+        "bookmaker_count": "11",
+        "commence_time": "2026-11-16T01:20:00Z",
+        "completed": 0,
+        "consensus_book_count": 11,
+        "espn_game_id": "401873064",
+        "game_date": "2026-11-16",
+        "game_id": "nfl_401873064",
+        "game_time_utc": "2026-11-16T01:20Z",
+        "has_h2h": "true",
+        "has_schedule_match": "true",
+        "has_spreads": "true",
+        "has_totals": "true",
+        "home_score": "0",
+        "home_team": "Cincinnati Bengals",
+        "home_team_key": "CIN",
+        "league": "nfl",
+        "line_source": "odds_api_flattened_consensus",
+        "market_count": "3",
+        "models": {
+          "Football_KeyNumberGuard_v1": {
+            "context_flags": {
+              "key_number_risk": true,
+              "key_numbers": [
+                3,
+                7,
+                10
+              ]
+            },
+            "home_line_proj": -3.5,
+            "model_name": "Football_KeyNumberGuard_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 49.5
+          },
+          "Football_LineMovement_v1": {
+            "context_flags": {
+              "movement_available": false
+            },
+            "home_line_proj": -3.5,
+            "model_name": "Football_LineMovement_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 49.5
+          },
+          "Football_MarketBlend_v1": {
+            "context_flags": {
+              "blend_inputs": [
+                "Football_MarketConsensus_v1",
+                "Football_SpreadValue_v1",
+                "Football_TotalValue_v1",
+                "Football_LineMovement_v1",
+                "Football_KeyNumberGuard_v1"
+              ],
+              "key_number_risk": true,
+              "spread_veto": "key_number_guard"
+            },
+            "home_line_proj": -3.25,
+            "model_name": "Football_MarketBlend_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.25,
+            "spread_edge": -0.25,
+            "spread_pick": "",
+            "total_distance": 0.5,
+            "total_edge": -0.5,
+            "total_pick": "UNDER",
+            "total_projection": 49.0
+          },
+          "Football_MarketConsensus_v1": {
+            "context_flags": {
+              "book_count": 11,
+              "source": "market_consensus"
+            },
+            "home_line_proj": -3.5,
+            "model_name": "Football_MarketConsensus_v1",
+            "parlay_edge_score": 0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 49.5
+          },
+          "Football_SpreadValue_v1": {
+            "context_flags": {
+              "book_count": 11.0,
+              "value_shift": 0.75
+            },
+            "home_line_proj": -2.75,
+            "model_name": "Football_SpreadValue_v1",
+            "parlay_edge_score": 0.75,
+            "spread_distance": 0.75,
+            "spread_edge": -0.75,
+            "spread_pick": "AWAY",
+            "total_distance": 0.0,
+            "total_edge": 0.0,
+            "total_pick": "",
+            "total_projection": 49.5
+          },
+          "Football_TotalValue_v1": {
+            "context_flags": {
+              "book_count": 11.0,
+              "total_value_rule": "low_total_over_high_total_under"
+            },
+            "home_line_proj": -3.5,
+            "model_name": "Football_TotalValue_v1",
+            "parlay_edge_score": 1.0,
+            "spread_distance": 0.0,
+            "spread_edge": 0.0,
+            "spread_pick": "",
+            "total_distance": 1.0,
+            "total_edge": -1.0,
+            "total_pick": "UNDER",
+            "total_projection": 48.5
+          }
+        },
+        "moneyline_away": "175.0",
+        "moneyline_away_last": 175.0,
+        "moneyline_home": "-210.0",
+        "moneyline_home_last": -210.0,
+        "odds_event_count": "66",
+        "odds_event_id": "48e497c230e6c9afcb3b600091d28e17",
+        "odds_snapshot_last_utc": "2026-11-16T00:31:17.777728+00:00",
+        "source_system": "odds_api_flattened",
+        "spread_away": "3.5",
+        "spread_away_last": 3.5,
+        "spread_home": "-3.5",
+        "spread_home_last": -3.5,
+        "status": "STATUS_SCHEDULED",
+        "status_state": "pre",
+        "total": "49.5",
+        "total_last": 49.5,
+        "venue": "Paycor Stadium",
+        "away_points": "0",
+        "home_points": "0",
+        "selection_authority": "Football_MarketBlend_v1",
+        "primary_model_source": "Football_MarketBlend_v1",
+        "Home Line Projection": "-3.25",
+        "Total Projection": "49.0",
+        "Spread Edge": "-0.25",
+        "Total Edge": "-0.5",
+        "Parlay Edge Score": "0.75",
+        "Line Bet": "",
+        "Total Bet": "UNDER",
+        "Projected Home Score": "",
+        "Projected Away score": "",
+        "Line Result": null,
+        "confidence_tier": "LOW",
+        "confidence_reason": "Football market blend edge clears threshold",
+        "actionability": "ACTIVE",
+        "Decision Factors": {
+          "blend_inputs": [
+            "Football_MarketConsensus_v1",
+            "Football_SpreadValue_v1",
+            "Football_TotalValue_v1",
+            "Football_LineMovement_v1",
+            "Football_KeyNumberGuard_v1"
+          ],
+          "key_number_risk": true,
+          "spread_veto": "key_number_guard"
+        },
+        "Explanation": "Game: Pittsburgh Steelers @ Cincinnati Bengals\nAuthority: Football_MarketBlend_v1\nMarket: Spread -3.5, Total 49.5\nProjection: Margin -3.25, Total 49.0\nSpread Pick:  (edge -0.25)\nTotal Pick: UNDER (edge -0.5)",
+        "arbitration": {
+          "spread": null,
+          "total": null
+        },
+        "arbitration_cluster": "FOOTBALL_MARKET_BLEND",
+        "cluster_alignment": "FOOTBALL_MARKET_BLEND",
+        "disagreement_flag": false,
+        "agent_reasoning": ""
+      },
+      "agent_reasoning": ""
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873054",
+        "odds_event_id": "",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 12:00 PM CT",
+        "away_team": "Buffalo Bills",
+        "home_team": "New York Jets",
+        "away_team_key": "",
+        "home_team_key": "",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": null,
+        "spread_away_last": null,
+        "total_last": null,
+        "moneyline_home_last": null,
+        "moneyline_away_last": null,
+        "bookmaker_count": 0,
+        "odds_snapshot_last_utc": "",
+        "line_source": "schedule_only"
+      },
+      "model_output": {
+        "model_name": "Football_ScheduleOnly_v1",
+        "spread_pick": "Pending market",
+        "total_pick": "Pending market",
+        "home_line_proj": null,
+        "total_projection": null,
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+      },
+      "edge_metrics": {
+        "spread_edge": null,
+        "total_edge": null,
+        "parlay_edge_score": null
+      },
+      "models": {},
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Schedule-only slate; no market-value signal has been calculated."
+      },
+      "source_row": {
+        "game_id": "nfl_401873054",
+        "espn_game_id": "401873054",
+        "game_date": "2026-11-15",
+        "game_time_utc": "2026-11-15T18:00Z",
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "completed": 1,
+        "home_team_raw": "New York Jets",
+        "away_team_raw": "Buffalo Bills",
+        "home_score": "12",
+        "away_score": "31",
+        "venue": "MetLife Stadium",
+        "season": "",
+        "source_system": "espn_public_scoreboard_nfl",
+        "requested_date": "20261115",
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1"
+      },
+      "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873055",
+        "odds_event_id": "",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 12:00 PM CT",
+        "away_team": "Carolina Panthers",
+        "home_team": "New Orleans Saints",
+        "away_team_key": "",
+        "home_team_key": "",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": null,
+        "spread_away_last": null,
+        "total_last": null,
+        "moneyline_home_last": null,
+        "moneyline_away_last": null,
+        "bookmaker_count": 0,
+        "odds_snapshot_last_utc": "",
+        "line_source": "schedule_only"
+      },
+      "model_output": {
+        "model_name": "Football_ScheduleOnly_v1",
+        "spread_pick": "Pending market",
+        "total_pick": "Pending market",
+        "home_line_proj": null,
+        "total_projection": null,
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+      },
+      "edge_metrics": {
+        "spread_edge": null,
+        "total_edge": null,
+        "parlay_edge_score": null
+      },
+      "models": {},
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Schedule-only slate; no market-value signal has been calculated."
+      },
+      "source_row": {
+        "game_id": "nfl_401873055",
+        "espn_game_id": "401873055",
+        "game_date": "2026-11-15",
+        "game_time_utc": "2026-11-15T18:00Z",
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "completed": 1,
+        "home_team_raw": "New Orleans Saints",
+        "away_team_raw": "Carolina Panthers",
+        "home_score": "17",
+        "away_score": "20",
+        "venue": "Caesars Superdome",
+        "season": "",
+        "source_system": "espn_public_scoreboard_nfl",
+        "requested_date": "20261115",
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1"
+      },
+      "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873056",
+        "odds_event_id": "",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 12:00 PM CT",
+        "away_team": "Houston Texans",
+        "home_team": "Cleveland Browns",
+        "away_team_key": "",
+        "home_team_key": "",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": null,
+        "spread_away_last": null,
+        "total_last": null,
+        "moneyline_home_last": null,
+        "moneyline_away_last": null,
+        "bookmaker_count": 0,
+        "odds_snapshot_last_utc": "",
+        "line_source": "schedule_only"
+      },
+      "model_output": {
+        "model_name": "Football_ScheduleOnly_v1",
+        "spread_pick": "Pending market",
+        "total_pick": "Pending market",
+        "home_line_proj": null,
+        "total_projection": null,
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+      },
+      "edge_metrics": {
+        "spread_edge": null,
+        "total_edge": null,
+        "parlay_edge_score": null
+      },
+      "models": {},
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Schedule-only slate; no market-value signal has been calculated."
+      },
+      "source_row": {
+        "game_id": "nfl_401873056",
+        "espn_game_id": "401873056",
+        "game_date": "2026-11-15",
+        "game_time_utc": "2026-11-15T18:00Z",
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "completed": 1,
+        "home_team_raw": "Cleveland Browns",
+        "away_team_raw": "Houston Texans",
+        "home_score": "27",
+        "away_score": "24",
+        "venue": "Huntington Bank Field",
+        "season": "",
+        "source_system": "espn_public_scoreboard_nfl",
+        "requested_date": "20261115",
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1"
+      },
+      "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873057",
+        "odds_event_id": "",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 12:00 PM CT",
+        "away_team": "Jacksonville Jaguars",
+        "home_team": "Tennessee Titans",
+        "away_team_key": "",
+        "home_team_key": "",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": null,
+        "spread_away_last": null,
+        "total_last": null,
+        "moneyline_home_last": null,
+        "moneyline_away_last": null,
+        "bookmaker_count": 0,
+        "odds_snapshot_last_utc": "",
+        "line_source": "schedule_only"
+      },
+      "model_output": {
+        "model_name": "Football_ScheduleOnly_v1",
+        "spread_pick": "Pending market",
+        "total_pick": "Pending market",
+        "home_line_proj": null,
+        "total_projection": null,
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+      },
+      "edge_metrics": {
+        "spread_edge": null,
+        "total_edge": null,
+        "parlay_edge_score": null
+      },
+      "models": {},
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Schedule-only slate; no market-value signal has been calculated."
+      },
+      "source_row": {
+        "game_id": "nfl_401873057",
+        "espn_game_id": "401873057",
+        "game_date": "2026-11-15",
+        "game_time_utc": "2026-11-15T18:00Z",
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "completed": 1,
+        "home_team_raw": "Tennessee Titans",
+        "away_team_raw": "Jacksonville Jaguars",
+        "home_score": "23",
+        "away_score": "40",
+        "venue": "Nissan Stadium",
+        "season": "",
+        "source_system": "espn_public_scoreboard_nfl",
+        "requested_date": "20261115",
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1"
+      },
+      "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873058",
+        "odds_event_id": "",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 12:00 PM CT",
+        "away_team": "Kansas City Chiefs",
+        "home_team": "Atlanta Falcons",
+        "away_team_key": "",
+        "home_team_key": "",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": null,
+        "spread_away_last": null,
+        "total_last": null,
+        "moneyline_home_last": null,
+        "moneyline_away_last": null,
+        "bookmaker_count": 0,
+        "odds_snapshot_last_utc": "",
+        "line_source": "schedule_only"
+      },
+      "model_output": {
+        "model_name": "Football_ScheduleOnly_v1",
+        "spread_pick": "Pending market",
+        "total_pick": "Pending market",
+        "home_line_proj": null,
+        "total_projection": null,
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+      },
+      "edge_metrics": {
+        "spread_edge": null,
+        "total_edge": null,
+        "parlay_edge_score": null
+      },
+      "models": {},
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Schedule-only slate; no market-value signal has been calculated."
+      },
+      "source_row": {
+        "game_id": "nfl_401873058",
+        "espn_game_id": "401873058",
+        "game_date": "2026-11-15",
+        "game_time_utc": "2026-11-15T18:00Z",
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "completed": 1,
+        "home_team_raw": "Atlanta Falcons",
+        "away_team_raw": "Kansas City Chiefs",
+        "home_score": "13",
+        "away_score": "35",
+        "venue": "Mercedes-Benz Stadium",
+        "season": "",
+        "source_system": "espn_public_scoreboard_nfl",
+        "requested_date": "20261115",
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1"
+      },
+      "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873061",
+        "odds_event_id": "",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 03:05 PM CT",
+        "away_team": "Los Angeles Rams",
+        "home_team": "Arizona Cardinals",
+        "away_team_key": "",
+        "home_team_key": "",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": null,
+        "spread_away_last": null,
+        "total_last": null,
+        "moneyline_home_last": null,
+        "moneyline_away_last": null,
+        "bookmaker_count": 0,
+        "odds_snapshot_last_utc": "",
+        "line_source": "schedule_only"
+      },
+      "model_output": {
+        "model_name": "Football_ScheduleOnly_v1",
+        "spread_pick": "Pending market",
+        "total_pick": "Pending market",
+        "home_line_proj": null,
+        "total_projection": null,
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+      },
+      "edge_metrics": {
+        "spread_edge": null,
+        "total_edge": null,
+        "parlay_edge_score": null
+      },
+      "models": {},
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Schedule-only slate; no market-value signal has been calculated."
+      },
+      "source_row": {
+        "game_id": "nfl_401873061",
+        "espn_game_id": "401873061",
+        "game_date": "2026-11-15",
+        "game_time_utc": "2026-11-15T21:05Z",
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "completed": 1,
+        "home_team_raw": "Arizona Cardinals",
+        "away_team_raw": "Los Angeles Rams",
+        "home_score": "6",
+        "away_score": "34",
+        "venue": "State Farm Stadium",
+        "season": "",
+        "source_system": "espn_public_scoreboard_nfl",
+        "requested_date": "20261115",
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1"
+      },
+      "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873059",
+        "odds_event_id": "",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 12:00 PM CT",
+        "away_team": "Miami Dolphins",
+        "home_team": "Indianapolis Colts",
+        "away_team_key": "",
+        "home_team_key": "",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": null,
+        "spread_away_last": null,
+        "total_last": null,
+        "moneyline_home_last": null,
+        "moneyline_away_last": null,
+        "bookmaker_count": 0,
+        "odds_snapshot_last_utc": "",
+        "line_source": "schedule_only"
+      },
+      "model_output": {
+        "model_name": "Football_ScheduleOnly_v1",
+        "spread_pick": "Pending market",
+        "total_pick": "Pending market",
+        "home_line_proj": null,
+        "total_projection": null,
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+      },
+      "edge_metrics": {
+        "spread_edge": null,
+        "total_edge": null,
+        "parlay_edge_score": null
+      },
+      "models": {},
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Schedule-only slate; no market-value signal has been calculated."
+      },
+      "source_row": {
+        "game_id": "nfl_401873059",
+        "espn_game_id": "401873059",
+        "game_date": "2026-11-15",
+        "game_time_utc": "2026-11-15T18:00Z",
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "completed": 1,
+        "home_team_raw": "Indianapolis Colts",
+        "away_team_raw": "Miami Dolphins",
+        "home_score": "24",
+        "away_score": "22",
+        "venue": "Lucas Oil Stadium",
+        "season": "",
+        "source_system": "espn_public_scoreboard_nfl",
+        "requested_date": "20261115",
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1"
+      },
+      "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873060",
+        "odds_event_id": "",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 12:00 PM CT",
+        "away_team": "Minnesota Vikings",
+        "home_team": "Green Bay Packers",
+        "away_team_key": "",
+        "home_team_key": "",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": null,
+        "spread_away_last": null,
+        "total_last": null,
+        "moneyline_home_last": null,
+        "moneyline_away_last": null,
+        "bookmaker_count": 0,
+        "odds_snapshot_last_utc": "",
+        "line_source": "schedule_only"
+      },
+      "model_output": {
+        "model_name": "Football_ScheduleOnly_v1",
+        "spread_pick": "Pending market",
+        "total_pick": "Pending market",
+        "home_line_proj": null,
+        "total_projection": null,
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+      },
+      "edge_metrics": {
+        "spread_edge": null,
+        "total_edge": null,
+        "parlay_edge_score": null
+      },
+      "models": {},
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Schedule-only slate; no market-value signal has been calculated."
+      },
+      "source_row": {
+        "game_id": "nfl_401873060",
+        "espn_game_id": "401873060",
+        "game_date": "2026-11-15",
+        "game_time_utc": "2026-11-15T18:00Z",
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "completed": 1,
+        "home_team_raw": "Green Bay Packers",
+        "away_team_raw": "Minnesota Vikings",
+        "home_score": "10",
+        "away_score": "30",
+        "venue": "Lambeau Field",
+        "season": "",
+        "source_system": "espn_public_scoreboard_nfl",
+        "requested_date": "20261115",
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1"
+      },
+      "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873053",
+        "odds_event_id": "",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 08:30 AM CT",
+        "away_team": "New England Patriots",
+        "home_team": "Detroit Lions",
+        "away_team_key": "",
+        "home_team_key": "",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": null,
+        "spread_away_last": null,
+        "total_last": null,
+        "moneyline_home_last": null,
+        "moneyline_away_last": null,
+        "bookmaker_count": 0,
+        "odds_snapshot_last_utc": "",
+        "line_source": "schedule_only"
+      },
+      "model_output": {
+        "model_name": "Football_ScheduleOnly_v1",
+        "spread_pick": "Pending market",
+        "total_pick": "Pending market",
+        "home_line_proj": null,
+        "total_projection": null,
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+      },
+      "edge_metrics": {
+        "spread_edge": null,
+        "total_edge": null,
+        "parlay_edge_score": null
+      },
+      "models": {},
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Schedule-only slate; no market-value signal has been calculated."
+      },
+      "source_row": {
+        "game_id": "nfl_401873053",
+        "espn_game_id": "401873053",
+        "game_date": "2026-11-15",
+        "game_time_utc": "2026-11-15T14:30Z",
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "completed": 1,
+        "home_team_raw": "Detroit Lions",
+        "away_team_raw": "New England Patriots",
+        "home_score": "35",
+        "away_score": "10",
+        "venue": "FC Bayern Munich Stadium",
+        "season": "",
+        "source_system": "espn_public_scoreboard_nfl",
+        "requested_date": "20261115",
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1"
+      },
+      "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+    },
+    {
+      "identity": {
+        "game_id": "nfl_401873062",
+        "odds_event_id": "",
+        "game_date": "2026-11-15",
+        "slate_date": "2026-11-15",
+        "tip_time_cst": "2026-11-15 03:05 PM CT",
+        "away_team": "Seattle Seahawks",
+        "home_team": "Las Vegas Raiders",
+        "away_team_key": "",
+        "home_team_key": "",
+        "status": "STATUS_FINAL",
+        "completed": "1"
+      },
+      "market_state": {
+        "spread_home_last": null,
+        "spread_away_last": null,
+        "total_last": null,
+        "moneyline_home_last": null,
+        "moneyline_away_last": null,
+        "bookmaker_count": 0,
+        "odds_snapshot_last_utc": "",
+        "line_source": "schedule_only"
+      },
+      "model_output": {
+        "model_name": "Football_ScheduleOnly_v1",
+        "spread_pick": "Pending market",
+        "total_pick": "Pending market",
+        "home_line_proj": null,
+        "total_projection": null,
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+      },
+      "edge_metrics": {
+        "spread_edge": null,
+        "total_edge": null,
+        "parlay_edge_score": null
+      },
+      "models": {},
+      "execution_overlay": {
+        "dual_sweet_spot": false,
+        "spread_sweet_spot": false,
+        "total_sweet_spot": false,
+        "spread_avoid": false,
+        "total_avoid": false
+      },
+      "calibration_tags": {
+        "historical_bucket_win_rate": null,
+        "sample_warning": "Schedule-only slate; no market-value signal has been calculated."
+      },
+      "source_row": {
+        "game_id": "nfl_401873062",
+        "espn_game_id": "401873062",
+        "game_date": "2026-11-15",
+        "game_time_utc": "2026-11-15T21:05Z",
+        "status": "STATUS_FINAL",
+        "status_state": "post",
+        "completed": 1,
+        "home_team_raw": "Las Vegas Raiders",
+        "away_team_raw": "Seattle Seahawks",
+        "home_score": "13",
+        "away_score": "21",
+        "venue": "Allegiant Stadium",
+        "season": "",
+        "source_system": "espn_public_scoreboard_nfl",
+        "requested_date": "20261115",
+        "Line Bet": "Pending market",
+        "Total Bet": "Pending market",
+        "confidence_tier": "PENDING",
+        "confidence_reason": "Schedule-only slate; sportsbook market/model rows are not available yet.",
+        "actionability": "WAIT",
+        "selection_authority": "Football_ScheduleOnly_v1"
+      },
+      "agent_reasoning": "Waiting for sportsbook market rows before producing football model signals."
+    }
+  ]
+}

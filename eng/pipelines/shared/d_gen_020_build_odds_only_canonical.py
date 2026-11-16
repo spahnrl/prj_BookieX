@@ -12,6 +12,7 @@ import csv
 import json
 import re
 import sys
+import unicodedata
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -241,6 +242,8 @@ def _build_canonical_rows(league: str, odds_rows: list[dict], schedule_rows: lis
             "odds_event_id": game_id,
             "game_date": commence[:10],
             "commence_time": commence,
+            **({"game_time_utc": schedule_row["game_time_utc"]}
+               if league in ("nfl", "ncaaf") and schedule_row else {}),
             "home_team": home,
             "away_team": away,
             "home_team_key": name_to_key.get(_normalize_name(home), ""),
@@ -365,8 +368,9 @@ def _schedule_match_row(odds_group: list[dict], schedule_rows: list[dict], leagu
     if not schedule_rows or not odds_group:
         return None
     sample = odds_group[0]
-    home = _normalize_name(sample.get("home_team") or "")
-    away = _normalize_name(sample.get("away_team") or "")
+    normalize = _ncaaf_schedule_name if league == "ncaaf" else _normalize_name
+    home = normalize(sample.get("home_team") or "")
+    away = normalize(sample.get("away_team") or "")
     comm = _parse_dt(sample.get("commence_time") or "")
     if not home or not away or comm is None:
         return None
@@ -374,9 +378,9 @@ def _schedule_match_row(odds_group: list[dict], schedule_rows: list[dict], leagu
     high = comm + timedelta(hours=24)
     matches = []
     for row in schedule_rows:
-        if _normalize_name(row.get("home_team_raw") or "") != home:
+        if normalize(row.get("home_team_raw") or "") != home:
             continue
-        if _normalize_name(row.get("away_team_raw") or "") != away:
+        if normalize(row.get("away_team_raw") or "") != away:
             continue
         sched_dt = _parse_dt(row.get("game_time_utc") or "")
         if sched_dt is None:
@@ -392,6 +396,17 @@ def _schedule_match_row(odds_group: list[dict], schedule_rows: list[dict], leagu
         if _schedule_game_id_from_row(row, league) == target:
             return row
     return None
+
+
+def _ncaaf_schedule_name(name: str) -> str:
+    ascii_name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
+    key = _normalize_name(ascii_name.replace("'", ""))
+    return {
+        "umass minutemen": "massachusetts minutemen",
+        "sam houston state bearkats": "sam houston bearkats",
+        "appalachian state mountaineers": "app state mountaineers",
+        "southern mississippi golden eagles": "southern miss golden eagles",
+    }.get(key, key)
 
 
 def _schedule_game_id_from_row(row: dict | None, league: str) -> str:

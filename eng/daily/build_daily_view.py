@@ -336,24 +336,19 @@ def build_daily_view():
         spread_edge = g.get("Spread Edge")
         total_edge = g.get("Total Edge")
 
-        # Skip games without signal
-        if spread_edge is None or total_edge is None:
-            continue
+        has_signal = spread_edge is not None and total_edge is not None
 
         game_id = str(g.get("game_id") or "").strip()
         pocket = pocket_lookup.get(game_id)
 
-        spread_bucket = determine_bucket(spread_edge)
-
-        spread_percentile = determine_percentile(
-            spread_edge,
-            calibration["spread_edge_percentiles"]
-        )
-
-        total_percentile = determine_percentile(
-            total_edge,
-            calibration["total_edge_percentiles"]
-        )
+        spread_bucket = None
+        spread_percentile = None
+        total_percentile = None
+        if spread_edge is not None:
+            spread_bucket = determine_bucket(spread_edge)
+            spread_percentile = determine_percentile(spread_edge, calibration["spread_edge_percentiles"])
+        if total_edge is not None:
+            total_percentile = determine_percentile(total_edge, calibration["total_edge_percentiles"])
 
 
         bucket_win_rate = calibration["spread_bucket_win_rates"].get(
@@ -425,13 +420,13 @@ def build_daily_view():
                 "projected_away_score": g.get("Projected Away score"),
                 "projected_margin_home": g.get("Home Line Projection"),
                 "projected_total": g.get("Total Projection"),
-                "spread_pick": g.get("Line Bet"),
-                "total_pick": g.get("Total Bet"),
-                "confidence_tier": g.get("confidence_tier"),
+                "spread_pick": g.get("Line Bet") if has_signal else None,
+                "total_pick": g.get("Total Bet") if has_signal else None,
+                "confidence_tier": g.get("confidence_tier") if has_signal else "PENDING",
                 "cluster_alignment": g.get("cluster_alignment"),
                 "arbitration_cluster": g.get("arbitration_cluster"),
-                "confidence_reason": g.get("confidence_reason"),
-                "actionability": g.get("actionability")
+                "confidence_reason": g.get("confidence_reason") if has_signal else "Model edges unavailable.",
+                "actionability": g.get("actionability") if has_signal else "WAIT"
             },
 
             # ------------------------------------------------

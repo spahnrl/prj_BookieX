@@ -253,13 +253,22 @@ def build_daily_view(league: str, date_str: str | None = None) -> dict:
     games = [_daily_game(row) for row in rows]
     if date_str:
         games = [g for g in games if g["identity"].get("slate_date") == date_str]
-        if not games:
-            schedule_games = [
-                _pending_schedule_game(row)
-                for row in _load_schedule_rows(league)
-                if _slate_date(row) == date_str
-            ]
-            games = schedule_games
+        game_ids = {g["identity"]["game_id"].removeprefix(f"{league}_") for g in games}
+        matchups = {
+            (g["identity"]["away_team"].casefold(), g["identity"]["home_team"].casefold())
+            for g in games
+        }
+        for row in _load_schedule_rows(league):
+            if _slate_date(row) != date_str:
+                continue
+            game = _pending_schedule_game(row)
+            identity = game["identity"]
+            game_id = identity["game_id"].removeprefix(f"{league}_")
+            matchup = (identity["away_team"].casefold(), identity["home_team"].casefold())
+            if game_id and game_id not in game_ids and matchup not in matchups:
+                games.append(game)
+                game_ids.add(game_id)
+                matchups.add(matchup)
     elif games:
         dates = sorted({g["identity"].get("slate_date") for g in games if g["identity"].get("slate_date")})
         today = datetime.now(CENTRAL).date().isoformat()
