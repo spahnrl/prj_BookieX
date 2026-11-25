@@ -1,0 +1,1822 @@
+{
+  "generated_at_utc": "2026-11-25T22:13:13.285516+00:00",
+  "league": "ncaam",
+  "source_backtest_dir": "backtest_20261125_221300",
+  "source_games_path": "C:/Users/Rick_DellXPS/OneDrive/Dev/Python/prj_BookieX/data/ncaam/backtests/backtest_20261125_221300/backtest_games.json",
+  "excluded_models": [],
+  "formulas": {
+    "roi_minus_110": "Per graded leg: WIN adds 100/|price| units profit, LOSS adds -1, PUSH adds 0; ROI = total_profit / graded_games (matches execution overlay 039b leg accounting).",
+    "win_rate": "wins / graded_games where graded_games = wins + losses + pushes (pushes count in denominator).",
+    "breakeven_win_rate": 0.47619,
+    "state_rules": {
+      "insufficient": "graded_games < 15",
+      "hot": "graded_games >= 25 and win_rate >= 0.545 and roi >= 0.035",
+      "cold": "graded_games >= 15 and (win_rate < 0.515 or roi <= -0.03)",
+      "warm": "else when graded_games >= MIN_GRADED_FOR_STATE"
+    },
+    "combo_outcome_pair": "LOSS if either leg LOSS; WIN if both WIN; PUSH if any PUSH without LOSS.",
+    "combo_outcome_triple": "LOSS if any leg LOSS; WIN if all WIN; PUSH if any PUSH without LOSS.",
+    "combo_min_graded": 30
+  },
+  "slate_date": "2026-11-26",
+  "source_live_slate_artifact": "C:\\Users\\Rick_DellXPS\\OneDrive\\Dev\\Python\\prj_BookieX\\data\\ncaam\\daily\\daily_view_ncaam_2026-11-26_v1.json",
+  "game_count": 26,
+  "games": [
+    {
+      "game_id": "ncaam_401920537",
+      "matchup": "Miami (FL) @ Michigan",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 3.5472
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 14.9761
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 3.5472
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "hot",
+            "abs_edge": 11.2321
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 9.0
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 15.6
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+        "games": 2601,
+        "graded_games": 2601,
+        "wins": 1360,
+        "losses": 1232,
+        "pushes": 9,
+        "win_rate": 0.5229,
+        "roi": 0.0017,
+        "state": "warm"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:warm",
+        "games": 2432,
+        "graded_games": 2432,
+        "wins": 1190,
+        "losses": 1233,
+        "pushes": 9,
+        "win_rate": 0.4893,
+        "roi": -0.0622,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_momentum5_model:warm",
+        "games": 1553,
+        "graded_games": 1553,
+        "wins": 697,
+        "losses": 855,
+        "pushes": 1,
+        "win_rate": 0.4488,
+        "roi": -0.1425,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:hot|ncaam_momentum5_model:warm",
+        "games": 336,
+        "graded_games": 336,
+        "wins": 183,
+        "losses": 152,
+        "pushes": 1,
+        "win_rate": 0.5446,
+        "roi": 0.0427,
+        "state": "warm"
+      }
+    },
+    {
+      "game_id": "ncaam_401920538",
+      "matchup": "TCU @ Creighton",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 4.2378
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 11.4122
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 4.2378
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "hot",
+            "abs_edge": 8.5592
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 2.4
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 3.4
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:hot|ncaam_market_pressure_model:hot",
+        "games": 693,
+        "graded_games": 693,
+        "wins": 379,
+        "losses": 312,
+        "pushes": 2,
+        "win_rate": 0.5469,
+        "roi": 0.047,
+        "state": "hot"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:hot|ncaam_market_pressure_model:hot|ncaam_momentum5_model:warm",
+        "games": 647,
+        "graded_games": 647,
+        "wins": 318,
+        "losses": 327,
+        "pushes": 2,
+        "win_rate": 0.4915,
+        "roi": -0.0586,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_momentum5_model:warm",
+        "games": 1553,
+        "graded_games": 1553,
+        "wins": 697,
+        "losses": 855,
+        "pushes": 1,
+        "win_rate": 0.4488,
+        "roi": -0.1425,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:hot|ncaam_momentum5_model:warm",
+        "games": 336,
+        "graded_games": 336,
+        "wins": 183,
+        "losses": 152,
+        "pushes": 1,
+        "win_rate": 0.5446,
+        "roi": 0.0427,
+        "state": "warm"
+      }
+    },
+    {
+      "game_id": "ncaam_401917547",
+      "matchup": "Saint Mary's (CA) @ UCLA",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 8.9488
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 11.1309
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 8.9488
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "hot",
+            "abs_edge": 8.3482
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "warm",
+            "abs_edge": 5.5
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "warm",
+            "abs_edge": 4.7
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+        "games": 2601,
+        "graded_games": 2601,
+        "wins": 1360,
+        "losses": 1232,
+        "pushes": 9,
+        "win_rate": 0.5229,
+        "roi": 0.0017,
+        "state": "warm"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:warm",
+        "games": 2432,
+        "graded_games": 2432,
+        "wins": 1190,
+        "losses": 1233,
+        "pushes": 9,
+        "win_rate": 0.4893,
+        "roi": -0.0622,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_momentum5_model:warm",
+        "games": 1553,
+        "graded_games": 1553,
+        "wins": 697,
+        "losses": 855,
+        "pushes": 1,
+        "win_rate": 0.4488,
+        "roi": -0.1425,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:hot|ncaam_momentum5_model:warm",
+        "games": 336,
+        "graded_games": 336,
+        "wins": 183,
+        "losses": 152,
+        "pushes": 1,
+        "win_rate": 0.5446,
+        "roi": 0.0427,
+        "state": "warm"
+      }
+    },
+    {
+      "game_id": "ncaam_401906869",
+      "matchup": "Georgetown @ Texas",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 8.2083
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 8.4139
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 8.2083
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "cold",
+            "abs_edge": 6.3104
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 13.7
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 3.9
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+        "games": 2601,
+        "graded_games": 2601,
+        "wins": 1360,
+        "losses": 1232,
+        "pushes": 9,
+        "win_rate": 0.5229,
+        "roi": 0.0017,
+        "state": "warm"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:warm",
+        "games": 2432,
+        "graded_games": 2432,
+        "wins": 1190,
+        "losses": 1233,
+        "pushes": 9,
+        "win_rate": 0.4893,
+        "roi": -0.0622,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 3067,
+        "graded_games": 3067,
+        "wins": 1166,
+        "losses": 1899,
+        "pushes": 2,
+        "win_rate": 0.3802,
+        "roi": -0.2736,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 1217,
+        "graded_games": 1217,
+        "wins": 514,
+        "losses": 703,
+        "pushes": 0,
+        "win_rate": 0.4224,
+        "roi": -0.1937,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "ncaam_401929281",
+      "matchup": "Georgia @ Cincinnati",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "1-2",
+            "state": "cold",
+            "abs_edge": 1.9276
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "warm",
+            "abs_edge": 6.7587
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "1-2",
+            "state": "cold",
+            "abs_edge": 1.9276
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 5.069
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "6-8",
+            "state": "warm",
+            "abs_edge": 6.9
+          },
+          "total": {
+            "edge_bucket": "1-2",
+            "state": "warm",
+            "abs_edge": 1.4
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+        "games": 873,
+        "graded_games": 873,
+        "wins": 440,
+        "losses": 430,
+        "pushes": 3,
+        "win_rate": 0.504,
+        "roi": -0.0344,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 695,
+        "graded_games": 695,
+        "wins": 214,
+        "losses": 479,
+        "pushes": 2,
+        "win_rate": 0.3079,
+        "roi": -0.4093,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 3067,
+        "graded_games": 3067,
+        "wins": 1166,
+        "losses": 1899,
+        "pushes": 2,
+        "win_rate": 0.3802,
+        "roi": -0.2736,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 1217,
+        "graded_games": 1217,
+        "wins": 514,
+        "losses": 703,
+        "pushes": 0,
+        "win_rate": 0.4224,
+        "roi": -0.1937,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "ncaam_401906807",
+      "matchup": "Oklahoma @ Purdue",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.508
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 2.9804
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.508
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "cold",
+            "abs_edge": 2.2353
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "6-8",
+            "state": "warm",
+            "abs_edge": 6.4
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 2.3
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+        "games": 873,
+        "graded_games": 873,
+        "wins": 440,
+        "losses": 430,
+        "pushes": 3,
+        "win_rate": 0.504,
+        "roi": -0.0344,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 695,
+        "graded_games": 695,
+        "wins": 214,
+        "losses": 479,
+        "pushes": 2,
+        "win_rate": 0.3079,
+        "roi": -0.4093,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 3067,
+        "graded_games": 3067,
+        "wins": 1166,
+        "losses": 1899,
+        "pushes": 2,
+        "win_rate": 0.3802,
+        "roi": -0.2736,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 1850,
+        "graded_games": 1850,
+        "wins": 652,
+        "losses": 1197,
+        "pushes": 1,
+        "win_rate": 0.3524,
+        "roi": -0.3266,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "ncaam_401920529",
+      "matchup": "Tennessee @ Iowa St.",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 2.0238
+          },
+          "total": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.4928
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 2.0238
+          },
+          "total": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.3696
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.0
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "warm",
+            "abs_edge": 5.8
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+        "games": 2601,
+        "graded_games": 2601,
+        "wins": 1360,
+        "losses": 1232,
+        "pushes": 9,
+        "win_rate": 0.5229,
+        "roi": 0.0017,
+        "state": "warm"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:cold",
+        "games": 159,
+        "graded_games": 159,
+        "wins": 42,
+        "losses": 117,
+        "pushes": 0,
+        "win_rate": 0.2642,
+        "roi": -0.4957,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 3067,
+        "graded_games": 3067,
+        "wins": 1166,
+        "losses": 1899,
+        "pushes": 2,
+        "win_rate": 0.3802,
+        "roi": -0.2736,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 1850,
+        "graded_games": 1850,
+        "wins": 652,
+        "losses": 1197,
+        "pushes": 1,
+        "win_rate": 0.3524,
+        "roi": -0.3266,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "ncaam_401929282",
+      "matchup": "Boston College @ UCF",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.851
+          },
+          "total": {
+            "edge_bucket": "1-2",
+            "state": "warm",
+            "abs_edge": 1.6296
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.851
+          },
+          "total": {
+            "edge_bucket": "1-2",
+            "state": "cold",
+            "abs_edge": 1.2222
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "warm",
+            "abs_edge": 4.8
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 18.9
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+        "games": 873,
+        "graded_games": 873,
+        "wins": 440,
+        "losses": 430,
+        "pushes": 3,
+        "win_rate": 0.504,
+        "roi": -0.0344,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 695,
+        "graded_games": 695,
+        "wins": 214,
+        "losses": 479,
+        "pushes": 2,
+        "win_rate": 0.3079,
+        "roi": -0.4093,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 3067,
+        "graded_games": 3067,
+        "wins": 1166,
+        "losses": 1899,
+        "pushes": 2,
+        "win_rate": 0.3802,
+        "roi": -0.2736,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 1217,
+        "graded_games": 1217,
+        "wins": 514,
+        "losses": 703,
+        "pushes": 0,
+        "win_rate": 0.4224,
+        "roi": -0.1937,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "ncaam_401925757",
+      "matchup": "Arkansas @ Michigan St.",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401921714",
+      "matchup": "Clemson @ Colorado St.",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401921671",
+      "matchup": "Grand Canyon @ Colorado",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401918960",
+      "matchup": "Norfolk St. @ NC State",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401917544",
+      "matchup": "Pacific @ Jacksonville St.",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401918971",
+      "matchup": "SMU @ Utah St.",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401920528",
+      "matchup": "San Diego St. @ Maryland",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401921674",
+      "matchup": "South Carolina @ Arizona St.",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401921170",
+      "matchup": "TBD_AWAY @ Cleveland St.",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401925880",
+      "matchup": "TBD_AWAY @ Montana St.",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401912231",
+      "matchup": "TBD_AWAY @ UTSA",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401909568",
+      "matchup": "UConn @ Duke",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401921673",
+      "matchup": "Utah St. @ TBD_HOME",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401929287",
+      "matchup": "Wake Forest @ Mississippi St.",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_market_pressure_model": {
+          "spread": null,
+          "total": null
+        },
+        "ncaam_momentum5_model": {
+          "spread": null,
+          "total": null
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 0,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": null,
+      "best_triple_spread": null,
+      "best_pair_total": null,
+      "best_triple_total": null
+    },
+    {
+      "game_id": "ncaam_401920540",
+      "matchup": "Baylor @ Gonzaga",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.85
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 17.075
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.85
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "hot",
+            "abs_edge": 12.8062
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "6-8",
+            "state": "warm",
+            "abs_edge": 6.0
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 48.8
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 1,
+        "warm": 2,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+        "games": 873,
+        "graded_games": 873,
+        "wins": 440,
+        "losses": 430,
+        "pushes": 3,
+        "win_rate": 0.504,
+        "roi": -0.0344,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 695,
+        "graded_games": 695,
+        "wins": 214,
+        "losses": 479,
+        "pushes": 2,
+        "win_rate": 0.3079,
+        "roi": -0.4093,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_momentum5_model:warm",
+        "games": 1553,
+        "graded_games": 1553,
+        "wins": 697,
+        "losses": 855,
+        "pushes": 1,
+        "win_rate": 0.4488,
+        "roi": -0.1425,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:hot|ncaam_momentum5_model:warm",
+        "games": 336,
+        "graded_games": 336,
+        "wins": 183,
+        "losses": 152,
+        "pushes": 1,
+        "win_rate": 0.5446,
+        "roi": 0.0427,
+        "state": "warm"
+      }
+    },
+    {
+      "game_id": "ncaam_401918972",
+      "matchup": "SMU @ LSU",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 5.6926
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "warm",
+            "abs_edge": 7.2317
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "4-6",
+            "state": "hot",
+            "abs_edge": 5.6926
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 5.4238
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 10.0
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 33.4
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 2,
+        "warm": 1,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:hot|ncaam_market_pressure_model:hot",
+        "games": 693,
+        "graded_games": 693,
+        "wins": 379,
+        "losses": 312,
+        "pushes": 2,
+        "win_rate": 0.5469,
+        "roi": 0.047,
+        "state": "hot"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:hot|ncaam_market_pressure_model:hot|ncaam_momentum5_model:warm",
+        "games": 647,
+        "graded_games": 647,
+        "wins": 318,
+        "losses": 327,
+        "pushes": 2,
+        "win_rate": 0.4915,
+        "roi": -0.0586,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 3067,
+        "graded_games": 3067,
+        "wins": 1166,
+        "losses": 1899,
+        "pushes": 2,
+        "win_rate": 0.3802,
+        "roi": -0.2736,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 1217,
+        "graded_games": 1217,
+        "wins": 514,
+        "losses": 703,
+        "pushes": 0,
+        "win_rate": 0.4224,
+        "roi": -0.1937,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "ncaam_401920531",
+      "matchup": "Texas Tech @ Oregon",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 3.4375
+          },
+          "total": {
+            "edge_bucket": "6-8",
+            "state": "warm",
+            "abs_edge": 6.2875
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 3.4375
+          },
+          "total": {
+            "edge_bucket": "4-6",
+            "state": "cold",
+            "abs_edge": 4.7156
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 2.2
+          },
+          "total": {
+            "edge_bucket": "8+",
+            "state": "warm",
+            "abs_edge": 16.4
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 3,
+        "cold": 0,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 2,
+        "cold": 1,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm",
+        "games": 2601,
+        "graded_games": 2601,
+        "wins": 1360,
+        "losses": 1232,
+        "pushes": 9,
+        "win_rate": 0.5229,
+        "roi": 0.0017,
+        "state": "warm"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:warm|ncaam_momentum5_model:warm",
+        "games": 2432,
+        "graded_games": 2432,
+        "wins": 1190,
+        "losses": 1233,
+        "pushes": 9,
+        "win_rate": 0.4893,
+        "roi": -0.0622,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 3067,
+        "graded_games": 3067,
+        "wins": 1166,
+        "losses": 1899,
+        "pushes": 2,
+        "win_rate": 0.3802,
+        "roi": -0.2736,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:warm|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 1217,
+        "graded_games": 1217,
+        "wins": 514,
+        "losses": 703,
+        "pushes": 0,
+        "win_rate": 0.4224,
+        "roi": -0.1937,
+        "state": "cold"
+      }
+    },
+    {
+      "game_id": "ncaam_401909506",
+      "matchup": "DePaul @ Pittsburgh",
+      "per_model": {
+        "ncaam_avg_score_model": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.335
+          },
+          "total": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.5687
+          }
+        },
+        "ncaam_market_pressure_model": {
+          "spread": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.335
+          },
+          "total": {
+            "edge_bucket": "0-1",
+            "state": "cold",
+            "abs_edge": 0.4265
+          }
+        },
+        "ncaam_momentum5_model": {
+          "spread": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 3.1
+          },
+          "total": {
+            "edge_bucket": "2-4",
+            "state": "warm",
+            "abs_edge": 3.3
+          }
+        }
+      },
+      "spread_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "total_pocket_alignment": {
+        "hot": 0,
+        "warm": 1,
+        "cold": 2,
+        "insufficient": 0
+      },
+      "best_pair_spread": {
+        "market_type": "spread",
+        "combo_kind": "pair",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold",
+        "games": 873,
+        "graded_games": 873,
+        "wins": 440,
+        "losses": 430,
+        "pushes": 3,
+        "win_rate": 0.504,
+        "roi": -0.0344,
+        "state": "cold"
+      },
+      "best_triple_spread": {
+        "market_type": "spread",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 695,
+        "graded_games": 695,
+        "wins": 214,
+        "losses": 479,
+        "pushes": 2,
+        "win_rate": 0.3079,
+        "roi": -0.4093,
+        "state": "cold"
+      },
+      "best_pair_total": {
+        "market_type": "total",
+        "combo_kind": "pair",
+        "models_key": "ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 3067,
+        "graded_games": 3067,
+        "wins": 1166,
+        "losses": 1899,
+        "pushes": 2,
+        "win_rate": 0.3802,
+        "roi": -0.2736,
+        "state": "cold"
+      },
+      "best_triple_total": {
+        "market_type": "total",
+        "combo_kind": "triple",
+        "models_key": "ncaam_avg_score_model|ncaam_market_pressure_model|ncaam_momentum5_model",
+        "state_signature": "ncaam_avg_score_model:cold|ncaam_market_pressure_model:cold|ncaam_momentum5_model:warm",
+        "games": 1850,
+        "graded_games": 1850,
+        "wins": 652,
+        "losses": 1197,
+        "pushes": 1,
+        "win_rate": 0.3524,
+        "roi": -0.3266,
+        "state": "cold"
+      }
+    }
+  ]
+}
